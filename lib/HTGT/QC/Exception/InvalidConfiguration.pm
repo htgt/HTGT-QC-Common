@@ -1,4 +1,10 @@
 package HTGT::QC::Exception::InvalidConfiguration;
+## no critic(RequireUseStrict,RequireUseWarnings)
+{
+    $HTGT::QC::Exception::InvalidConfiguration::VERSION = '0.001';
+}
+## use critic
+
 
 use Moose;
 use MooseX::Types::Path::Class;
