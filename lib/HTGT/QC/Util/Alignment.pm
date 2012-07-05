@@ -52,7 +52,7 @@ sub target_alignment_string {
         }
         else { # $op eq 'I'
             $alignment_str .= '-' x $length;
-        }        
+        }
     }
 
     if ( $pos < length( $seq ) ) {
@@ -64,8 +64,8 @@ sub target_alignment_string {
 
 sub query_alignment_string {
     my ( $bio_seq, $cigar ) = @_;
-    
-    my ( $seq, $query_start, $query_end );    
+
+    my ( $seq, $query_start, $query_end );
     if ( $cigar->{query_strand} eq '-' ) {
         $seq = $bio_seq->revcom->seq;
         $query_start = $bio_seq->length - $cigar->{query_start};
@@ -83,8 +83,8 @@ sub query_alignment_string {
     if ( $query_start > 0 ) {
         $alignment_str .= substr( $seq, 0, $query_start );
         $pos += $query_start;
-    }    
-    
+    }
+
     for ( @{ $cigar->{operations} } ) {
         my ( $op, $length ) = @$_;
         if ( $op eq 'M' or $op eq 'I' ) {
@@ -93,12 +93,12 @@ sub query_alignment_string {
         }
         else {
             $alignment_str .= '-' x $length;
-        }        
+        }
     }
 
     if ( $pos < length( $seq ) ) {
         $alignment_str .= substr( $seq, $pos );
-    }    
+    }
 
     return $alignment_str;
 }
@@ -108,7 +108,7 @@ sub target_alignment_string_pos {
 
     # $target_pos is 1-based coordinate, convert to zero-based
     $target_pos = $target_pos - 1;
-    
+
     my ( $alignment_start, $alignment_end );
     if ( $cigar->{target_strand} eq '+' ) {
         $alignment_start = $cigar->{target_start};
@@ -143,7 +143,7 @@ sub target_alignment_string_pos {
         elsif ( $op eq 'I' ) {
             $alignment_pos += $length;
         }
-    }        
+    }
 
     return $alignment_pos;
 }
@@ -158,26 +158,26 @@ sub alignment_match {
 
     $start ||= 1;
     $end   ||= $target_bio_seq->length;
-    
+
     my $target_align_str = target_alignment_string( $target_bio_seq, $cigar );
     my $query_align_str  = query_alignment_string( $query_bio_seq, $cigar );
 
     my $pad_total = length( $target_align_str ) - length( $query_align_str );
 
     my ( $pad_left, $pad_right );
-    
+
     if ( $cigar->{target_strand} eq '+' ) {
         $pad_left  = $cigar->{target_start} - $cigar->{query_start};
         $pad_right = ($target_bio_seq->length - $cigar->{target_end}) - ($query_bio_seq->length - $cigar->{query_end});
     }
     else {
         $pad_left  = ($target_bio_seq->length - $cigar->{target_start}) - $cigar->{query_start};
-        $pad_right = $cigar->{target_end} - ($query_bio_seq->length - $cigar->{query_end});        
+        $pad_right = $cigar->{target_end} - ($query_bio_seq->length - $cigar->{query_end});
     }
 
     if ( $pad_left < 0 ) {
         $target_align_str = join( '', '-' x -$pad_left ) . $target_align_str;
-    }    
+    }
     elsif ( $pad_left > 0 ) {
         $query_align_str = join( '', '-' x $pad_left ) . $query_align_str;
     }
@@ -189,11 +189,11 @@ sub alignment_match {
         $query_align_str = $query_align_str . join( '', '-' x $pad_right );
     }
 
-    if ( length( $target_align_str ) != length( $query_align_str ) ) {        
+    if ( length( $target_align_str ) != length( $query_align_str ) ) {
         HTGT::QC::Exception->throw( 'Alignment string length mismatch (target='
                                         . length( $target_align_str) . ', query=' . length( $query_align_str ) . ')' );
     }
-        
+
     my $sub_seq_start = target_alignment_string_pos( $cigar, $start, $target_bio_seq->length );
     my $sub_seq_end   = target_alignment_string_pos( $cigar, $end,   $target_bio_seq->length );
 
@@ -234,9 +234,9 @@ sub format_alignment {
                                           : 'Query';
 
     my $length = length( $params{target_str} );
-    
+
     my $alignment_str = '';
-    
+
     my $pos = 0;
     while ( $pos < $length ) {
         my $chunk_size = min( $length - $pos, $line_len );
@@ -247,7 +247,7 @@ sub format_alignment {
                                ) . "\n";
         $pos += $chunk_size;
     }
-    
+
     return $alignment_str;
 }
 

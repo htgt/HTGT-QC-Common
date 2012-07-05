@@ -78,7 +78,7 @@ sub _build_primer_regions {
     my $parser = Parse::BooleanLogic->new();
 
     my %regions_for_primer;
-    
+
     for my $primer_name ( $self->primers ) {
         my %regions;
         my $condition_str = $self->condition_for_primer( $primer_name );
@@ -89,7 +89,7 @@ sub _build_primer_regions {
             }
         );
         my @regions = keys %regions;
-        $self->assert_valid_regions( $primer_name, \@regions );               
+        $self->assert_valid_regions( $primer_name, \@regions );
         $regions_for_primer{ $primer_name } = \@regions;
     }
 
@@ -101,6 +101,7 @@ sub BUILD {
 
     # Ensure the builder runs on object creation
     $self->primer_regions;
+    return;
 }
 
 sub assert_valid_regions {
@@ -108,12 +109,13 @@ sub assert_valid_regions {
 
     HTGT::QC::Exception->throw( "No regions defined for primer '$primer_name'" )
             unless @{$regions};
-    
+
     for my $region_name ( @{$regions} ) {
         unless ( $self->is_alignment_region( $region_name ) ) {
             HTGT::QC::Exception->throw( "Alignment region '$region_name' for primer '$primer_name' is not defined" );
         }
     }
+    return;
 }
 
 sub expected_strand_for_primer {
@@ -122,7 +124,7 @@ sub expected_strand_for_primer {
     my @strands;
     for my $region_name ( @{ $self->regions_for_primer( $primer ) } ) {
         my $region = $self->alignment_region( $region_name );
-        push @strands, $region->{expected_strand};        
+        push @strands, $region->{expected_strand};
     }
 
     @strands = uniq( @strands );
@@ -143,29 +145,29 @@ sub is_primer_pass {
     };
 
     my $parser = Parse::BooleanLogic->new;
-    $parser->solve( $parser->as_array( $self->condition_for_primer( $primer ) ), $callback );
+    return $parser->solve( $parser->as_array( $self->condition_for_primer( $primer ) ), $callback );
 }
 
 sub is_pass {
-    my ( $self, $primer_results ) = @_;    
-    
+    my ( $self, $primer_results ) = @_;
+
     my $callback = sub {
         my $primer = $_[0]->{operand};
         exists $primer_results->{$primer} && $primer_results->{$primer}{pass};
     };
 
     my $parser = Parse::BooleanLogic->new;
-    $parser->solve( $parser->as_array( $self->pass_condition ), $callback );
+    return $parser->solve( $parser->as_array( $self->pass_condition ), $callback );
 }
 
 sub is_genomic_pass {
     my ( $self, $primer_results ) = @_;
 
-    if ( $primer_results->{alignment} ) {        
+    if ( $primer_results->{alignment} ) {
         while ( my ( $region, $analysis ) = each %{ $primer_results->{alignment} } ) {
             return 1 if $analysis->{pass} && $self->alignment_region( $region )->{genomic};
         }
-    }    
+    }
 
     return 0;
 }

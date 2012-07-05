@@ -1,4 +1,5 @@
 package HTGT::QC::Config;
+# ABSTRACT: Common QC Code
 
 use Moose;
 use MooseX::Types::Path::Class;
@@ -31,7 +32,7 @@ has _config => (
 sub _build__config {
     my $self = shift;
 
-    $self->log->debug( 'Reading configuration from ' . $self->conffile );    
+    $self->log->debug( 'Reading configuration from ' . $self->conffile );
     my $parser = Config::Scoped->new(
         file     => $self->conffile->stringify,
         warnings => { permissions => 'off' }
@@ -44,29 +45,29 @@ sub _build__config {
 }
 
 sub software_version {
-    $HTGT::QC::Config::VERSION || '1.0.0_01';
+    return $HTGT::QC::Config::VERSION || '1.0.0_01';
 }
 
 sub basedir {
-    dir( shift->_config->{GLOBAL}->{basedir} );
+    return dir( shift->_config->{GLOBAL}->{basedir} );
 }
 
 sub runner_basedir {
-    dir( shift->_config->{RUNNER}->{basedir} );
+    return dir( shift->_config->{RUNNER}->{basedir} );
 }
 
 sub runner_max_parallel {
-    shift->_config->{RUNNER}->{max_parallel};
+    return shift->_config->{RUNNER}->{max_parallel};
 }
 
 sub runner_poll_interval {
-    shift->_config->{RUNNER}->{poll_interval};
+    return shift->_config->{RUNNER}->{poll_interval};
 }
 
 sub profiles {
     my $self = shift;
 
-    keys %{ $self->_config->{profile} || {} };
+    return keys %{ $self->_config->{profile} || {} };
 }
 
 sub profile {
@@ -95,12 +96,12 @@ sub validate {
 
     push @errors, $self->_validate_alignment_regions();
     push @errors, $self->_validate_profiles();
-    
+
     if ( @errors ) {
         HTGT::QC::Exception::InvalidConfiguration->throw(
             conffile => $self->conffile,
             errors   => \@errors
-        );        
+        );
     }
 
     return $self;
@@ -121,13 +122,13 @@ sub _validate_alignment_regions {
         for my $required ( qw( expected_strand start end genomic ) ) {
             unless ( defined $region->{$required} ) {
                 push @errors, "Alignment region $name missing required parameter $required";
-            }            
+            }
         }
         unless ( any { defined $region->{$_} } qw( min_match_length min_match_pct ensure_no_indel ) ) {
             push @errors, "Alignment region $name missing pass condition";
-        }        
+        }
     }
-        
+
     return @errors;
 }
 
@@ -149,7 +150,7 @@ sub _validate_profiles {
             push @errors, "Invalid profile $profile_name: $_";
         };
     }
-    
+
     return @errors;
 }
 

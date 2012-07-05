@@ -26,8 +26,8 @@ has '+message' => (
 sub _build_message {
     my $self = shift;
 
-    join ( "\n  ", 'Errors detected in configuration file ' . $self->conffile . ':',
-           @{ $self->errors } );    
+    return join ( "\n  ", 'Errors detected in configuration file ' . $self->conffile . ':',
+           @{ $self->errors } );
 }
 
 __PACKAGE__->meta->make_immutable( inline_constructor => 0 );

@@ -13,6 +13,7 @@ use namespace::autoclean;
 
 with qw( MooseX::Log::Log4perl );
 
+## no critic (RegularExpressions::ProhibitComplexRegexes)
 const my $CIGAR_RX => qr(
     ^cigar:
     \s+
@@ -21,7 +22,7 @@ const my $CIGAR_RX => qr(
     (\d+)                 # query_start
     \s+
     (\d+)                 # query_end
-    \s+           
+    \s+
     ([+-])                # query_strand
     \s+
     (\S+)                 # target_id
@@ -37,6 +38,7 @@ const my $CIGAR_RX => qr(
     (.+)                  # operator/length pairs
     $
 )x;
+## use critic
 
 const my $OP_STR_RX => qr(
    \s*
@@ -88,7 +90,6 @@ has plate_name_map => (
 sub canonical_plate_name {
     my ( $self, $plate_name ) = @_;
 
-    my $canonical_name;
     if ( $self->has_canonical_name( $plate_name ) ) {
         return $self->get_canonical_name( $plate_name );
     }
@@ -115,17 +116,17 @@ sub _build_query_primer_rx {
             push @primer_names, '.*'; # match anything
         }
     }
-        
+
     my $primer_match = join '|', @primer_names;
 
-    return qr/^(.+)\.(?:[a-z]\d)k\d*[a-z]?($primer_match)[a-z]?$/;    
+    return qr/^(.+)\.(?:[a-z]\d)k\d*[a-z]?($primer_match)[a-z]?$/;
 }
 
 sub parse_query_id {
     my ( $self, $query_id ) = @_;
 
     # XXX this is a hack, do we need something more general?
-    $query_id =~ s/_20mer$//;    
+    $query_id =~ s/_20mer$//;
 
     my ( $well, $primer ) = $query_id =~ $self->query_primer_rx;
 
@@ -133,7 +134,7 @@ sub parse_query_id {
                        $query_id, (defined $well ? $well : '<undef>'), (defined $primer ? $primer : '<undef>')
                    );
 
-    if ( $self->strict_mode and ( not defined $well or not defined $primer ) ) {        
+    if ( $self->strict_mode and ( not defined $well or not defined $primer ) ) {
         HTGT::QC::Exception->throw( "Failed to parse query_id: $query_id" );
     }
 
@@ -144,7 +145,7 @@ sub parse_query_id {
         $res{well_name}  = uc substr( $well, -3 );
         if ( my $canon_name = $self->canonical_plate_name( $res{plate_name} ) ) {
             $res{plate_name} = $canon_name;
-        }            
+        }
     }
 
     return \%res;
@@ -153,17 +154,17 @@ sub parse_query_id {
 sub parse_cigar {
     my ( $self, $cigar_str ) = @_;
 
-    chomp( $cigar_str );    
+    chomp( $cigar_str );
 
     $self->log->trace( "Parsing CIGAR string: '$cigar_str'" );
-    
+
     my %parsed;
 
     @parsed{ @CIGAR_FIELDS } = $cigar_str =~ $CIGAR_RX
         or HTGT::QC::Exception->throw( "failed to parse CIGAR '$cigar_str'" );
 
     my @op_pairs = $parsed{op_str} =~ m/$OP_STR_RX/g;
-    
+
     my @operations;
     while ( @op_pairs ) {
         my ( $op, $length ) = splice @op_pairs, 0, 2;
@@ -177,10 +178,10 @@ sub parse_cigar {
     $parsed{query_well}   = join '', @{$parsed_query_id}{ qw( plate_name well_name ) };
     $parsed{query_primer} = $parsed_query_id->{primer};
     $parsed{raw}          = $cigar_str;
-    $parsed{length}       = abs( $parsed{target_end} - $parsed{target_start} );    
-    
-    $self->log->trace( sub { 'Parsed cigar: ' . pp \%parsed } );    
-    
+    $parsed{length}       = abs( $parsed{target_end} - $parsed{target_start} );
+
+    $self->log->trace( sub { 'Parsed cigar: ' . pp \%parsed } );
+
     return \%parsed;
 }
 
@@ -199,24 +200,24 @@ sub parse_files {
 sub file_iterator {
     my $self = shift;
 
-    Iterator::Simple::ichain map { $self->_single_file_iterator( $_ ) } @_;
+    return Iterator::Simple::ichain map { $self->_single_file_iterator( $_ ) } @_;
 }
 
 sub _single_file_iterator {
     my ( $self, $filename ) = @_;
 
-    my ( $fh, $done_init );    
+    my ( $fh, $done_init );
 
     return Iterator::Simple::iterator {
         unless ( $done_init ) {
             $self->log->debug( "Reading CIGARs from $filename" );
             $fh = $self->input_fh( $filename );
             $done_init = 1;
-        }        
-        while ( ! $fh->eof ) {            
-            defined( my $line = $fh->getline ) 
+        }
+        while ( ! $fh->eof ) {
+            defined( my $line = $fh->getline )
                 or next;
-            next unless $line =~ m/^cigar:/;            
+            next unless $line =~ m/^cigar:/;
             return $self->parse_cigar( $line );
         }
         $fh->close;
@@ -224,32 +225,34 @@ sub _single_file_iterator {
     };
 }
 
+## no critic ( ControlStructures::ProhibitCascadingIfElse )
 sub input_fh {
     my ( $self, $input ) = @_;
-    
+
     my $ifh;
     if ( ! ref $input ) {
-        $self->log->debug( "Parsing exonerate output from $input" );        
+        $self->log->debug( "Parsing exonerate output from $input" );
         $ifh = file( $input )->openr;
     }
     elsif ( $input->isa( 'Path::Class::File' ) ) {
-        $self->log->debug( "Parsing exonerate output from $input" );        
+        $self->log->debug( "Parsing exonerate output from $input" );
         $ifh = $input->openr;
     }
     elsif ( $input->isa( 'IO::Handle' ) ) {
-        $self->log->debug( "Parsing exonerate output from IO::Handle" );        
+        $self->log->debug( "Parsing exonerate output from IO::Handle" );
         $ifh = $input;
     }
     elsif ( Scalar::Util::openhandle( $input ) ) {
         $self->log->debug( "Parsing exonerate output from open filehandle" );
         $ifh = IO::Handle->new_from_fd( $input, 'r' )
-    }    
+    }
     else {
         HTGT::QC::Exception->throw( "Don't know how to read from a " . ref $input );
     }
 
-    return $ifh;    
+    return $ifh;
 }
+## use critic
 
 1;
 
