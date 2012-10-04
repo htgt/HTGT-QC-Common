@@ -1,4 +1,10 @@
 package HTGT::QC::Config;
+## no critic(RequireUseStrict,RequireUseWarnings)
+{
+    $HTGT::QC::Config::VERSION = '0.002';
+}
+## use critic
+
 # ABSTRACT: Common QC Code
 
 use Moose;

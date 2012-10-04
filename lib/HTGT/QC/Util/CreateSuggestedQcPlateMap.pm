@@ -1,4 +1,10 @@
 package HTGT::QC::Util::CreateSuggestedQcPlateMap;
+## no critic(RequireUseStrict,RequireUseWarnings)
+{
+    $HTGT::QC::Util::CreateSuggestedQcPlateMap::VERSION = '0.002';
+}
+## use critic
+
 
 use strict;
 use warnings FATAL => 'all';

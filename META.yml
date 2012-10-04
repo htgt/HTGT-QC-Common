@@ -1,0 +1,49 @@
+---
+abstract: 'Common QC Code'
+author:
+  - 'Wellcome Trust Sanger Institute'
+build_requires:
+  English: 0
+  File::Find: 0
+  File::Temp: 0
+  FindBin: 0
+  Test::More: 0.88
+  Test::Most: 0
+configure_requires:
+  ExtUtils::MakeMaker: 6.30
+dynamic_config: 0
+generated_by: 'Dist::Zilla version 4.300014, CPAN::Meta::Converter version 2.120921'
+license: perl
+meta-spec:
+  url: http://module-build.sourceforge.net/META-spec-v1.4.html
+  version: 1.4
+name: HTGT-QC-Common
+requires:
+  Array::Compare: 0
+  Config::Scoped: 0
+  Const::Fast: 0
+  Data::Dump: 0
+  File::Which: 0
+  IO::Handle: 0
+  IPC::Run: 0
+  IPC::System::Simple: 0
+  Iterator::Simple: 0
+  List::MoreUtils: 0
+  List::Util: 0
+  Log::Log4perl: 0
+  Moose: 0
+  MooseX::ClassAttribute: 0
+  MooseX::Log::Log4perl: 0
+  MooseX::StrictConstructor: 0
+  MooseX::Types::Path::Class: 0
+  Parse::BooleanLogic: 0
+  Path::Class: 0
+  Scalar::Util: 0
+  Sub::Exporter: 0
+  Throwable::Error: 0
+  Try::Tiny: 0
+  YAML::Any: 0
+  namespace::autoclean: 0
+  strict: 0
+  warnings: 0
+version: 0.002

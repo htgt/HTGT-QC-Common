@@ -1,4 +1,6 @@
-{{$NEXT}}
+0.002     2012-10-04 15:39:45 Europe/London
+
+	Moved some modules from HTGT-QC to HTGT-QC-Config to allow LIMS2 WebApp to process QC submissions
 
 0.001     2012-07-05 10:45:10 Europe/London
 
