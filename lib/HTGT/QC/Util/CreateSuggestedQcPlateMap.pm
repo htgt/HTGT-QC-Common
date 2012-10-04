@@ -14,7 +14,6 @@ use File::Which;
 use List::MoreUtils qw( uniq any );
 use Array::Compare;
 
-#my $schema = HTGT::DBFactory->connect('eucomm_vector');
 my $SCHEMA;
 my $PLATE_OBJECT;
 
@@ -59,10 +58,8 @@ sub get_sequencing_project_plate_names {
     my @reads;
 
     my $parser = HTGT::QC::Util::CigarParser->new( strict_mode => 0 );
-    # FIXME: put fetch-seq-reads.sh script in lims2 accessible dir    
-    my $script_name = '/nfs/users/nfs_a/af11/workspace/qc_lims2/fetch-seq-reads.sh';
-    #my $fetch_cmd = File::Which::which( $script_name ) or die "Could not find $script_name";
-    my $fetch_cmd = $script_name;
+
+    my $fetch_cmd = File::Which::which( $script_name ) or die "Could not find $script_name";
  
     foreach my $seq_project ( @{ $seq_projects } ) {
         push @reads, map { chomp; $_ } capturex( $fetch_cmd, $seq_project, '--list-only' );
