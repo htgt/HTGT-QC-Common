@@ -23,6 +23,12 @@ has conffile => (
     default  => sub { file( $ENV{HTGT_QC_CONF} ) }
 );
 
+has is_lims2 => (
+    is         => 'ro',
+    isa        => 'Bool',
+    default    => 0,
+);
+
 has _config => (
     is         => 'ro',
     isa        => 'HashRef',
@@ -49,7 +55,11 @@ sub software_version {
 }
 
 sub basedir {
-    return dir( shift->_config->{GLOBAL}->{basedir} );
+	my $self = shift;
+	if ($self->is_lims2){
+		return dir( $self->_config->{GLOBAL}->{lims2_basedir});
+	}
+    return dir( $self->_config->{GLOBAL}->{basedir} );
 }
 
 sub runner_basedir {
