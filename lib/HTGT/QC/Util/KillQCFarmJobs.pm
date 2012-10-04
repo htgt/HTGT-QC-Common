@@ -45,6 +45,7 @@ sub run_cmd {
     my @cmd = @_;
 
     my $output;
+    ## no critic (RequireCheckingReturnValueOfEval)
     eval {
         IPC::Run::run( \@cmd, '<', \undef, '>&', \$output )
                 or die "$output\n";
@@ -53,6 +54,7 @@ sub run_cmd {
         chomp $err;
         die "Command failed: $err";
     }
+    ## use critic
 
     chomp $output;
     return  $output;

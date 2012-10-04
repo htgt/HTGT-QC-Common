@@ -70,7 +70,7 @@ sub get_last_stage_details{
     my ( $self, $qc_run_id ) = @_;
 
     my @outfiles = $self->config->basedir->subdir( $qc_run_id )->subdir('output')->children;
-    
+
     # Avoid interface error when user goes to run list before any output files
     # have been written
     return( "-", "-") unless @outfiles;

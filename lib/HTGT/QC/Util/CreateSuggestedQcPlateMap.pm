@@ -19,17 +19,17 @@ my $PLATE_OBJECT;
 
 sub create_suggested_plate_map {
     my ($seq_projects, $schema, $plate_object) = @_;
-    
+
     unless($schema and $schema->isa('DBIx::Class::Schema')){
     	die "Schema $schema must be a DBIx::Class::Schema object";
     }
     unless($plate_object){
     	die "The name of the plate object in the schema must be provided";
     }
-    
+
     $SCHEMA = $schema;
     $PLATE_OBJECT = $plate_object;
-    
+
     my $plate_map;
 
     my $plate_names = get_sequencing_project_plate_names( $seq_projects );
@@ -59,10 +59,13 @@ sub get_sequencing_project_plate_names {
 
     my $parser = HTGT::QC::Util::CigarParser->new( strict_mode => 0 );
 
+    my $script_name = 'fetch-seq-reads.sh';
     my $fetch_cmd = File::Which::which( $script_name ) or die "Could not find $script_name";
- 
+
     foreach my $seq_project ( @{ $seq_projects } ) {
+    	## no critic (ProhibitComplexMappings)
         push @reads, map { chomp; $_ } capturex( $fetch_cmd, $seq_project, '--list-only' );
+        ## use critic
     }
 
     my @plate_names;
@@ -70,7 +73,7 @@ sub get_sequencing_project_plate_names {
         my $results = $parser->parse_query_id( $read );
         push @plate_names, $results->{plate_name};
     }
-    my @uniq_plate_names = uniq grep defined, @plate_names;
+    my @uniq_plate_names = uniq grep { defined } @plate_names;
 
     return \@uniq_plate_names;
 }
@@ -114,7 +117,9 @@ sub find_common_grouped_prefixes {
     my $plate_names = shift;
     my $num_plates = @{ $plate_names };
 
+    ## no critic (ProhibitComplexMappings, ProhibitCaptureWithoutTest)
     my @truncated_plate_names = uniq map{ /(.*)_(?:.*)/; $1 } @{ $plate_names };
+    ## use critic
     my $num_trun_plate_names = @truncated_plate_names;
 
     if ( $num_trun_plate_names < $num_plates ) {
@@ -123,6 +128,7 @@ sub find_common_grouped_prefixes {
     else {
         find_common_grouped_prefixes( \@truncated_plate_names );
     }
+    return;
 }
 
 sub find_common_prefix {
