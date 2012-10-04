@@ -126,9 +126,8 @@ sub find_common_grouped_prefixes {
         return \@truncated_plate_names;
     }
     else {
-        find_common_grouped_prefixes( \@truncated_plate_names );
+        return find_common_grouped_prefixes( \@truncated_plate_names );
     }
-    return;
 }
 
 sub find_common_prefix {
