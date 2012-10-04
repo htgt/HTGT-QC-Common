@@ -1,7 +1,7 @@
 package HTGT::QC::Config;
 ## no critic(RequireUseStrict,RequireUseWarnings)
 {
-    $HTGT::QC::Config::VERSION = '0.001';
+    $HTGT::QC::Config::VERSION = '0.003';
 }
 ## use critic
 
@@ -27,6 +27,12 @@ has conffile => (
     required => 1,
     coerce   => 1,
     default  => sub { file( $ENV{HTGT_QC_CONF} ) }
+);
+
+has is_lims2 => (
+    is         => 'ro',
+    isa        => 'Bool',
+    default    => 0,
 );
 
 has _config => (
@@ -55,7 +61,11 @@ sub software_version {
 }
 
 sub basedir {
-    return dir( shift->_config->{GLOBAL}->{basedir} );
+	my $self = shift;
+	if ($self->is_lims2){
+		return dir( $self->_config->{GLOBAL}->{lims2_basedir});
+	}
+    return dir( $self->_config->{GLOBAL}->{basedir} );
 }
 
 sub runner_basedir {

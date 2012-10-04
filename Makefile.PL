@@ -23,14 +23,20 @@ my %WriteMakefileArgs = (
     "ExtUtils::MakeMaker" => "6.30"
   },
   "DISTNAME" => "HTGT-QC-Common",
-  "EXE_FILES" => [],
+  "EXE_FILES" => [
+    "bin/fetch-seq-reads.sh"
+  ],
   "LICENSE" => "perl",
   "NAME" => "HTGT::QC::Common",
   "PREREQ_PM" => {
+    "Array::Compare" => 0,
     "Config::Scoped" => 0,
     "Const::Fast" => 0,
     "Data::Dump" => 0,
+    "File::Which" => 0,
     "IO::Handle" => 0,
+    "IPC::Run" => 0,
+    "IPC::System::Simple" => 0,
     "Iterator::Simple" => 0,
     "List::MoreUtils" => 0,
     "List::Util" => 0,
@@ -46,11 +52,12 @@ my %WriteMakefileArgs = (
     "Sub::Exporter" => 0,
     "Throwable::Error" => 0,
     "Try::Tiny" => 0,
+    "YAML::Any" => 0,
     "namespace::autoclean" => 0,
     "strict" => 0,
     "warnings" => 0
   },
-  "VERSION" => "0.001",
+  "VERSION" => "0.003",
   "test" => {
     "TESTS" => "t/*.t"
   }

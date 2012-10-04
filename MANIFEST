@@ -4,12 +4,16 @@ MANIFEST
 META.yml
 Makefile.PL
 README
+bin/fetch-seq-reads.sh
 lib/HTGT/QC/Config.pm
 lib/HTGT/QC/Config/Profile.pm
 lib/HTGT/QC/Exception.pm
 lib/HTGT/QC/Exception/InvalidConfiguration.pm
 lib/HTGT/QC/Util/Alignment.pm
 lib/HTGT/QC/Util/CigarParser.pm
+lib/HTGT/QC/Util/CreateSuggestedQcPlateMap.pm
+lib/HTGT/QC/Util/KillQCFarmJobs.pm
+lib/HTGT/QC/Util/ListLatestRuns.pm
 t/00-compile.t
 t/05-config-profile.t
 t/10-config.t
