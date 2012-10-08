@@ -1,7 +1,7 @@
 package HTGT::QC::Util::CreateSuggestedQcPlateMap;
 ## no critic(RequireUseStrict,RequireUseWarnings)
 {
-    $HTGT::QC::Util::CreateSuggestedQcPlateMap::VERSION = '0.003';
+    $HTGT::QC::Util::CreateSuggestedQcPlateMap::VERSION = '0.004';
 }
 ## use critic
 
@@ -132,9 +132,8 @@ sub find_common_grouped_prefixes {
         return \@truncated_plate_names;
     }
     else {
-        find_common_grouped_prefixes( \@truncated_plate_names );
+        return find_common_grouped_prefixes( \@truncated_plate_names );
     }
-    return;
 }
 
 sub find_common_prefix {
