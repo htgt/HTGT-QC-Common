@@ -34,6 +34,7 @@ sub kill_unfinished_farm_jobs{
 
     run_cmd(
         'bsub',
+        '-G','team87-grp',
         'bkill',
         @job_ids
     );
