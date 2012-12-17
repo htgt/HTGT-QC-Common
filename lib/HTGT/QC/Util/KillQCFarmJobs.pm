@@ -20,25 +20,28 @@ has config => (
     required => 1
 );
 
-sub kill_unfinished_farm_jobs{
+sub kill_unfinished_farm_jobs {
+    #bsub qc kill-and-notify --config file --run-id FD0C-... 
+    #essentially, like before, just a handy wrapper for bsubbing the kills
+    #making web part easier.
+
     my $self = shift;
 
-    my $job_id_file = $self->config->basedir->subdir( $self->qc_run_id )->file( "lsf.job_id" );
-    my $job_id_fh = $job_id_file->openr();
-
-    my @job_ids;
-    while( my $job_id = $job_id_fh->getline() ) {
-        chomp( $job_id );
-        push @job_ids, $job_id;
-    }
+    my $outfile = $self->config->basedir->subdir($self->qc_run_id)->subdir("output")->file('kill_and_notify.out');
 
     run_cmd(
         'bsub',
-        '-G','team87-grp',
-        'bkill',
-        @job_ids
+        '-G', 'team87-grp',
+        '-o', $outfile,
+        '-M', '500000', #we were running out of memory for some reason
+        '-R', '"select[mem>500] rusage[mem=500]"',
+        'qc kill-and-notify',
+        '--config', $self->config->conffile,
+        '--run-id', $self->qc_run_id,
     );
 
+    #return the job_ids as that is what used to happen.
+    my @job_ids = $self->config->basedir->subdir( $self->qc_run_id )->file( "lsf.job_id" )->slurp( chomp => 1);
     return \@job_ids;
 }
 
@@ -53,7 +56,8 @@ sub run_cmd {
     };
     if ( my $err = $@ ) {
         chomp $err;
-        die "Command failed: $err";
+        #don't die here as it mostly comes back as failed
+        print "Command returned non-zero\n: $err";
     }
     ## use critic
 

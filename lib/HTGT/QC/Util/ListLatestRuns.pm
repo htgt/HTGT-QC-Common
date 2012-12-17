@@ -48,7 +48,8 @@ sub get_latest_run_data{
 
         my $params = YAML::Any::LoadFile( $params_file );
         next unless $params->{sequencing_projects};
-        my ( $last_stage, $last_stage_time ) = $self->get_last_stage_details( $run->{run_id} );
+        my ( $last_stage, $last_stage_time, $previous_stages ) = $self->get_last_stage_details( $run->{run_id} );
+        my ( $failed, $ended ) = $self->get_run_progress( $run->{run_id} );
 
         push @run_data, (
             {
@@ -58,7 +59,10 @@ sub get_latest_run_data{
                 seq_projects    => join('; ', @{$params->{sequencing_projects}}),
                 template_plate  => $params->{template_plate},
                 last_stage      => $last_stage,
-                last_stage_time => $last_stage_time
+                last_stage_time => $last_stage_time,
+                previous_stages => $previous_stages,
+                failed          => $failed,
+                ended           => $ended,
             }
         );
     }
@@ -66,22 +70,41 @@ sub get_latest_run_data{
     return \@run_data;
 }
 
-sub get_last_stage_details{
+sub get_run_progress {
+    my ( $self, $qc_run_id ) = @_;
+
+    #if a file exists it determines the status, note it is possible (and likely) to be failed and ended.
+    #failed just means there was an exception or it was killed
+    #ended means the processes are no longer running, it is called ended because finished implies success.
+    my $failed = $self->config->basedir->subdir( $qc_run_id )->file( 'failed.out' );
+    my $ended = $self->config->basedir->subdir( $qc_run_id )->file( 'ended.out' );
+
+    #-e returns true if a file exists
+    return ( -e $failed, -e $ended );
+
+}
+
+sub get_last_stage_details {
     my ( $self, $qc_run_id ) = @_;
 
     my @outfiles = $self->config->basedir->subdir( $qc_run_id )->subdir('output')->children;
 
     # Avoid interface error when user goes to run list before any output files
     # have been written
-    return( "-", "-") unless @outfiles;
+    return ( "-", "-" ) unless @outfiles;
 
-    my @time_sorted_outfiles = reverse sort { $a->{ctime} <=> $b->{ctime} } @outfiles;
+    
+    my @time_sorted_outfiles = reverse sort { $a->stat->ctime <=> $b->stat->ctime } @outfiles;
 
-    my ($last_stage) = $time_sorted_outfiles[0]->basename =~ /^(.*)\.out$/;
-    my $last_stage_ctime = $time_sorted_outfiles[0]->stat->ctime;
-    my $last_stage_time = scalar localtime $last_stage_ctime;
+    # get just the filenames, we can infer the directories later.
+    # map returns $1 from the regex by default in this context.
+    my @filenames = map { $_->basename =~ /^(.*)\.out$/ } @time_sorted_outfiles;
+    
+    my $last = shift @time_sorted_outfiles; #get the most recent file
+    my $last_stage_time = scalar localtime $last->stat->ctime; #get a more readable time
+    my $last_stage = shift @filenames; #top of filenames is the same as $last, so just take that.
 
-    return ( $last_stage, $last_stage_time );
+    return ( $last_stage, $last_stage_time, \@filenames );
 }
 
 __PACKAGE__->meta->make_immutable;
