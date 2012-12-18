@@ -1,5 +1,9 @@
 {{$NEXT}}
 
+0.006     2012-12-18 09:52:41 Europe/London
+
+    Added support for the new QC behaviour of notifying if a run was unsuccessful
+
 0.005     2012-11-14 09:31:37 Europe/London
 
 	-G option added to bsub command
