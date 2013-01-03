@@ -25,7 +25,7 @@ sub get_latest_run_data{
     my @child_dirs;
     my @children = $self->config->basedir->children;
     for my $child( @children ){
-        push @child_dirs, $child if $child->is_dir;
+        push @child_dirs, $child if $child->is_dir and -e $child->file("params.yaml");
     }
     my @runs = reverse sort { $a->{ctime} <=> $b->{ctime} }
         map { { run_id => $_->dir_list(-1), ctime => $_->file("params.yaml")->stat->ctime } }
