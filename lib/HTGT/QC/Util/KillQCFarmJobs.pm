@@ -1,7 +1,7 @@
 package HTGT::QC::Util::KillQCFarmJobs;
 ## no critic(RequireUseStrict,RequireUseWarnings)
 {
-    $HTGT::QC::Util::KillQCFarmJobs::VERSION = '0.007';
+    $HTGT::QC::Util::KillQCFarmJobs::VERSION = '0.008';
 }
 ## use critic
 
@@ -34,14 +34,13 @@ sub kill_unfinished_farm_jobs {
     my $self = shift;
 
     my $base = $self->config->basedir->subdir( $self->qc_run_id );
-    my $out_file = $base->subdir( "output" )->file( 'kill_and_notify.out' );
-    my $err_file = $base->subdir( "error" )->file( 'kill_and_notify.err' );
+    #no file in output folder as we don't want this log to show up in the web interface
+    my $out_file = $base->subdir( "error" )->file( 'kill_and_notify.err' );
 
     run_cmd(
         'bsub',
         '-G', 'team87-grp',
         '-o', $out_file,
-        '-e', $err_file,
         '-M', '500000', #we were running out of memory for some reason
         '-R', '"select[mem>500] rusage[mem=500]"',
         'qc kill-and-notify',
