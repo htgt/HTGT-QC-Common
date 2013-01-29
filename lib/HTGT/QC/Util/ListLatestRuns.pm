@@ -51,6 +51,9 @@ sub get_latest_run_data{
         my ( $oldest_stage, $oldest_stage_time, $previous_stages ) = $self->get_last_stage_details( $run->{run_id} );
         my ( $failed, $ended ) = $self->get_run_progress( $run->{run_id} );
 
+        #quick hack to identify if this run is escell. should be made more robust
+        my $is_escell = ( $params->{profile} =~ /es-cell$/ and not $params->{profile} =~ /pre$/ ) ? 1 : 0;
+
         push @run_data, (
             {
                 qc_run_id       => $run->{run_id},
@@ -63,6 +66,7 @@ sub get_latest_run_data{
                 previous_stages => $previous_stages,
                 failed          => $failed,
                 ended           => $ended,
+                is_escell       => $is_escell,
             }
         );
     }
