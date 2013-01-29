@@ -1,7 +1,7 @@
 package HTGT::QC::Util::CreateSuggestedQcPlateMap;
 ## no critic(RequireUseStrict,RequireUseWarnings)
 {
-    $HTGT::QC::Util::CreateSuggestedQcPlateMap::VERSION = '0.008';
+    $HTGT::QC::Util::CreateSuggestedQcPlateMap::VERSION = '0.009';
 }
 ## use critic
 
