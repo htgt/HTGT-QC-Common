@@ -24,7 +24,7 @@ has conffile => (
 );
 
 has is_lims2 => (
-    is         => 'ro',
+    is         => 'rw',
     isa        => 'Bool',
     default    => 0,
 );
