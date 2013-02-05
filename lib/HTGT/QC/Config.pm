@@ -1,7 +1,7 @@
 package HTGT::QC::Config;
 ## no critic(RequireUseStrict,RequireUseWarnings)
 {
-    $HTGT::QC::Config::VERSION = '0.009';
+    $HTGT::QC::Config::VERSION = '0.010';
 }
 ## use critic
 
@@ -30,7 +30,7 @@ has conffile => (
 );
 
 has is_lims2 => (
-    is         => 'ro',
+    is         => 'rw',
     isa        => 'Bool',
     default    => 0,
 );

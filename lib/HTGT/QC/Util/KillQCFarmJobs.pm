@@ -1,7 +1,7 @@
 package HTGT::QC::Util::KillQCFarmJobs;
 ## no critic(RequireUseStrict,RequireUseWarnings)
 {
-    $HTGT::QC::Util::KillQCFarmJobs::VERSION = '0.009';
+    $HTGT::QC::Util::KillQCFarmJobs::VERSION = '0.010';
 }
 ## use critic
 
@@ -35,9 +35,10 @@ sub kill_unfinished_farm_jobs {
 
     my $base = $self->config->basedir->subdir( $self->qc_run_id );
     #no file in output folder as we don't want this log to show up in the web interface
+    #listlatest runs searches output folder, but we actually view error. its weird
     my $out_file = $base->subdir( "error" )->file( 'kill_and_notify.err' );
 
-    run_cmd(
+    my @cmd = (
         'bsub',
         '-G', 'team87-grp',
         '-o', $out_file,
@@ -48,13 +49,17 @@ sub kill_unfinished_farm_jobs {
         '--run-id', $self->qc_run_id,
     );
 
+    push @cmd, '--is-lims2' if $self->config->is_lims2;
+
+    $self->run_cmd( @cmd );
+
     #return the job_ids as that is what used to happen.
     my @job_ids = $self->config->basedir->subdir( $self->qc_run_id )->file( "lsf.job_id" )->slurp( chomp => 1);
     return \@job_ids;
 }
 
 sub run_cmd {
-    my @cmd = @_;
+    my ( $self, @cmd ) = @_;
 
     my $output;
     ## no critic (RequireCheckingReturnValueOfEval)

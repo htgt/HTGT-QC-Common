@@ -1,3 +1,6 @@
+0.010     2013-02-05 11:29:23 Europe/London
+    Changed is_lims2 property to read write and added --is-lims2 flag to qc kill-and-notify call.
+
 0.009     2013-01-29 15:49:27 Europe/London
     Added flag to identify if a run is ESCell
 
