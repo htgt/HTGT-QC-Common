@@ -172,6 +172,12 @@ sub is_genomic_pass {
     return 0;
 }
 
+sub is_es_cell {
+    my ( $self ) = @_;
+
+    return $self->vector_stage eq 'allele';
+}
+
 __PACKAGE__->meta->make_immutable;
 
 1;
