@@ -1,7 +1,7 @@
 package HTGT::QC::Config::Profile;
 ## no critic(RequireUseStrict,RequireUseWarnings)
 {
-    $HTGT::QC::Config::Profile::VERSION = '0.010';
+    $HTGT::QC::Config::Profile::VERSION = '0.011';
 }
 ## use critic
 
@@ -176,6 +176,12 @@ sub is_genomic_pass {
     }
 
     return 0;
+}
+
+sub is_es_cell {
+    my ( $self ) = @_;
+
+    return $self->vector_stage eq 'allele';
 }
 
 __PACKAGE__->meta->make_immutable;

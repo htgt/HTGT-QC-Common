@@ -1,7 +1,7 @@
 package HTGT::QC::Util::ListLatestRuns;
 ## no critic(RequireUseStrict,RequireUseWarnings)
 {
-    $HTGT::QC::Util::ListLatestRuns::VERSION = '0.010';
+    $HTGT::QC::Util::ListLatestRuns::VERSION = '0.011';
 }
 ## use critic
 
@@ -28,51 +28,46 @@ has config => (
 sub get_latest_run_data{
     my ( $self ) = shift;
 
-    my @child_dirs;
-    my @children = $self->config->basedir->children;
-    for my $child( @children ){
-        push @child_dirs, $child if $child->is_dir and -e $child->file("params.yaml");
-    }
-    my @runs = reverse sort { $a->{ctime} <=> $b->{ctime} }
-        map { { run_id => $_->dir_list(-1), ctime => $_->file("params.yaml")->stat->ctime } }
+    #get all directories with a params.yaml file.
+    my @child_dirs = grep { $_->is_dir and -e $_->file( "params.yaml" ) } $self->config->basedir->children();
+
+    my @runs = reverse sort { $a->{ ctime } <=> $b->{ ctime } }
+        map { { run_id => $_->dir_list(-1), ctime => $_->file( "params.yaml" )->stat->ctime } }
             @child_dirs;
 
     my $max_index = min( scalar @runs, $self->limit ) - 1;
 
     my @run_data;
-    for my $run ( @runs[0..$max_index] ){
-        my $params_file = $self->config->basedir->subdir( $run->{run_id} )->stringify
-            . '/params.yaml';
-        unless ( -e $params_file ){
-            push @run_data, (
-                {
-                    qc_run_id    => $run->{run_id}
-                }
-            );
-            next;
-        }
+    for my $run ( @runs[0..$max_index] ) {
+        my $run_dir = $self->config->basedir->subdir( $run->{ run_id } );
 
-        my $params = YAML::Any::LoadFile( $params_file );
-        next unless $params->{sequencing_projects};
-        my ( $oldest_stage, $oldest_stage_time, $previous_stages ) = $self->get_last_stage_details( $run->{run_id} );
-        my ( $failed, $ended ) = $self->get_run_progress( $run->{run_id} );
+        #we only have dirs with a params file so we know this exists
+        my $params = YAML::Any::LoadFile( $run_dir->file( 'params.yaml' ) );
 
-        #quick hack to identify if this run is escell. should be made more robust
-        my $is_escell = ( $params->{profile} =~ /es-cell$/ and not $params->{profile} =~ /pre$/ ) ? 1 : 0;
+        next unless $params->{ sequencing_projects };
+
+        #the head of this list is the latest stage that was run
+        my ( $newest_time, @stages ) = $self->get_time_sorted_filenames( $run->{ run_id } );
+
+        #a note about the failed/ended ended status:
+        #the existence of these files determines the status of the run. 
+        #if failed.out exists there was an exception or the run was killed,
+        #if ended.out exists there are no processes left running, either because it was killed or finished.
+        #ended does NOT imply success. if something is failed it will also probably be ended
 
         push @run_data, (
             {
-                qc_run_id       => $run->{run_id},
-                created         => scalar localtime($run->{ctime}),
-                profile         => $params->{profile},
-                seq_projects    => join('; ', @{$params->{sequencing_projects}}),
-                template_plate  => $params->{template_plate},
-                last_stage      => $oldest_stage,
-                last_stage_time => $oldest_stage_time,
-                previous_stages => $previous_stages,
-                failed          => $failed,
-                ended           => $ended,
-                is_escell       => $is_escell,
+                qc_run_id       => $run->{ run_id },
+                created         => scalar localtime $run->{ ctime },
+                profile         => $params->{ profile },
+                seq_projects    => join( '; ', @{ $params->{ sequencing_projects } } ),
+                template_plate  => $params->{ template_plate },
+                last_stage      => shift @stages, #top file is the newest
+                last_stage_time => $newest_time,
+                previous_stages => \@stages,
+                failed          => -e $run_dir->file( 'failed.out' ),
+                ended           => -e $run_dir->file( 'ended.out' ),
+                is_escell       => $self->config->profile( $params->{ profile } )->is_es_cell(),
             }
         );
     }
@@ -80,40 +75,20 @@ sub get_latest_run_data{
     return \@run_data;
 }
 
-sub get_run_progress {
+#return all the filenames from newest to oldest
+sub get_time_sorted_filenames {
     my ( $self, $qc_run_id ) = @_;
 
-    #if a file exists it determines the status, note it is possible (and likely) to be failed and ended.
-    #failed just means there was an exception or it was killed
-    #ended means the processes are no longer running, it is called ended because finished implies success.
-    my $failed = $self->config->basedir->subdir( $qc_run_id )->file( 'failed.out' );
-    my $ended = $self->config->basedir->subdir( $qc_run_id )->file( 'ended.out' );
+    my @outfiles = $self->config->basedir->subdir( $qc_run_id, 'output' )->children;
 
-    #-e returns true if a file exists
-    return ( -e $failed, -e $ended );
-
-}
-
-sub get_last_stage_details {
-    my ( $self, $qc_run_id ) = @_;
-
-    my @outfiles = $self->config->basedir->subdir( $qc_run_id )->subdir('output')->children;
-
-    # Avoid interface error when user goes to run list before any output files
-    # have been written
-    return ( "-", "-" ) unless @outfiles;
+    #allow a run without any ouput to be displayed. it is likely just pending
+    return ( "-", undef ) unless @outfiles;
 
     my @time_sorted_outfiles = reverse sort { $a->stat->ctime <=> $b->stat->ctime } @outfiles;
 
-    # get just the filenames, we can infer the directories later.
-    # map returns $1 from the regex by default in this context.
-    my @filenames = map { $_->basename =~ /^(.*)\.out$/ } @time_sorted_outfiles;
-
-    my $oldest = shift @time_sorted_outfiles; #get the most recent file
-    my $oldest_stage_time = scalar localtime $oldest->stat->ctime; #get a more readable time
-    my $oldest_stage = shift @filenames; #top of filenames is the same as $oldest, so just take that.
-
-    return ( $oldest_stage, $oldest_stage_time, \@filenames );
+    #return newest ctime & extract a list of just the filenames, we dont care about the directories.
+    return ( scalar localtime $time_sorted_outfiles[0]->stat->ctime,
+             map { $_->basename =~ /^(.*)\.out$/ } @time_sorted_outfiles );
 }
 
 __PACKAGE__->meta->make_immutable;
