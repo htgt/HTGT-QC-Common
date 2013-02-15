@@ -81,7 +81,7 @@ sub get_time_sorted_filenames {
     my @time_sorted_outfiles = reverse sort { $a->stat->ctime <=> $b->stat->ctime } @outfiles;
 
     #return newest ctime & extract a list of just the filenames, we dont care about the directories.
-    return ( scalar localtime $time_sorted_outfiles[0]->stat->ctime, 
+    return ( scalar localtime $time_sorted_outfiles[0]->stat->ctime,
              map { $_->basename =~ /^(.*)\.out$/ } @time_sorted_outfiles );
 }
 
