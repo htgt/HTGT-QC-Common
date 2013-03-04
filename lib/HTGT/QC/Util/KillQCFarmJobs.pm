@@ -1,7 +1,7 @@
 package HTGT::QC::Util::KillQCFarmJobs;
 ## no critic(RequireUseStrict,RequireUseWarnings)
 {
-    $HTGT::QC::Util::KillQCFarmJobs::VERSION = '0.011';
+    $HTGT::QC::Util::KillQCFarmJobs::VERSION = '0.012';
 }
 ## use critic
 
@@ -50,6 +50,7 @@ sub kill_unfinished_farm_jobs {
     );
 
     push @cmd, '--is-lims2' if $self->config->is_lims2;
+    push @cmd, '--is-prescreen' if $self->config->is_prescreen;
 
     $self->run_cmd( @cmd );
 

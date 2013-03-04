@@ -1,7 +1,7 @@
 package HTGT::QC::Config;
 ## no critic(RequireUseStrict,RequireUseWarnings)
 {
-    $HTGT::QC::Config::VERSION = '0.011';
+    $HTGT::QC::Config::VERSION = '0.012';
 }
 ## use critic
 
@@ -35,6 +35,12 @@ has is_lims2 => (
     default    => 0,
 );
 
+has is_prescreen => (
+    is         => 'rw',
+    isa        => 'Bool',
+    default    => 0,
+);
+
 has _config => (
     is         => 'ro',
     isa        => 'HashRef',
@@ -62,9 +68,13 @@ sub software_version {
 
 sub basedir {
 	my $self = shift;
-	if ($self->is_lims2){
+	if ( $self->is_lims2 ) {
 		return dir( $self->_config->{GLOBAL}->{lims2_basedir});
 	}
+    elsif ( $self->is_prescreen ) {
+        return dir( $self->_config->{GLOBAL}->{prescreen_basedir} );
+    }
+
     return dir( $self->_config->{GLOBAL}->{basedir} );
 }
 
