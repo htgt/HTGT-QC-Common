@@ -19,6 +19,7 @@ t/05-config-profile.t
 t/10-config.t
 t/10-htgt-qc-util-create-suggested-qc-platemap.t
 t/10-htgt-qc-util-parse-cigar.t
+t/20-htgt-qc-util-list-latest-runs.t
 t/author-critic.t
 t/lib/MyTest/Util/WriteConfFile.pm
 t/release-no-smart-comments.t

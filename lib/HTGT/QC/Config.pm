@@ -1,7 +1,7 @@
 package HTGT::QC::Config;
 ## no critic(RequireUseStrict,RequireUseWarnings)
 {
-    $HTGT::QC::Config::VERSION = '0.012';
+    $HTGT::QC::Config::VERSION = '0.013';
 }
 ## use critic
 
@@ -51,6 +51,10 @@ sub _build__config {
     my $self = shift;
 
     $self->log->debug( 'Reading configuration from ' . $self->conffile );
+
+    die "Specified config file '" . $self->conffile . "' doesn't exist"
+        unless ( -e $self->conffile );
+
     my $parser = Config::Scoped->new(
         file     => $self->conffile->stringify,
         warnings => { permissions => 'off' }
