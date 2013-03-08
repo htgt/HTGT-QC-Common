@@ -24,13 +24,14 @@ sub write_conffile {
 
 __DATA__
 GLOBAL {
-    basedir = '/nfs/team87/data/qc/work'
+    basedir = '/nfs/team87/data/qc/runner'
 }
 
 RUNNER {
-    basedir = '/nfs/team87/data/qc/runner'    
+    basedir = '/nfs/team87/data/qc/runner'
     max_parallel = 10
-}       
+}
+     
 
 alignment_regions {
 

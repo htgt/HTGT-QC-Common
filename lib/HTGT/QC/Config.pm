@@ -45,6 +45,10 @@ sub _build__config {
     my $self = shift;
 
     $self->log->debug( 'Reading configuration from ' . $self->conffile );
+
+    die "Specified config file '" . $self->conffile . "' doesn't exist"
+        unless ( -e $self->conffile );
+
     my $parser = Config::Scoped->new(
         file     => $self->conffile->stringify,
         warnings => { permissions => 'off' }

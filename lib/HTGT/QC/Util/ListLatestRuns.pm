@@ -24,7 +24,7 @@ sub get_active_runs {
     my ( $self ) = shift;
 
     #get all directories with a params file that haven't ended yet
-    my @active_runs = grep { $_->is_dir and -e $_->file( "params.yaml" ) and not -e $_->file( "ended.out" ) } 
+    my @active_runs = grep { $_->is_dir and -e $_->file( "params.yaml" ) and not -e $_->file( "ended.out" ) }
                         $self->config->basedir->children();
 
     my @run_data;
@@ -32,9 +32,9 @@ sub get_active_runs {
         #if it is failed then it will be ending very soon, so dont count it.
         next if -e $run_dir->file( "failed.out" );
 
-        push @run_data, $self->get_run_data( { 
-            run_id => $run_dir->basename, 
-            ctime  => $run_dir->file( "params.yaml" )->stat->ctime, 
+        push @run_data, $self->get_run_data( {
+            run_id => $run_dir->basename,
+            ctime  => $run_dir->file( "params.yaml" )->stat->ctime,
         } );
     }
 
