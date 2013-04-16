@@ -1,3 +1,6 @@
+0.014     2013-04-16 15:13:18 Europe/London
+    all_primers function in Config.pm now returns primers sorted by length, to make the regular expression in CigarParser more reliable.
+
 0.013     2013-03-08 15:21:49 Europe/London
     Added a method to ListLatestRuns for displaying active runs.
 

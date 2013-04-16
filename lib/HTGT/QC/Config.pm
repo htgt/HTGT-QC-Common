@@ -1,7 +1,7 @@
 package HTGT::QC::Config;
 ## no critic(RequireUseStrict,RequireUseWarnings)
 {
-    $HTGT::QC::Config::VERSION = '0.013';
+    $HTGT::QC::Config::VERSION = '0.014';
 }
 ## use critic
 
@@ -189,7 +189,7 @@ sub all_primers {
 
     my %profiles = %{ $self->_config->{profile} };
 
-    return [ uniq map { keys %{ $profiles{$_}{primers} }  } keys %profiles ];
+    return [ sort { length($b) <=> length($a) } uniq map { keys %{ $profiles{$_}{primers} }  } keys %profiles ];
 }
 
 __PACKAGE__->meta->make_immutable;
