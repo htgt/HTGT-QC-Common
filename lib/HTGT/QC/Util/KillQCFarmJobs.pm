@@ -1,7 +1,7 @@
 package HTGT::QC::Util::KillQCFarmJobs;
 ## no critic(RequireUseStrict,RequireUseWarnings)
 {
-    $HTGT::QC::Util::KillQCFarmJobs::VERSION = '0.014';
+    $HTGT::QC::Util::KillQCFarmJobs::VERSION = '0.015';
 }
 ## use critic
 
