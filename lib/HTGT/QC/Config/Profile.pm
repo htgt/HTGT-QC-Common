@@ -34,6 +34,19 @@ has primers => (
     }
 );
 
+has split_primers => (
+    is      => 'rw',
+    isa     => 'HashRef',
+    traits  => [ 'Hash' ],
+    default => sub { {} },
+    handles => {
+        add_split_primers  => 'set',
+        get_split_primers  => 'get',
+        has_split_primers => 'count',
+        split_primer_exists => 'exists',
+    },
+);
+
 has [ qw( pre_filter_min_score post_filter_min_primers ) ] => (
     is       => 'ro',
     isa      => 'Int',
@@ -82,6 +95,13 @@ sub _build_primer_regions {
     for my $primer_name ( $self->primers ) {
         my %regions;
         my $condition_str = $self->condition_for_primer( $primer_name );
+
+        if ( ref $condition_str eq 'HASH' and exists $condition_str->{ 'split_into' } ) {
+            $self->add_split_primers( $primer_name => $condition_str->{ 'split_into' } );
+
+            next; #dont add a region for this, as we rename all reads with this name
+        }
+
         $parser->as_array(
             $condition_str,
             operand_cb => sub {
