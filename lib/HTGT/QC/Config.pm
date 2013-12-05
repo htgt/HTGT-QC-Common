@@ -24,7 +24,13 @@ has conffile => (
 );
 
 has is_lims2 => (
-    is         => 'ro',
+    is         => 'rw',
+    isa        => 'Bool',
+    default    => 0,
+);
+
+has is_prescreen => (
+    is         => 'rw',
     isa        => 'Bool',
     default    => 0,
 );
@@ -39,6 +45,10 @@ sub _build__config {
     my $self = shift;
 
     $self->log->debug( 'Reading configuration from ' . $self->conffile );
+
+    die "Specified config file '" . $self->conffile . "' doesn't exist"
+        unless ( -e $self->conffile );
+
     my $parser = Config::Scoped->new(
         file     => $self->conffile->stringify,
         warnings => { permissions => 'off' }
@@ -56,9 +66,13 @@ sub software_version {
 
 sub basedir {
 	my $self = shift;
-	if ($self->is_lims2){
+	if ( $self->is_lims2 ) {
 		return dir( $self->_config->{GLOBAL}->{lims2_basedir});
 	}
+    elsif ( $self->is_prescreen ) {
+        return dir( $self->_config->{GLOBAL}->{prescreen_basedir} );
+    }
+
     return dir( $self->_config->{GLOBAL}->{basedir} );
 }
 
@@ -169,7 +183,7 @@ sub all_primers {
 
     my %profiles = %{ $self->_config->{profile} };
 
-    return [ uniq map { keys %{ $profiles{$_}{primers} }  } keys %profiles ];
+    return [ sort { length($b) <=> length($a) } uniq map { keys %{ $profiles{$_}{primers} }  } keys %profiles ];
 }
 
 __PACKAGE__->meta->make_immutable;
