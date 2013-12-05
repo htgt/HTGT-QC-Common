@@ -79,13 +79,14 @@ sub get_sequencing_project_plate_names {
 }
 
 sub search_seq_project_names {
-	my $search_term = shift;
+    my $search_term = shift;
 
     my $script_name = 'fetch-seq-projects.sh';
     my $fetch_cmd = File::Which::which( $script_name ) or die "Could not find $script_name";
-    
-    my @results = map { chomp; $_ } capturex( $fetch_cmd, $search_term );
 
+    ## no critic (ProhibitComplexMappings, ProhibitCaptureWithoutTest)    
+    my @results = map { chomp; $_ } capturex( $fetch_cmd, $search_term );
+    ## use critic
     return \@results;
 }
 
