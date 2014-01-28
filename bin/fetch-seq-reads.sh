@@ -25,7 +25,7 @@ test -n "$1" || die "TraceServer project must be specified"
 TRACE_PROJECT="$1"; shift
 
 if test "$1" = "--list-only"; then
-    /software/bin/perl /software/badger/bin/indir "${TRACE_PROJECT}"
+    perl /software/badger/bin/indir "${TRACE_PROJECT}"
 else
-    /software/bin/perl /software/badger/bin/indir "${TRACE_PROJECT}" | /software/badger/bin/exp-piece -fofn - left right
+    perl /software/badger/bin/indir "${TRACE_PROJECT}" | /software/badger/bin/exp-piece -fofn - left right
 fi
