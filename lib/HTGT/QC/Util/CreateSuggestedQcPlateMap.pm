@@ -4,7 +4,7 @@ use strict;
 use warnings FATAL => 'all';
 
 use Sub::Exporter -setup => {
-    exports => [ qw( create_suggested_plate_map get_sequencing_project_plate_names ) ]
+    exports => [ qw( create_suggested_plate_map get_sequencing_project_plate_names search_seq_project_names ) ]
 };
 
 use Log::Log4perl qw( :easy );
@@ -76,6 +76,18 @@ sub get_sequencing_project_plate_names {
     my @uniq_plate_names = uniq grep { defined } @plate_names;
 
     return \@uniq_plate_names;
+}
+
+sub search_seq_project_names {
+    my $search_term = shift;
+
+    my $script_name = 'fetch-seq-projects.sh';
+    my $fetch_cmd = File::Which::which( $script_name ) or die "Could not find $script_name";
+
+    ## no critic (ProhibitComplexMappings, ProhibitCaptureWithoutTest)    
+    my @results = map { chomp; $_ } capturex( $fetch_cmd, $search_term );
+    ## use critic
+    return \@results;
 }
 
 sub plate_map_for_same_length_names {
