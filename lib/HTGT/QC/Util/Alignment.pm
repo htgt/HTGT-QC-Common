@@ -5,9 +5,13 @@ use warnings FATAL => 'all';
 
 use Sub::Exporter -setup => {
     exports => [ qw( target_alignment_string
+                     reduced_query_alignment_string
+                     reduced_target_alignment_string
                      query_alignment_string
                      target_alignment_string_pos
                      alignment_match
+                     reduced_alignment_match
+                     alignment_match_on_target
                      format_alignment
                ) ],
 };
@@ -20,6 +24,150 @@ use HTGT::QC::Exception;
 
 const my $DISPLAY_HEADER_LEN => 12;
 const my $DISPLAY_LINE_LEN   => 72;
+
+# one base per target, BUT with a "Q" written when the query
+# has an insertion relative to the target
+sub reduced_target_alignment_string {
+    my ( $bio_seq, $cigar ) = @_;
+
+    my ( $seq, $target_start, $target_end );
+    if ( $cigar->{target_strand} eq '-' ) {
+        $seq = $bio_seq->revcom->seq;
+        $target_start = $bio_seq->length - $cigar->{target_start};
+        $target_end   = $bio_seq->length - $cigar->{target_end};
+    }
+    else {
+        $seq = $bio_seq->seq;
+        $target_start = $cigar->{target_start};
+        $target_end   = $cigar->{target_end};
+    }
+
+    my $pos = 0;
+    my $alignment_str;
+
+    if ( $target_start > 0 ) {
+        $alignment_str .= substr( $seq, 0, $target_start );
+        $pos += $target_start;
+    }
+
+    for ( @{ $cigar->{operations} } ) {
+        my ( $op, $length ) = @$_;
+        if ( $op eq 'M' or $op eq 'D' ) {
+            $alignment_str .= substr( $seq, $pos, $length );
+            $pos += $length;
+        }
+        else { 
+            # $op eq 'I'
+	    # have to go to the previous base and replace it with a "Q"
+            $alignment_str = substr($alignment_str,0,length($alignment_str)-1) . "Q"; 
+        }
+    }
+
+    if ( $pos < length( $seq ) ) {
+        $alignment_str .= substr( $seq, $pos );
+    }
+
+    return $alignment_str;
+}
+
+
+
+# one base per target bioseq: 
+# The actual emitted string (to account for mismatches)
+# AND a 'result' string which indicates M or D but
+# completely omits insertions relative to target 
+sub reduced_query_alignment_string{
+    my ( $query_bio_seq, $cigar, $target_bio_seq ) = @_;
+
+    my ( $seq, $query_start, $query_end );
+    if ( $cigar->{query_strand} eq '-' ) {
+        $seq = $query_bio_seq->revcom->seq;
+        $query_start = $query_bio_seq->length - $cigar->{query_start};
+        $query_end   = $query_bio_seq->length - $cigar->{query_end};
+    }
+    else {
+        $seq = $query_bio_seq->seq;
+        $query_start = $cigar->{query_start};
+        $query_end   = $cigar->{query_end};
+    }
+
+    #first work out how much of the query lies to the left or right of the target
+    my ($pad_left, $pad_right);
+    my $pos_on_reference = 0;
+    if ( $cigar->{target_strand} eq '+' ) {
+        $pad_left  = $cigar->{target_start} - $query_start; 
+    	$pos_on_reference = $cigar->{target_start};;
+        $pad_right = ($target_bio_seq->length - $cigar->{target_end}) - ($query_bio_seq->length - $query_end);
+    }else{
+        $pad_left  = ($target_bio_seq->length - $cigar->{target_start}) - $query_start;
+        $pad_right = $cigar->{target_end} - $query_end;
+    	$pos_on_reference = $target_bio_seq->length - $cigar->{target_start};
+    }
+
+    #If the query starts to the left of the target, then the pos_on_target starts with a neg offset
+    #If the query starts to the right of the target, then pos_on_target has a positive offset
+    # We _need_ this pos_on_target to correctly catalogue the insertions that we find when building
+    # the align string relative to reference 
+    my $insertions = [];
+
+    my $pos = 0;
+    my $query_alignment_str;
+
+    #First produce the unadulerated string, (then either pad or trim it to the target as necc)
+    my ($alignment_string, $extended_op_string);
+    if ( $query_start > 0 ) {
+        $query_alignment_str .= substr( $seq, 0, $query_start );
+        $pos += $query_start;
+	$pos_on_reference += $query_start;
+    }
+
+    for ( @{ $cigar->{operations} } ) {
+        my ( $op, $length ) = @$_;
+        if ( $op eq 'M' ){
+            $query_alignment_str .= substr( $seq, $pos, $length );
+
+            $pos += $length;
+	    $pos_on_reference += $length;
+        }elsif ($op eq 'I') {
+	    # instead of adding the whole insertion, add a single Q at this point
+	    #$query_alignment_str .= "Q"; 
+	    my $insertion_string = substr( $seq, $pos, $length );
+	    push @{$insertions}, [$pos_on_reference, $insertion_string];
+
+            $pos += $length;
+        } else {
+            $query_alignment_str .= '-' x $length;
+
+	    $pos_on_reference += $length;
+        }
+    }
+
+    if ( $pos < length( $seq ) ) {
+        $query_alignment_str .= substr( $seq, $pos );
+    }
+
+   #Now you have a piece of query sequence which either matches the target or has a '-' for each target base
+    # The insertions relative have been obscured completely, but will be caught the 'insertions' array
+    #Now pad left or right (or truncate) to further match target
+    if( $pad_left < 0 ){
+	#clip $pad_left off beginning of string
+	$query_alignment_str = substr($query_alignment_str, abs($pad_left));
+	$pad_left = 0;
+    };
+    if($pad_right < 0){
+	#clip $pad_right off end of string
+	$query_alignment_str = substr ($query_alignment_str,0,length($query_alignment_str) - abs($pad_right));
+	$pad_right = 0;
+    }
+    if ( $pad_left > 0 ) {
+        $query_alignment_str = join( '', 'X' x $pad_left ) . $query_alignment_str;
+    }
+    if ( $pad_right > 0 ) {
+        $query_alignment_str = $query_alignment_str . join( '', 'X' x $pad_right );
+    }
+
+    return ($query_alignment_str, $insertions);
+}
 
 sub target_alignment_string {
     my ( $bio_seq, $cigar ) = @_;
@@ -148,8 +296,64 @@ sub target_alignment_string_pos {
     return $alignment_pos;
 }
 
+sub alignment_match_on_target {
+    my ( $query_bio_seq, $target_bio_seq, $cigar) = @_;
+
+    # $start, $end 1-based co-ordinates, inclusive
+    # Expected align_str lengths is ( $start - $end + 1 ).
+    # When $start not given, assume 1
+    # When end not given, assume $target_bio_seq->length
+
+    my $target_align_str = reduced_target_alignment_string( $target_bio_seq, $cigar );
+    my ($query_align_str, $insertions) = reduced_query_alignment_string( $query_bio_seq, $cigar , $target_bio_seq);
+
+    if ( length( $target_align_str ) != length( $query_align_str ) ) {
+        HTGT::QC::Exception->throw( 'Alignment string length mismatch (target='
+                                        . length( $target_align_str) . ', query=' . length( $query_align_str ) . ')' );
+    }
+
+    my $well = $cigar->{query_well};
+    my $primer = $cigar->{query_primer};
+
+    my $full_match_string = ""; 
+
+    # We want to write out a full string along the whole target sequence, of either D's Q's M's or X's.
+    # The cigar "starts" in the target sequence at the position $cigar->{target_start} so we pad that portion with X's
+
+    my $alignment_target_start = $cigar->{target_start};
+    my $alignment_target_end = $cigar->{target_end};
+    if($cigar->{target_strand} eq '-'){
+        $alignment_target_start = $query_bio_seq->length - $cigar->{target_start};
+        $alignment_target_end = $query_bio_seq->length - $cigar->{target_end};
+    }
+
+    $full_match_string .= 'X' x $alignment_target_start;
+
+    for ( @{ $cigar->{operations} } ) {
+        my ( $op, $length ) = @$_;
+	if($op eq 'D' or $op eq 'M'){
+            $full_match_string .= $op x $length; 
+        }else{
+            #for an insertion, trim the last character off the match string and replace it with a "Q"
+            $full_match_string = substr($full_match_string,0,length($full_match_string)-1) . "Q"; 
+	}
+    }
+    if(length($full_match_string) < length($target_align_str)){
+	    $full_match_string .= "X" x (length($full_match_string) - length($target_align_str));
+    }
+    my $insertion_details = "";
+    foreach my $insertion (@$insertions){
+	    $insertion_details .= $insertion->[0].":".length($insertion->[1]).":".$insertion->[1].",";
+    }
+    return (
+	    "$well,$primer,$query_align_str,$insertion_details",
+	    "$well,$primer,$target_align_str",
+	    "$well,$primer,$full_match_string"
+    );
+}
+
 sub alignment_match {
-    my ( $query_bio_seq, $target_bio_seq, $cigar, $start, $end ) = @_;
+    my ( $query_bio_seq, $target_bio_seq, $cigar, $start, $end) = @_;
 
     # $start, $end 1-based co-ordinates, inclusive
     # Expected align_str lengths is ( $start - $end + 1 ).
@@ -166,9 +370,19 @@ sub alignment_match {
 
     my ( $pad_left, $pad_right );
 
-    if ( $cigar->{target_strand} eq '+' ) {
-        $pad_left  = $cigar->{target_start} - $cigar->{query_start};
-        $pad_right = ($target_bio_seq->length - $cigar->{target_end}) - ($query_bio_seq->length - $cigar->{query_end});
+    if ( $cigar->{target_strand} eq '+') {
+        my $alignment_query_start = $cigar->{query_start};
+        my $alignment_query_end = $cigar->{query_end};
+
+	# If the query seq is '-' then the query coordinates presented by the cigar are on the neg strand
+	# However the align-string has oriented the query string to match the target (pos strand) so we
+	# have to first revcomp the query coordinates to do the right padding.
+        if($cigar->{query_strand} eq '-'){
+            $alignment_query_start = $query_bio_seq->length - $cigar->{query_start};
+	    $alignment_query_end = $query_bio_seq->length - $cigar->{query_end};
+        }
+        $pad_left  = $cigar->{target_start} - $alignment_query_start; 
+        $pad_right = ($target_bio_seq->length - $cigar->{target_end}) - ($query_bio_seq->length - $alignment_query_end);
     }
     else {
         $pad_left  = ($target_bio_seq->length - $cigar->{target_start}) - $cigar->{query_start};
@@ -251,6 +465,4 @@ sub format_alignment {
     return $alignment_str;
 }
 
-1;
-
-__END__
+return 1;
