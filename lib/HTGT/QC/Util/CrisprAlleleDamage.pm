@@ -6,6 +6,9 @@ HTGT::QC::Util::CrisprAlleleDamage
 
 =head1 DESCRIPTION
 
+Identify damage caused by crispr pairs on the second allele.
+Compare wildtype genomic sequence of area around crispr pair target site with the sequence
+from primer reads that flank this target site.
 
 =cut
 
@@ -20,12 +23,6 @@ use namespace::autoclean;
 
 with qw( MooseX::Log::Log4perl );
 
-has well_name => (
-    is       => 'ro',
-    isa      => 'Str',
-    required => 1,
-);
-
 has genomic_region => (
     is       => 'ro',
     isa      => 'Bio::Seq',
@@ -33,23 +30,27 @@ has genomic_region => (
 );
 
 has forward_primer_name => (
-    is  => 'ro',
-    isa => 'Str',
+    is       => 'ro',
+    isa      => 'Str',
+    required => 1,
 );
 
 has reverse_primer_name => (
-    is  => 'ro',
-    isa => 'Str',
+    is       => 'ro',
+    isa      => 'Str',
+    required => 1,
 );
 
 has forward_primer_read => (
-    is  => 'ro',
-    isa => 'Bio::Seq',
+    is        => 'ro',
+    isa       => 'Maybe[Bio::Seq]',
+    predicate => 'has_forward_primer_read',
 );
 
 has reverse_primer_read => (
-    is  => 'ro',
-    isa => 'Bio::Seq',
+    is        => 'ro',
+    isa       => 'Maybe[Bio::Seq]',
+    predicate => 'has_reverse_primer_read',
 );
 
 has dir => (
@@ -62,11 +63,8 @@ has dir => (
 has cigar_parser => (
     is         => 'ro',
     isa        => 'HTGT::QC::Util::CigarParser',
-    required   => 1,
+    lazy_build => 1,
 );
-
-#TODO work out well name from both primer read display names?
-#     do i really need the well name?
 
 sub _build_cigar_parser {
     my $self = shift;
@@ -77,74 +75,54 @@ sub _build_cigar_parser {
 sub BUILD {
     my $self = shift;
 
-    # TODO - validation of primer reads
-    # add tests for following:
-    # need at least one primer read ( forward or reverse )
-    # if we have a primer read we also need its name
+    if ( !$self->has_forward_primer_read && !$self->has_reverse_primer_read ) {
+        die("Must specify at least a forward or reverse primer read");
+    }
 
-    # check the well name for the primer reads is correct?
-    #   - would require user to pass in well name
-    # check the primer names are corrext?
-
-    #my ( $well, $primer ) = $display_name =~ $parser->query_primer_rx;
-
+    return;
 }
 
 =head2 analyse
+
+Run the analysis of the primer reads against the genomic region.
 
 =cut
 sub analyse {
     my ( $self ) = @_;
 
-    # grab genomic region
-    # grab primer reads ( should be 2, one forward one reverse )
-
-    # run exonerate against the genomic region and both primer reads
-
-    # grab cigar strings from exonerate results
-    # run cigar string parser against them
-    # NOTE: can grab the primer name and well name from the cigar string if needed
-    #       not sure I need them though
-
-    # ....
     my $cigars = $self->align_reads();
+    $self->display_alignments( $cigars );
 
-    # gather forward and reverse primer read sequences, cigar strings and target sequence
-    # run aligment analysis
-
-    # ....
+    return;
 }
 
-=head2 _analyse
+=head2 display_alignments
 
-rename
+Using the cigar strings and the target sequence display the reads aligned against the
+genomic target region.
 
 =cut
-sub _analyse {
+sub display_alignments {
     my ( $self, $cigars ) = @_;
-    
-    my ( $forward_cigar, $reverse_cigar );
-    if ( exists $cigars->{ $self->forward_primer_name } ) {
-        $forward_cigar = $cigars->{ $self->forward_primer_name };
-    }
-    if ( exists $cigars->{ $self->reverse_primer_name } ) {
-        $reverse_cigar = $cigars->{ $self->reverse_primer_name };
-    }
 
+    #TODO what I really need here is the genomic coordinates of the crispr pair
+    #     we can not hard code the cut offs like this
     my $left_crispr_loc  = 150;
     my $right_crispr_loc = 270;
     my ( $fquery, $fmatch, $rquery, $rmatch, $ftarget, $rtarget );
     my ( $fmatch_substr, $rmatch_substr );
-    if ( $self->forward_primer_read && $forward_cigar->{target_strand} ) {
+
+    if ( exists $cigars->{forward}) {
         ( $fquery, $ftarget, $fmatch )
-            = alignment_match_on_target( $forward_seq, $target_seq, $forward_cigar );
+            = alignment_match_on_target( $self->forward_primer_read, $self->genomic_region, $cigars->{forward} );
         $fquery  = substr( $fquery,  $left_crispr_loc, $right_crispr_loc - $left_crispr_loc + 1 );
         $ftarget = substr( $ftarget, $left_crispr_loc, $right_crispr_loc - $left_crispr_loc + 1 );
         $fmatch  = substr( $fmatch,  $left_crispr_loc, $right_crispr_loc - $left_crispr_loc + 1 );
     }
-    if ( $self->reverse_primer_read && $reverse_cigar->{target_strand} ) {
+
+    if ( exists $cigars->{reverse} ) {
         ( $rquery, $rtarget, $rmatch )
-            = alignment_match_on_target( $reverse_seq, $target_seq, $reverse_cigar );
+            = alignment_match_on_target( $self->reverse_primer_read, $self->genomic_region, $cigars->{reverse} );
         $rquery  = substr( $rquery,  $left_crispr_loc, $right_crispr_loc - $left_crispr_loc + 1 );
         $rtarget = substr( $rtarget, $left_crispr_loc, $right_crispr_loc - $left_crispr_loc + 1 );
         $rmatch  = substr( $rmatch,  $left_crispr_loc, $right_crispr_loc - $left_crispr_loc + 1 );
@@ -163,12 +141,13 @@ sub _analyse {
 
 =head2 align_reads
 
-desc
-    # exonerate --showcigar true --showalignment true --model affine:local --query ATP2B4_140114.fa --target atp2b4_exon.fa --exhaustive yes --bestn 1
+Align primer reads against genomic region where damage is expected, expect cigar strings as output.
+We run exonerate in exhaustive mode, with a gapped model and only take the best result.
 
 =cut
 sub align_reads {
     my $self = shift;
+    $self->log->debug( 'Align reads' );
 
     my ( $target_file, $query_file ) = $self->create_exonerate_files();
 
@@ -179,12 +158,12 @@ sub align_reads {
         showcigar     => 'yes',
         showalignment => 'yes',
         model         => 'affine:local',
+        exhaustive    => 'yes',
     );
 
     $exonerate->run_exonerate;
     # put exonerate output in a log file
-    my $exonerate_output = $self->dir->file('exonerate_output');
-    my $fh = $exonerate_output->openw;
+    my $fh = $self->dir->file('exonerate_output')->openw;
     my $raw_output = $exonerate->raw_output;
     print $fh $raw_output;
 
@@ -193,9 +172,20 @@ sub align_reads {
     my %cigars;
     for my $cigar ( @cigar_strings ) {
         my $result = $self->cigar_parser->parse_cigar($cigar);
-        $cigars{ $result->{query_primer} } = $result;
-        #TODO check wells the same?
-        #my $well   = $result->{query_well};
+
+        if ( $result->{query_primer} eq $self->forward_primer_name ) {
+            $cigars{forward} = $result;
+        }
+        elsif ( $result->{query_primer} eq $self->reverse_primer_name ) {
+            $cigars{reverse} = $result;
+        }
+        else {
+            $self->log->error( "Unknown primer $result->{query_primer}, "
+                    . "does not match foward: " . $self->forward_primer_name
+                    . ", or reverse: " . $self->reverse_primer_name
+                    . ' primer names.' );
+        }
+        #TODO check well names? $result->{query_well};
     }
 
     return \%cigars;
@@ -203,7 +193,7 @@ sub align_reads {
 
 =head2 create_exonerate_files
 
-desc
+Create the target and query fasta files that will be in the input to exonerate.
 
 =cut
 sub create_exonerate_files {
