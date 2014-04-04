@@ -10,7 +10,6 @@ use Sub::Exporter -setup => {
                      query_alignment_string
                      target_alignment_string_pos
                      alignment_match
-                     reduced_alignment_match
                      alignment_match_on_target
                      format_alignment
                ) ],
