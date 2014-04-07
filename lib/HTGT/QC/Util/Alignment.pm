@@ -69,8 +69,6 @@ sub reduced_target_alignment_string {
     return $alignment_str;
 }
 
-
-
 # one base per target bioseq: 
 # The actual emitted string (to account for mismatches)
 # AND a 'result' string which indicates M or D but
@@ -344,10 +342,16 @@ sub alignment_match_on_target {
     foreach my $insertion (@$insertions){
 	    $insertion_details .= $insertion->[0].":".length($insertion->[1]).":".$insertion->[1].",";
     }
+
     return (
-	    "$well,$primer,$query_align_str,$insertion_details",
-	    "$well,$primer,$target_align_str",
-	    "$well,$primer,$full_match_string"
+        {
+            well              => $well,
+            primer            => $primer,
+            query_align_str   => $query_align_str,
+            target_align_str  => $target_align_str,
+            full_match_string => $full_match_string,
+            insertion_details => $insertion_details,
+        }
     );
 }
 
