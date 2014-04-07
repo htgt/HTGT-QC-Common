@@ -91,52 +91,34 @@ sub analyse {
     my ( $self ) = @_;
 
     my $cigars = $self->align_reads();
-    $self->display_alignments( $cigars );
+    my $alignment_data = $self->analyse_alignments( $cigars );
 
-    return;
+    # TODO concordant indel analysis here
+
+    return $alignment_data;
 }
 
-=head2 display_alignments
+=head2 analyse_alignments
 
-Using the cigar strings and the target sequence display the reads aligned against the
+Using the cigar strings and the target sequence analyse the reads aligned against the
 genomic target region.
 
 =cut
-sub display_alignments {
+sub analyse_alignments {
     my ( $self, $cigars ) = @_;
 
-    #TODO what I really need here is the genomic coordinates of the crispr pair
-    #     we can not hard code the cut offs like this
-    my $left_crispr_loc  = 150;
-    my $right_crispr_loc = 270;
-    my ( $fquery, $fmatch, $rquery, $rmatch, $ftarget, $rtarget );
-    my ( $fmatch_substr, $rmatch_substr );
-
+    my %data;
     if ( exists $cigars->{forward}) {
-        ( $fquery, $ftarget, $fmatch )
+        $data{forward}
             = alignment_match_on_target( $self->forward_primer_read, $self->genomic_region, $cigars->{forward} );
-        $fquery  = substr( $fquery,  $left_crispr_loc, $right_crispr_loc - $left_crispr_loc + 1 );
-        $ftarget = substr( $ftarget, $left_crispr_loc, $right_crispr_loc - $left_crispr_loc + 1 );
-        $fmatch  = substr( $fmatch,  $left_crispr_loc, $right_crispr_loc - $left_crispr_loc + 1 );
     }
 
     if ( exists $cigars->{reverse} ) {
-        ( $rquery, $rtarget, $rmatch )
+        $data{reverse}
             = alignment_match_on_target( $self->reverse_primer_read, $self->genomic_region, $cigars->{reverse} );
-        $rquery  = substr( $rquery,  $left_crispr_loc, $right_crispr_loc - $left_crispr_loc + 1 );
-        $rtarget = substr( $rtarget, $left_crispr_loc, $right_crispr_loc - $left_crispr_loc + 1 );
-        $rmatch  = substr( $rmatch,  $left_crispr_loc, $right_crispr_loc - $left_crispr_loc + 1 );
     }
 
-    if ( $fquery && $rquery ) {
-        print "$fquery\n$fmatch\n$ftarget\n-\n$rtarget\n$rmatch\n$rquery\n\n";
-    }
-    elsif ($fquery) {
-        print "$fquery\n$fmatch\n$ftarget\n-\n\n";
-    }
-    elsif ($rquery) {
-        print "-\n$rtarget\n$rmatch\n$rquery\n\n";
-    }
+    return \%data;
 }
 
 =head2 align_reads
