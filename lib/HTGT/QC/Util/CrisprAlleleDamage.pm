@@ -181,14 +181,14 @@ Create the target and query fasta files that will be in the input to exonerate.
 sub create_exonerate_files {
     my $self = shift;
 
-    my $query_file    = $self->dir->file('exonerate_query.fasta')->absolute;
+    my $query_file    = $self->dir->file('primer_reads.fasta')->absolute;
     my $query_fh      = $query_file->openw;
     my $query_seq_out = Bio::SeqIO->new( -fh => $query_fh, -format => 'fasta' );
 
     $query_seq_out->write_seq( $self->forward_primer_read ) if $self->forward_primer_read;
     $query_seq_out->write_seq( $self->reverse_primer_read ) if $self->reverse_primer_read;
 
-    my $target_file = $self->dir->file('target_query.fasta')->absolute;
+    my $target_file = $self->dir->file('genomic_region.fasta')->absolute;
     my $target_fh         = $target_file->openw;
     my $target_seq_out    = Bio::SeqIO->new( -fh => $target_fh, -format => 'fasta' );
 
