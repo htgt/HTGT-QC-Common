@@ -105,7 +105,7 @@ sub reduced_query_alignment_string{
     #If the query starts to the right of the target, then pos_on_target has a positive offset
     # We _need_ this pos_on_target to correctly catalogue the insertions that we find when building
     # the align string relative to reference 
-    my $insertions = [];
+    my %insertions;
 
     my $pos = 0;
     my $query_alignment_str;
@@ -129,7 +129,7 @@ sub reduced_query_alignment_string{
 	    # instead of adding the whole insertion, add a single Q at this point
 	    #$query_alignment_str .= "Q"; 
 	    my $insertion_string = substr( $seq, $pos, $length );
-	    push @{$insertions}, [$pos_on_reference, $insertion_string];
+        $insertions{$pos_on_reference} = $insertion_string;
 
             $pos += $length;
         } else {
@@ -143,8 +143,8 @@ sub reduced_query_alignment_string{
         $query_alignment_str .= substr( $seq, $pos );
     }
 
-   #Now you have a piece of query sequence which either matches the target or has a '-' for each target base
-    # The insertions relative have been obscured completely, but will be caught the 'insertions' array
+    #Now you have a piece of query sequence which either matches the target or has a '-' for each target base
+    # The insertions relative have been obscured completely, but will be caught the 'insertions' hash
     #Now pad left or right (or truncate) to further match target
     if( $pad_left < 0 ){
 	#clip $pad_left off beginning of string
@@ -163,7 +163,7 @@ sub reduced_query_alignment_string{
         $query_alignment_str = $query_alignment_str . join( '', 'X' x $pad_right );
     }
 
-    return ($query_alignment_str, $insertions);
+    return ($query_alignment_str, \%insertions);
 }
 
 sub target_alignment_string {
@@ -338,10 +338,6 @@ sub alignment_match_on_target {
     if(length($full_match_string) < length($target_align_str)){
 	    $full_match_string .= "X" x (length($full_match_string) - length($target_align_str));
     }
-    my $insertion_details = "";
-    foreach my $insertion (@$insertions){
-	    $insertion_details .= $insertion->[0].":".length($insertion->[1]).":".$insertion->[1].",";
-    }
 
     return (
         {
@@ -350,7 +346,7 @@ sub alignment_match_on_target {
             query_align_str   => $query_align_str,
             target_align_str  => $target_align_str,
             full_match_string => $full_match_string,
-            insertion_details => $insertion_details,
+            insertion_details => $insertions,
         }
     );
 }
