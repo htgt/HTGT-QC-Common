@@ -79,11 +79,13 @@ sub reduced_query_alignment_string {
     my ( $query_bio_seq, $cigar, $target_bio_seq ) = @_;
 
     my ( $seq, $query_start, $query_end );
+    # should match any reverse primer reads
     if ( $cigar->{query_strand} eq '-' ) {
         $seq         = $query_bio_seq->revcom->seq;
         $query_start = $query_bio_seq->length - $cigar->{query_start};
         $query_end   = $query_bio_seq->length - $cigar->{query_end};
     }
+    # should match forward primer reads
     else {
         $seq         = $query_bio_seq->seq;
         $query_start = $cigar->{query_start};
@@ -99,14 +101,15 @@ sub reduced_query_alignment_string {
         $pad_right        = ( $target_bio_seq->length - $cigar->{target_end} )
             - ( $query_bio_seq->length - $query_end );
     }
+    # this branch has not been used yet, so calculations may be wrong
     else {
         $pad_left         = ( $target_bio_seq->length - $cigar->{target_start} ) - $query_start;
         $pad_right        = $cigar->{target_end} - $query_end;
         $pos_on_reference = $target_bio_seq->length - $cigar->{target_start};
     }
 
-    #If the query starts to the left of the target, then the pos_on_target starts with a neg offset
-    #If the query starts to the right of the target, then pos_on_target has a positive offset
+    # If the query starts to the left of the target, then the pos_on_target starts with a neg offset
+    # If the query starts to the right of the target, then pos_on_target has a positive offset
     # We _need_ this pos_on_target to correctly catalogue the insertions that we find when building
     # the align string relative to reference
     my %insertions;
@@ -119,7 +122,6 @@ sub reduced_query_alignment_string {
     if ( $query_start > 0 ) {
         $query_alignment_str .= substr( $seq, 0, $query_start );
         $pos              += $query_start;
-        $pos_on_reference += $query_start;
     }
 
     for ( @{ $cigar->{operations} } ) {
@@ -136,6 +138,7 @@ sub reduced_query_alignment_string {
             $insertions{$pos_on_reference} = $insertion_string;
             $pos += $length;
         }
+        # deletion
         else {
             $query_alignment_str .= '-' x $length;
             $pos_on_reference += $length;
