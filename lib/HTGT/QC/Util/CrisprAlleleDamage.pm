@@ -19,6 +19,7 @@ use HTGT::QC::Util::Alignment qw( alignment_match_on_target );
 use Bio::SeqIO;
 use Data::Dumper;
 use MooseX::Types::Path::Class::MoreCoercions qw/AbsDir/;
+use List::Util qw( min );
 use namespace::autoclean;
 
 with qw( MooseX::Log::Log4perl );
@@ -85,6 +86,7 @@ sub BUILD {
 =head2 analyse
 
 Run the analysis of the primer reads against the genomic region.
+Calculate the largest concordant indel shown by the reads.
 
 =cut
 sub analyse {
@@ -93,7 +95,38 @@ sub analyse {
     my $cigars = $self->align_reads();
     my $alignment_data = $self->analyse_alignments( $cigars );
 
-    # TODO concordant indel analysis here
+    my $deletions = $self->concordant_deletions(
+        $alignment_data->{forward}{full_match_string},
+        $alignment_data->{reverse}{full_match_string},
+    );
+
+    my $insertions;
+    if (   %{ $alignment_data->{forward}{insertion_details} }
+        && %{ $alignment_data->{reverse}{insertion_details} } )
+    {
+        $insertions = $self->concordant_insertions(
+            $alignment_data->{forward}{full_match_string},
+            $alignment_data->{reverse}{full_match_string},
+            $alignment_data->{forward}{insertion_details},
+            $alignment_data->{reverse}{insertion_details},
+        );
+    }
+
+    # if we have both concordant insertions and deletions pick the longest one
+    if ( $deletions && $insertions ) {
+        if ( $deletions->{length} >= $insertions->{length} ) {
+            $alignment_data->{concordant_indel} = $deletions;
+        }
+        else {
+            $alignment_data->{concordant_indel} = $insertions;
+        }
+    }
+    elsif ( $deletions ) {
+        $alignment_data->{concordant_indel} = $deletions;
+    }
+    elsif ( $insertions ) {
+        $alignment_data->{concordant_indel} = $insertions;
+    }
 
     return $alignment_data;
 }
@@ -197,6 +230,135 @@ sub create_exonerate_files {
     $self->log->debug("Created exonerate query and target files");
 
     return ( $target_file, $query_file );
+}
+
+=head2 concordant_deletions
+
+Find the largest deletion that is present in both the forward and reverse
+primer reads.
+
+=cut
+sub concordant_deletions {
+    my ( $self, $forward_cigar, $reverse_cigar ) = @_;
+    return if !$forward_cigar || !$reverse_cigar;
+
+    my $string_length = min( length( $forward_cigar ), length( $reverse_cigar ) );
+
+    my @f = split( //, $forward_cigar );
+    my @r = split( //, $reverse_cigar );
+
+    my $current_max_length = 0;
+    my @concordant_positions;
+
+    my $d_run = 0;
+    my $d_run_pos;
+    my $d_run_len;
+    for ( my $i = 0; $i < $string_length; $i++ ) {
+        my $f_char = $f[$i];
+        my $r_char = $r[$i];
+
+        if ( $f_char eq 'D' && $r_char eq 'D' ) {
+            if ( $d_run ) {
+                $d_run_len++;
+            }
+            else {
+                $d_run = 1;
+                $d_run_pos = $i;
+                $d_run_len = 1;
+            }
+        }
+        else {
+            if ( $d_run ) {
+                if ( $d_run_len > $current_max_length ) {
+                    $current_max_length = $d_run_len;
+                    @concordant_positions = $d_run_pos;
+                }
+                elsif ( $d_run_len == $current_max_length ) {
+                    push @concordant_positions, $d_run_pos;
+                }
+                $d_run = 0;
+                $d_run_pos = undef;
+                $d_run_len = undef;
+            }
+        }
+    }
+
+    my $concordant_deletion;
+    if ( $current_max_length ) {
+        $concordant_deletion = {
+            length    => $current_max_length,
+            positions => \@concordant_positions,
+        };
+    }
+
+    return $concordant_deletion;
+}
+
+=head2 concordant_insertions
+
+Find the largest insertion that is present in both the forward and reverse
+primer reads.
+
+=cut
+sub concordant_insertions {
+    my ( $self, $forward_cigar, $reverse_cigar, $forward_insertions, $reverse_insertions ) = @_;
+
+    my $forward_ins_positions = insertion_data( $forward_cigar );
+    my $reverse_ins_positions = insertion_data( $reverse_cigar );
+
+    my $current_max_length = 0;
+    my $current_max_seq = '';
+    my @concordant_positions;
+
+    for my $forward_pos ( keys %{ $forward_ins_positions } ) {
+        next unless exists $reverse_ins_positions->{$forward_pos};
+
+        # insertion on same place in both cigars, now check if sequence the same
+        my $forward_ins_seq = $forward_insertions->{$forward_pos};
+        my $reverse_ins_seq = $reverse_insertions->{$forward_pos};
+
+        if ( $reverse_ins_seq && $forward_ins_seq && $reverse_ins_seq eq $forward_ins_seq ) {
+            my $ins_length = length( $forward_ins_seq );
+            if ( $ins_length > $current_max_length ) {
+                $current_max_length = $ins_length;
+                $current_max_seq = $forward_ins_seq;
+                @concordant_positions = ( $forward_pos );
+            }
+            elsif ( $ins_length == $current_max_length ) {
+                push @concordant_positions, $forward_pos;
+            }
+        }
+    }
+
+    my $concordant_insertion;
+    if ( $current_max_length ) {
+        $concordant_insertion = {
+            length    => $current_max_length,
+            positions => \@concordant_positions,
+            seq       => $current_max_seq,
+        };
+    }
+
+    return $concordant_insertion;
+}
+
+=head2 insertion_data
+
+Find the position of all the Q characters on the cigar string.
+The Q represents a insertion of one or more bases.
+
+=cut
+sub insertion_data {
+    my $string = shift;
+
+    my %data;
+    while ($string =~ /Q/g) {
+        # we work with 1 based coordinates
+        my $start = $-[0] + 1;
+        $data{$start} = undef;
+    }
+
+    return \%data;
 }
 
 __PACKAGE__->meta->make_immutable;
