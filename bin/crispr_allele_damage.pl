@@ -10,6 +10,7 @@ use Log::Log4perl ':easy';
 use Bio::SeqIO;
 use Pod::Usage;
 use Path::Class;
+use feature qw( say );
 
 my $log_level = $WARN;
 
@@ -75,7 +76,15 @@ else {
 
 my $qc = HTGT::QC::Util::CrisprAlleleDamage->new( %params );
 
-$qc->analyse;
+my $analysis = $qc->analyse;
+
+my $trim_five_prime = 100;
+my $seq_length = 230;
+say substr( $analysis->{forward}{full_match_string}, $trim_five_prime, $seq_length );
+say substr( $analysis->{forward}{query_align_str}, $trim_five_prime, $seq_length );
+say substr( $analysis->{forward}{target_align_str}, $trim_five_prime, $seq_length );
+say substr( $analysis->{reverse}{query_align_str}, $trim_five_prime, $seq_length );
+say substr( $analysis->{reverse}{full_match_string}, $trim_five_prime, $seq_length );
 
 __END__
 
