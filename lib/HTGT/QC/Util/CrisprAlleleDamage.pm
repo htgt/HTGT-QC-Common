@@ -95,20 +95,27 @@ sub analyse {
     my $cigars = $self->align_reads();
     my $alignment_data = $self->analyse_alignments( $cigars );
 
+    my $forward_aln = $alignment_data->{forward};
+    my $reverse_aln = $alignment_data->{reverse};
+
+    if ( !$forward_aln || !$reverse_aln ) {
+        return $alignment_data;
+    }
+
     my $deletions = $self->concordant_deletions(
-        $alignment_data->{forward}{full_match_string},
-        $alignment_data->{reverse}{full_match_string},
+        $forward_aln->{full_match_string},
+        $reverse_aln->{full_match_string},
     );
 
     my $insertions;
-    if (   %{ $alignment_data->{forward}{insertion_details} }
-        && %{ $alignment_data->{reverse}{insertion_details} } )
+    if (   %{ $forward_aln->{insertion_details} }
+        && %{ $reverse_aln->{insertion_details} } )
     {
         $insertions = $self->concordant_insertions(
-            $alignment_data->{forward}{full_match_string},
-            $alignment_data->{reverse}{full_match_string},
-            $alignment_data->{forward}{insertion_details},
-            $alignment_data->{reverse}{insertion_details},
+            $forward_aln->{full_match_string},
+            $reverse_aln->{full_match_string},
+            $forward_aln->{insertion_details},
+            $reverse_aln->{insertion_details},
         );
     }
 
