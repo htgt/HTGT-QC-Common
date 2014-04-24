@@ -4,6 +4,7 @@ MANIFEST
 META.yml
 Makefile.PL
 README
+bin/crispr_allele_damage.pl
 bin/fetch-seq-reads.sh
 lib/HTGT/QC/Config.pm
 lib/HTGT/QC/Config/Profile.pm
@@ -12,12 +13,14 @@ lib/HTGT/QC/Exception/InvalidConfiguration.pm
 lib/HTGT/QC/Util/Alignment.pm
 lib/HTGT/QC/Util/CigarParser.pm
 lib/HTGT/QC/Util/CreateSuggestedQcPlateMap.pm
+lib/HTGT/QC/Util/CrisprAlleleDamage.pm
 lib/HTGT/QC/Util/KillQCFarmJobs.pm
 lib/HTGT/QC/Util/ListLatestRuns.pm
 t/00-compile.t
 t/05-config-profile.t
 t/10-config.t
 t/10-htgt-qc-util-create-suggested-qc-platemap.t
+t/10-htgt-qc-util-crispr-allele-damage.t
 t/10-htgt-qc-util-parse-cigar.t
 t/20-htgt-qc-util-list-latest-runs.t
 t/author-critic.t

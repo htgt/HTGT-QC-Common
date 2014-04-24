@@ -1,7 +1,7 @@
 package HTGT::QC::Util::CreateSuggestedQcPlateMap;
 ## no critic(RequireUseStrict,RequireUseWarnings)
 {
-    $HTGT::QC::Util::CreateSuggestedQcPlateMap::VERSION = '0.016';
+    $HTGT::QC::Util::CreateSuggestedQcPlateMap::VERSION = '0.017';
 }
 ## use critic
 
@@ -10,7 +10,14 @@ use strict;
 use warnings FATAL => 'all';
 
 use Sub::Exporter -setup => {
-    exports => [ qw( create_suggested_plate_map get_sequencing_project_plate_names search_seq_project_names ) ]
+    exports => [
+        qw( 
+            create_suggested_plate_map 
+            get_sequencing_project_plate_names 
+            search_seq_project_names 
+            get_parsed_reads 
+        )
+    ]
 };
 
 use Log::Log4perl qw( :easy );
@@ -59,6 +66,8 @@ sub create_suggested_plate_map {
     return $plate_map ? $plate_map : { map{ $_ => '' } @{ $plate_names } };
 }
 
+#this method should be changed to use get_parsed_reads
+#but im afraid if I change it i'll break htgt somewhere
 sub get_sequencing_project_plate_names {
     my $seq_projects = shift;
     my @reads;
@@ -82,6 +91,25 @@ sub get_sequencing_project_plate_names {
     my @uniq_plate_names = uniq grep { defined } @plate_names;
 
     return \@uniq_plate_names;
+}
+
+#general method to get back all reads in a project
+sub get_parsed_reads {
+    my ( $seq_project ) = @_;
+
+    my $script_name = 'fetch-seq-reads.sh';
+    my $fetch_cmd = File::Which::which( $script_name ) or die "Could not find $script_name";
+
+    my $parser = HTGT::QC::Util::CigarParser->new( strict_mode => 0 );
+
+    my @parsed;
+    for my $read ( capturex($fetch_cmd, $seq_project, '--list-only') ) {
+        chomp $read;
+
+        push @parsed, $parser->parse_query_id( $read );
+    }
+
+    return @parsed;
 }
 
 sub search_seq_project_names {
