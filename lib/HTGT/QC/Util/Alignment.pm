@@ -118,7 +118,6 @@ sub reduced_query_alignment_string {
     my $query_alignment_str;
 
     #First produce the unadulerated string, (then either pad or trim it to the target as necc)
-    my ( $alignment_string, $extended_op_string );
     if ( $query_start > 0 ) {
         $query_alignment_str .= substr( $seq, 0, $query_start );
         $pos              += $query_start;
@@ -481,4 +480,4 @@ sub format_alignment {
     return $alignment_str;
 }
 
-return 1;
+1;

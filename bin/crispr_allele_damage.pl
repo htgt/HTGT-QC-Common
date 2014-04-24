@@ -54,7 +54,7 @@ while ( my $seq = $primer_reads_io->next_seq ) {
     }
 }
 
-my $work_dir = dir( $dir )->absolute; 
+my $work_dir = dir( $dir )->absolute;
 my $genomic_region_io = Bio::SeqIO->new( -file => $genomic_region_file, -format => 'Fasta' );
 
 my %params = (

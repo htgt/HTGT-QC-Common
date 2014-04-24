@@ -4,13 +4,13 @@ use strict;
 use warnings FATAL => 'all';
 
 use Sub::Exporter -setup => {
-    exports => [ 
+    exports => [
         qw( 
             create_suggested_plate_map 
             get_sequencing_project_plate_names 
             search_seq_project_names 
             get_parsed_reads 
-        ) 
+        )
     ]
 };
 
