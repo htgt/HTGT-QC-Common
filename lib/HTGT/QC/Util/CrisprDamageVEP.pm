@@ -30,7 +30,9 @@ const my $SAMTOOLS_CMD => $ENV{SAMTOOLS_CMD}
 const my $BCFTOOLS_CMD => $ENV{BCFTOOLS_CMD}
     // '/software/vertres/bin-external/samtools-0.2.0-rc8/bin/bcftools';
 const my $VEP_CMD => $ENV{VEP_CMD}
-    // '';
+    // '/opt/t87/global/software/ensembl-tools-release-75/scripts/variant_effect_predictor/variant_effect_predictor.pl';
+const my $VEP_CACHE_DIR => $ENV{VEP_CACHE_DIR}
+    // '/lustre/scratch109/blastdb/Ensembl/vep';
 
 const my %BWA_REF_GENOMES => (
     human => '/lustre/scratch109/blastdb/Users/team87/Human/bwa/Homo_sapiens.GRCh37.toplevel.clean_chr_names.fa',
@@ -98,6 +100,17 @@ has vcf_file => (
     predicate => 'has_vcf_file',
 );
 
+has vep_output_file => (
+    is        => 'rw',
+    isa       => 'Path::Class::File',
+    predicate => 'has_vep_output_file',
+);
+
+has vep_output_file_html => (
+    is        => 'rw',
+    isa       => 'Path::Class::File',
+);
+
 has target_overlapping_reads => (
     is  => 'rw',
     isa => 'Int',
@@ -135,16 +148,11 @@ Run the analysis
 sub analyse {
     my ( $self ) = @_;
 
-    # TODO what if only 1 read has deletion / insertion
-    # TODO what if we only have one read
-
     $self->sam_to_bam;
     $self->check_reads_overlap_target;
-    $self->log->info('We have ' . $self->target_overlapping_reads . ' reads that overlap the target region');
     $self->run_mpileup;
     $self->variant_calling;
-
-    # TODO run vep and return this output
+    $self->variant_effect_predictor;
 
     return;
 }
@@ -192,7 +200,7 @@ sub sam_to_bam {
     $self->log->debug( "samtools view command2: " . join( ' ', @samtools_view_command2 ) );
 
     my $bam_file = $self->dir->file('alignment.bam')->absolute;
-    my $log_file = $self->dir->file( 'initial_sam_to_bam.log' )->absolute;
+    my $log_file = $self->dir->file( 'sam_to_bam.log' )->absolute;
     run( \@samtools_view_command,
         '|',
         \@samtools_sort_command,
@@ -251,6 +259,7 @@ sub check_reads_overlap_target {
     chomp($out);
 
     die( "We don't have any reads that overlap the target region" ) unless $out;
+    $self->log->info("We have $out reads that overlap the target region");
     $self->target_overlapping_reads( $out );
 
     return;
@@ -338,6 +347,39 @@ sub variant_calling {
             "Failed to run bcftools call command, see log file: $log_file" );
 
     $self->vcf_file( $output_vcf_file );
+    return;
+}
+
+=head2 variant_effect_predictor
+
+Run the Ensembl variant_effect_predictor.pl script and store the output.
+
+=cut
+sub variant_effect_predictor {
+    my ( $self ) = @_;
+    $self->log->info( 'Running variant_effect_predictor' );
+
+    #TODO limit the vcf file to the target region
+
+    my $vep_output = $self->dir->file('variant_effect_output.txt')->absolute;
+    my $log_file = $self->dir->file( 'vep.log' )->absolute;
+    my @vep_command = (
+        'perl',
+        $VEP_CMD,                          # vep cmd
+        '--cache',                         # use cached data
+        '--dir_cache', $VEP_CACHE_DIR,     # directory where cache is stored
+        '-i', $self->vcf_file->stringify,  # input vcf file
+        '-o', $vep_output->stringify       # output file
+    );
+
+    $self->log->debug( "vep command: " . join( ' ', @vep_command ) );
+    run( \@vep_command,
+        '>', $log_file->stringify
+    ) or die(
+            "Failed to run variant_effect_predictor.pl, see log file: $log_file" );
+
+    $self->vep_output_file( $vep_output );
+    $self->vep_output_file_html( $self->dir->file('variant_effect_output.txt_summary.html')->absolute );
     return;
 }
 
