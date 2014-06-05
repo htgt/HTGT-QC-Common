@@ -57,6 +57,17 @@ has target_chr => (
     required => 1,
 );
 
+has target_string => (
+    is         => 'ro',
+    isa        => 'Str',
+    lazy_build => 1,
+);
+
+sub _build_target_string {
+    my $self = shift;
+    return $self->target_chr . ":" . $self->target_start . "-" . $self->target_end;
+}
+
 has forward_primer_read => (
     is        => 'ro',
     isa       => 'Maybe[Bio::Seq]',
@@ -76,39 +87,12 @@ has sam_file => (
     coerce    => 1,
 );
 
-has bam_file => (
-    is        => 'rw',
-    isa       => 'Path::Class::File',
-    predicate => 'has_bam_file',
-);
-
-has bcf_file => (
-    is        => 'rw',
-    isa       => 'Path::Class::File',
-    predicate => 'has_bcf_file',
-);
-
-has pileup_file => (
-    is        => 'rw',
-    isa       => 'Path::Class::File',
-    predicate => 'has_pileup_file',
-);
-
-has vcf_file => (
-    is        => 'rw',
-    isa       => 'Path::Class::File',
-    predicate => 'has_vcf_file',
-);
-
-has vep_output_file => (
-    is        => 'rw',
-    isa       => 'Path::Class::File',
-    predicate => 'has_vep_output_file',
-);
-
-has vep_output_file_html => (
-    is        => 'rw',
-    isa       => 'Path::Class::File',
+has [
+    'bam_file', 'bcf_file',      'pileup_file', 'vcf_file',
+    'vep_file', 'vep_html_file', 'vcf_file_target_region '
+    ] => (
+    is  => 'rw',
+    isa => 'Path::Class::File',
 );
 
 has target_overlapping_reads => (
@@ -152,6 +136,8 @@ sub analyse {
     $self->check_reads_overlap_target;
     $self->run_mpileup;
     $self->variant_calling;
+    #TODO limit the vcf file to the target region
+    $self->target_region_vcf_file;
     $self->variant_effect_predictor;
 
     return;
@@ -170,6 +156,7 @@ sub sam_to_bam {
     my ( $self ) = @_;
     $self->log->info('Converting SAM file to sorted BAM file');
 
+    # TODO remove first view command, samtools sort can accept sam file
     my @samtools_view_command = (
         $SAMTOOLS_CMD,
         'view',                     # align command
@@ -239,14 +226,12 @@ sub check_reads_overlap_target {
     ) or die (
             "Failed to run samtools index, see log file: $log_file" );
 
-    my $target_region
-        = $self->target_chr . ":" . $self->target_start . "-" . $self->target_end;
     my @samtools_view_command = (
         $SAMTOOLS_CMD,
         'view',                     # view command
         '-c',                       # count the number of alignments
         $self->bam_file->stringify, # bam file
-        $target_region,             # string specifying target region for crispr
+        $self->target_string,       # string specifying target region for crispr
     );
     $self->log->debug( "samtools view command: " . join( ' ', @samtools_view_command ) );
 
@@ -279,7 +264,7 @@ sub run_mpileup {
     my ( $self  ) = @_;
     $self->log->info('Running mpileup command to generate bcf file');
 
-    my $output_bcf_file = $self->dir->file('analysis.bcf')->absolute;
+    my $output_bcf_file = $self->dir->file('raw_analysis.bcf')->absolute;
     my $output_pileup_file = $self->dir->file('analysis.pileup')->absolute;
     my $log_file = $self->dir->file( 'mpileup.log' )->absolute;
 
@@ -350,6 +335,65 @@ sub variant_calling {
     return;
 }
 
+=head2 target_region_vcf_file
+
+Produce a vcf file which only looks at the target region we are interested in.
+Any variants not overlapping the target region will be filtered out.
+
+=cut
+sub target_region_vcf_file {
+    my ( $self ) = @_;
+    $self->log->info('Producing target region vcf file');
+
+    # convert vcf to bcf so we can index / filter it
+    # bcftools view -O b analysis.vcf > analysis.bcf
+    my $bcf_file = $self->dir->file('analysis.bcf')->absolute;
+    my $log_file = $self->dir->file( 'generate_target_region_vcf_file.log' )->absolute;
+    my @vcf_to_bcf_command = (
+        $BCFTOOLS_CMD,              # bcftools cmd
+        'view',                     # view cmd
+        '-O', 'b',                  # output is compressed bcf
+        $self->vcf_file->stringify, # input bcf file
+    );
+    $self->log->debug( "vcf to bcf command: " . join( ' ', @vcf_to_bcf_command ) );
+    run( \@vcf_to_bcf_command,
+        '>', $bcf_file->stringify,
+        '2>', $log_file->stringify
+    ) or die(
+            "Failed to convert vcf to bcf, see log file: $log_file" );
+
+    # index the bcf file
+    # bcftools index analysis.bcf
+    my @index_bcf_command = (
+        $BCFTOOLS_CMD,              # bcftools cmd
+        'index',                    # index cmd
+        $bcf_file->stringify,       # input bcf file
+    );
+    $self->log->debug( "bcftools index command: " . join( ' ', @index_bcf_command ) );
+    run( \@index_bcf_command,
+        '2>>', $log_file->stringify
+    ) or die(
+            "Failed to index bcf file, see log file: $log_file" );
+
+    # produce vcf filtered to the target region
+    my $filtered_vcf_file = $self->dir->file('filtered_analysis.vcf')->absolute;
+    my @filter_vcf_command = (
+        $BCFTOOLS_CMD,              # bcftools cmd
+        'view',                     # view cmd
+        '-r', $self->target_string, # target region
+        $bcf_file->stringify,       # input bcf file
+    );
+    $self->log->debug( "bcftools view filter command: " . join( ' ', @filter_vcf_command ) );
+    run( \@filter_vcf_command,
+        '>', $filtered_vcf_file->stringify,
+        '2>>', $log_file->stringify
+    ) or die(
+            "Failed to filter vcf file, see log file: $log_file" );
+
+    $self->vcf_file_target_region( $filtered_vcf_file );
+    return;
+}
+
 =head2 variant_effect_predictor
 
 Run the Ensembl variant_effect_predictor.pl script and store the output.
@@ -359,17 +403,17 @@ sub variant_effect_predictor {
     my ( $self ) = @_;
     $self->log->info( 'Running variant_effect_predictor' );
 
-    #TODO limit the vcf file to the target region
-
     my $vep_output = $self->dir->file('variant_effect_output.txt')->absolute;
     my $log_file = $self->dir->file( 'vep.log' )->absolute;
     my @vep_command = (
         'perl',
-        $VEP_CMD,                          # vep cmd
-        '--cache',                         # use cached data
-        '--dir_cache', $VEP_CACHE_DIR,     # directory where cache is stored
-        '-i', $self->vcf_file->stringify,  # input vcf file
-        '-o', $vep_output->stringify       # output file
+        $VEP_CMD,                                       # vep cmd
+        '--cache',                                      # use cached data
+        '--dir_cache', $VEP_CACHE_DIR,                  # directory where cache is stored
+        '-i', $self->vcf_file_target_region->stringify, # input vcf file
+        '-o', $vep_output->stringify,                   # output file
+        '--no_progress',                                # do not show progresss bar
+        '--force_overwrite',                            # overwrite output files if they exist
     );
 
     $self->log->debug( "vep command: " . join( ' ', @vep_command ) );
@@ -378,8 +422,8 @@ sub variant_effect_predictor {
     ) or die(
             "Failed to run variant_effect_predictor.pl, see log file: $log_file" );
 
-    $self->vep_output_file( $vep_output );
-    $self->vep_output_file_html( $self->dir->file('variant_effect_output.txt_summary.html')->absolute );
+    $self->vep_file( $vep_output );
+    $self->vep_file_html( $self->dir->file('variant_effect_output.txt_summary.html')->absolute );
     return;
 }
 
