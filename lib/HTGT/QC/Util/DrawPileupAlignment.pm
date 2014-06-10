@@ -6,6 +6,12 @@ HTGT::QC::Util::DrawPileupAlignment
 
 =head1 DESCRIPTION
 
+Take a pileup file generated from very specific input and build up the aligned sequence
+to display. Used to create aligned sequences of primer pair reads that cover area of potential
+crispr damage.
+
+The pileup file must consist of 2 reads, one forward and one reverse, that overlap the same area.
+
 =cut
 
 use Moose;
@@ -17,7 +23,7 @@ with qw( MooseX::Log::Log4perl );
 has [ 'target_start', 'target_end' ] => (
     is       => 'ro',
     isa      => 'Int',
-    required => 0,
+    required => 1,
 );
 
 has pileup_file => (
@@ -48,6 +54,11 @@ has active_reads => (
 has [ 'first_read', 'second_read' ] => (
     is  => 'rw',
     isa => 'Str',
+);
+
+has genome_start => (
+    is  => 'rw',
+    isa => 'Int',
 );
 
 has current_position => (
@@ -93,6 +104,7 @@ sub calculate_pileup_alignment {
         my ( $chr, $start, $ref, $depth, $reads, $quality ) = split(/\t/);
         if ( $self->current_position == 0 ) {
             $self->calculate_read_positions( $reads );
+            $self->genome_start( $start );
         }
 
         my $read_array = $self->split_reads( $reads, $depth );
@@ -105,6 +117,7 @@ sub calculate_pileup_alignment {
     }
 
     $self->parse_insertions;
+    $self->truncated_sequence;
 
     return $self->seqs;
 }
@@ -170,7 +183,12 @@ sub split_reads {
         my $expr = $+{expr};
         my $seq = $+{seq};
         if ( $expr =~ /^\+/ ) {
-            push @{ $self->insertions->{$self->current_position} }, $seq;
+            my $read = $seq =~ /^[ACTGN]+$/ ? 'forward' : 'reverse';
+            push @{ $self->insertions->{$self->current_position} },{
+                seq    => $seq,
+                length => $count,
+                read   => $read,
+            };
         }
     }
 
@@ -312,61 +330,24 @@ sub parse_insertions {
     for my $pos ( @insert_positions ) {
         my $inserts = $self->insertions->{$pos};
         if ( scalar( @{ $inserts } ) == 1 ) {
-            my $seq = $inserts->[0];
-            my $length = length( $seq );
-            if ( $seq =~ /^[actgn]+$/ ) {
-                $self->add_insertion( 'reverse', $pos, $length, $seq );
-                $self->add_insertion( 'forward', $pos, $length );
-                $self->add_insertion( 'ref', $pos, $length );
-            }
-            elsif ( $seq =~ /^[ACTNG]+$/ ) {
-                $self->add_insertion( 'forward', $pos, $length, $seq );
-                $self->add_insertion( 'reverse', $pos, $length );
-                $self->add_insertion( 'ref', $pos, $length );
+            if ( $inserts->[0]{read} eq 'forward'  ) {
+                $self->add_insertion( 'forward', $pos, '?' );
+                $self->add_insertion( 'reverse', $pos );
+                $self->add_insertion( 'ref', $pos );
             }
             else {
-                die("Unexpected insert sequences $seq");
+                $self->add_insertion( 'reverse', $pos, '?' );
+                $self->add_insertion( 'forward', $pos );
+                $self->add_insertion( 'ref', $pos );
             }
         }
         elsif ( scalar( @{ $inserts } ) == 2 ) {
-            my $insert_0_length = length( $inserts->[0] );
-            my $insert_1_length = length( $inserts->[1] );
-            my ( $insert_1_type, $insert_0_type );
-            if ( $inserts->[0] =~ /^[actgn]+$/ ) {
-                $insert_0_type = 'reverse';
-                $insert_1_type = 'forward';
-            }
-            elsif ( $inserts->[0] =~ /^[ACTGN]+$/ ) {
-                $insert_0_type = 'forward';
-                $insert_1_type = 'reverse';
-            }
-            else {
-                die("Unexpected insert sequences: " . $inserts->[0] );
-            }
-
-            if ( $insert_1_length == $insert_0_length ) {
-                $self->add_insertion( $insert_0_type, $pos, $insert_1_length, $inserts->[0] );
-                $self->add_insertion( $insert_1_type, $pos, $insert_1_length, $inserts->[1] );
-                $self->add_insertion( 'ref', $pos, $insert_1_length );
-            }
-            elsif ( $insert_0_length > $insert_1_length ) {
-                $self->add_insertion( $insert_0_type, $pos, $insert_0_length, $inserts->[0] );
-                my $pad_seq = '-' x ( $insert_0_length - $insert_1_length );
-                $self->add_insertion( $insert_1_type, $pos, $insert_0_length, $inserts->[1] . $pad_seq );
-                $self->add_insertion( 'ref', $pos, $insert_1_length );
-            }
-            elsif ( $insert_1_length > $insert_0_length ) {
-                $self->add_insertion( $insert_1_type, $pos, $insert_1_length, $inserts->[1] );
-                my $pad_seq = '-' x ( $insert_1_length - $insert_0_length );
-                $self->add_insertion( $insert_0_type, $pos, $insert_1_length, $inserts->[0] . $pad_seq );
-                $self->add_insertion( 'ref', $pos, $insert_1_length );
-            }
-            else {
-                die( "Not sure how to deal with insert sequences" );
-            }
+            $self->add_insertion( 'forward', $pos, '?' );
+            $self->add_insertion( 'reverse', $pos, '?' );
+            $self->add_insertion( 'ref', $pos );
         }
         else {
-            die( "Too many insert sequencs at position $pos: " . scalar( @{ $inserts } ) );
+            die( "Too many insert sequences at position $pos: " . scalar( @{ $inserts } ) );
         }
     }
     return;
@@ -378,10 +359,28 @@ Push the insert sequence into the named sequence string.
 
 =cut
 sub add_insertion {
-    my ( $self, $seq_name, $position, $length, $insert_seq ) = @_;
-    $insert_seq //= '-' x $length;
+    my ( $self, $seq_name, $position, $insert_seq ) = @_;
+    $insert_seq //= 'Q';
 
-    substr( $self->seqs->{$seq_name}, $position, 0, uc( $insert_seq ) );
+    substr( $self->seqs->{$seq_name}, $position, 0, $insert_seq );
+}
+
+=head2 truncated_sequence
+
+Create a truncated version of each sequence that covers the target region.
+
+=cut
+sub truncated_sequence {
+    my ( $self ) = @_;
+
+    my $diff = $self->target_start - $self->genome_start;
+
+    for my $seq_name ( keys %{ $self->seqs } ) {
+        my $seq = $self->seqs->{$seq_name};
+        my $trun_seq = substr( $seq, $diff - 55, 125 );
+        $self->seqs->{ $seq_name . '_trunc' } = $trun_seq;
+    }
+
 }
 
 __PACKAGE__->meta->make_immutable;
