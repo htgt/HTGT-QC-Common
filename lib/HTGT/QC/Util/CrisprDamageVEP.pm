@@ -14,6 +14,7 @@ Try to predict the effect of the damage using Ensemble's Varient Effect Predicto
 =cut
 
 use Moose;
+use HTGT::QC::Util::DrawPileupAlignment;
 use Bio::SeqIO;
 use MooseX::Types::Path::Class::MoreCoercions qw/AbsDir/;
 use IPC::Run 'run';
@@ -72,13 +73,23 @@ has forward_primer_read => (
     is        => 'ro',
     isa       => 'Maybe[Bio::Seq]',
     predicate => 'has_forward_primer_read',
+    trigger   => \&_clean_read_seq,
 );
 
 has reverse_primer_read => (
     is        => 'ro',
     isa       => 'Maybe[Bio::Seq]',
     predicate => 'has_reverse_primer_read',
+    trigger   => \&_clean_read_seq,
 );
+
+# replace dashes with N characters in read sequence so bwa mem will work
+sub _clean_read_seq {
+    my ( $self, $bio_seq ) = @_;
+
+    ( my $cleaned_seq = $bio_seq->seq ) =~ s/-/N/g;
+    $bio_seq->seq( $cleaned_seq );
+}
 
 has sam_file => (
     is        => 'rw',
@@ -89,10 +100,15 @@ has sam_file => (
 
 has [
     'bam_file', 'bcf_file',      'pileup_file', 'vcf_file',
-    'vep_file', 'vep_html_file', 'vcf_file_target_region '
+    'vep_file', 'vep_html_file', 'vcf_file_target_region'
     ] => (
     is  => 'rw',
     isa => 'Path::Class::File',
+);
+
+has alignment_sequences => (
+    is  => 'rw',
+    isa => 'HashRef',
 );
 
 has target_overlapping_reads => (
@@ -135,9 +151,13 @@ sub analyse {
     $self->sam_to_bam;
     $self->check_reads_overlap_target;
     $self->run_mpileup;
+    $self->generate_pileup_diagram;
     $self->variant_calling;
-    #TODO limit the vcf file to the target region
+
+    # if no variants we want to skip next two steps
+
     $self->target_region_vcf_file;
+    # if no target region variants we want to skip next step
     $self->variant_effect_predictor;
 
     return;
@@ -156,7 +176,6 @@ sub sam_to_bam {
     my ( $self ) = @_;
     $self->log->info('Converting SAM file to sorted BAM file');
 
-    # TODO remove first view command, samtools sort can accept sam file
     my @samtools_view_command = (
         $SAMTOOLS_CMD,
         'view',                     # align command
@@ -284,7 +303,6 @@ sub run_mpileup {
             "Failed to run mpileup command, see log file: $log_file" );
     $self->pileup_file( $output_pileup_file );
 
-    # TODO remove this if we don't need mpileup to visualise the deletion
     my @mpileup_bcf_command = (
         $SAMTOOLS_CMD,
         'mpileup',                                      # mpileup command
@@ -302,6 +320,24 @@ sub run_mpileup {
             "Failed to run mpileup command, see log file: $log_file" );
 
     $self->bcf_file( $output_bcf_file );
+    return;
+}
+
+=head2 generate_pileup_diagram
+
+Generate read alignment strings to show to user.
+
+=cut
+sub generate_pileup_diagram {
+    my ( $self ) = @_;
+
+    my $pileup_parser = HTGT::QC::Util::DrawPileupAlignment->new(
+        pileup_file  => $self->pileup_file,
+        target_start => $self->target_start,
+        target_end   => $self->target_end,
+    );
+
+    $self->alignment_sequences( $pileup_parser->calculate_pileup_alignment );
     return;
 }
 
@@ -346,7 +382,6 @@ sub target_region_vcf_file {
     $self->log->info('Producing target region vcf file');
 
     # convert vcf to bcf so we can index / filter it
-    # bcftools view -O b analysis.vcf > analysis.bcf
     my $bcf_file = $self->dir->file('analysis.bcf')->absolute;
     my $log_file = $self->dir->file( 'generate_target_region_vcf_file.log' )->absolute;
     my @vcf_to_bcf_command = (
@@ -363,7 +398,6 @@ sub target_region_vcf_file {
             "Failed to convert vcf to bcf, see log file: $log_file" );
 
     # index the bcf file
-    # bcftools index analysis.bcf
     my @index_bcf_command = (
         $BCFTOOLS_CMD,              # bcftools cmd
         'index',                    # index cmd
@@ -403,6 +437,11 @@ sub variant_effect_predictor {
     my ( $self ) = @_;
     $self->log->info( 'Running variant_effect_predictor' );
 
+    if ( $self->no_target_region_variants ) {
+        $self->log->warn( 'No variants found in target region, not running vep' );
+        return;
+    }
+
     my $vep_output = $self->dir->file('variant_effect_output.txt')->absolute;
     my $log_file = $self->dir->file( 'vep.log' )->absolute;
     my @vep_command = (
@@ -423,7 +462,7 @@ sub variant_effect_predictor {
             "Failed to run variant_effect_predictor.pl, see log file: $log_file" );
 
     $self->vep_file( $vep_output );
-    $self->vep_file_html( $self->dir->file('variant_effect_output.txt_summary.html')->absolute );
+    $self->vep_html_file( $self->dir->file('variant_effect_output.txt_summary.html')->absolute );
     return;
 }
 
@@ -460,7 +499,6 @@ Run bwa mem, return the output sam file
 sub bwa_mem {
     my ( $self, $query_file ) = @_;
 
-    #TODO clean up query sequence ( no dashes! )
     my @mem_command = (
         $BWA_MEM_CMD,
         'mem',                                    # align command
@@ -478,6 +516,19 @@ sub bwa_mem {
             "Failed to run bwa mem command, see log file: $bwa_mem_log_file" );
 
     return $bwa_output_sam_file;
+}
+
+=head2 no_target_region_variants
+
+Check vcf file for target region to see if we have any variants
+
+=cut
+sub no_target_region_variants {
+    my ( $self ) = @_;
+
+    my @variant_lines = grep { !/^#/ } $self->vcf_file_target_region->slurp( chomp => 1 );
+
+    return @variant_lines ? 0 : 1;
 }
 
 __PACKAGE__->meta->make_immutable;
