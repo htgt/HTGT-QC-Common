@@ -106,9 +106,9 @@ has [
     isa => 'Path::Class::File',
 );
 
-has alignment_sequences => (
+has pileup_parser => (
     is  => 'rw',
-    isa => 'HashRef',
+    isa => 'HTGT::QC::Util::DrawPileupAlignment',
 );
 
 has target_overlapping_reads => (
@@ -151,14 +151,12 @@ sub analyse {
     $self->sam_to_bam;
     $self->check_reads_overlap_target;
     $self->run_mpileup;
-    $self->generate_pileup_diagram;
+    $self->parse_pileup_file;
     $self->variant_calling;
-
-    # if no variants we want to skip next two steps
-
     $self->target_region_vcf_file;
-    # if no target region variants we want to skip next step
     $self->variant_effect_predictor;
+
+    #TODO concordant_indel ??
 
     return;
 }
@@ -323,12 +321,15 @@ sub run_mpileup {
     return;
 }
 
-=head2 generate_pileup_diagram
+=head2 parse_pileup_file
 
-Generate read alignment strings to show to user.
+Parse the pileup file, generate following information:
+* Read alignment strings to show to user.
+* Genome start and end coordinates for reference sequence string.
+* Hash of insertion sequences keyed on insert position ( relative to ref string, not genome ).
 
 =cut
-sub generate_pileup_diagram {
+sub parse_pileup_file {
     my ( $self ) = @_;
 
     my $pileup_parser = HTGT::QC::Util::DrawPileupAlignment->new(
@@ -337,7 +338,8 @@ sub generate_pileup_diagram {
         target_end   => $self->target_end,
     );
 
-    $self->alignment_sequences( $pileup_parser->calculate_pileup_alignment );
+    $pileup_parser->calculate_pileup_alignment;
+    $self->pileup_parser( $pileup_parser );
     return;
 }
 
