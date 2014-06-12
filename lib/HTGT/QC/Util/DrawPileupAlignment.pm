@@ -56,7 +56,7 @@ has [ 'first_read', 'second_read' ] => (
     isa => 'Str',
 );
 
-has genome_start => (
+has [ 'genome_start', 'genome_end' ] => (
     is  => 'rw',
     isa => 'Int',
 );
@@ -99,12 +99,13 @@ sub calculate_pileup_alignment {
     my ( $self ) = @_;
     my $fh = $self->pileup_file->openr() or die ('Can not open file: ' . $self->pileup_file->stringify);
 
+    my ( $chr, $genome_position, $ref, $depth, $reads, $quality );
     while ( <$fh> ) {
         chomp;
-        my ( $chr, $start, $ref, $depth, $reads, $quality ) = split(/\t/);
+        ( $chr, $genome_position, $ref, $depth, $reads, $quality ) = split(/\t/);
         if ( $self->current_position == 0 ) {
             $self->calculate_read_positions( $reads );
-            $self->genome_start( $start );
+            $self->genome_start( $genome_position );
         }
 
         my $read_array = $self->split_reads( $reads, $depth );
@@ -115,11 +116,17 @@ sub calculate_pileup_alignment {
         $self->build_sequences( $read_array, $ref, $depth );
         $self->inc_position;
     }
+    $self->genome_end( $genome_position );
 
+    #remove empty alignments
+    for my $align_type ( qw( forward reverse ) ) {
+        if ( $self->seqs->{$align_type} =~ /^\s+$/ ) {
+            delete $self->seqs->{$align_type};
+        }
+    }
     $self->parse_insertions;
-    $self->truncated_sequence;
 
-    return $self->seqs;
+    return;
 }
 
 =head2 calculate_read_positions
@@ -361,6 +368,8 @@ Push the insert sequence into the named sequence string.
 sub add_insertion {
     my ( $self, $seq_name, $position, $insert_seq ) = @_;
     $insert_seq //= 'Q';
+
+    return unless exists $self->seqs->{$seq_name};
 
     substr( $self->seqs->{$seq_name}, $position, 0, $insert_seq );
 }
