@@ -23,7 +23,7 @@ use namespace::autoclean;
 
 with qw( MooseX::Log::Log4perl );
 
-#TODO install own versions of bwa / samtools
+#TODO install own versions of bwa / samtools?
 const my $BWA_MEM_CMD  => $ENV{BWA_MEM_CMD}
     // '/software/vertres/bin-external/bwa-0.7.5a-r406/bwa';
 const my $SAMTOOLS_CMD => $ENV{SAMTOOLS_CMD}
@@ -99,8 +99,8 @@ has sam_file => (
 );
 
 has [
-    'bam_file', 'bcf_file',      'pileup_file', 'vcf_file',
-    'vep_file', 'vep_html_file', 'vcf_file_target_region'
+    'bam_file', 'filtered_bam_file', 'bcf_file',      'pileup_file',
+    'vcf_file', 'vep_file',          'vep_html_file', 'vcf_file_target_region',
     ] => (
     is  => 'rw',
     isa => 'Path::Class::File',
@@ -109,11 +109,6 @@ has [
 has pileup_parser => (
     is  => 'rw',
     isa => 'HTGT::QC::Util::DrawPileupAlignment',
-);
-
-has target_overlapping_reads => (
-    is  => 'rw',
-    isa => 'Int',
 );
 
 has dir => (
@@ -149,7 +144,7 @@ sub analyse {
     my ( $self ) = @_;
 
     $self->sam_to_bam;
-    $self->check_reads_overlap_target;
+    $self->remove_reads_not_overlapping_target;
     $self->run_mpileup;
     $self->parse_pileup_file;
     $self->variant_calling;
@@ -174,42 +169,30 @@ sub sam_to_bam {
     my ( $self ) = @_;
     $self->log->info('Converting SAM file to sorted BAM file');
 
-    my @samtools_view_command = (
-        $SAMTOOLS_CMD,
-        'view',                     # align command
-        '-u',                       # output is uncompressed BAM file
-        '-S',                       # input is SAM file
-        '-F', 2048,                 # filter alignments with bit present in secondary alignment
-        $self->sam_file->stringify, # alignment file
-    );
     my @samtools_sort_command = (
         $SAMTOOLS_CMD,
         'sort',                     # sort command
         '-o',                       # output to STDOUT
-        '-',                        # take input from pipe
+        $self->sam_file->stringify, # alignment file
         'deleteme',                 # samtools sort always needs a output prefix
     );
 
-    # For unknown reasons the samtools sort command outputs SAM not BAM
-    # so we run another samtools view to convert this SAM to BAM
-    my @samtools_view_command2 = (
+    my @samtools_view_command = (
         $SAMTOOLS_CMD,
-        'view',                        # align command
-        '-b',                          # output is compressed BAM file
-        '-',                           # input from pipe
+        'view',                     # align command
+        '-b',                       # output is compressed BAM file
+        '-',                        # input from pipe
+        '-F', 2048,                 # filter alignments with bit present in secondary alignment
     );
 
-    $self->log->debug( "samtools view command: " . join( ' ', @samtools_view_command ) );
     $self->log->debug( "samtools sort command: " . join( ' ', @samtools_sort_command ) );
-    $self->log->debug( "samtools view command2: " . join( ' ', @samtools_view_command2 ) );
+    $self->log->debug( "samtools view command: " . join( ' ', @samtools_view_command ) );
 
     my $bam_file = $self->dir->file('alignment.bam')->absolute;
     my $log_file = $self->dir->file( 'sam_to_bam.log' )->absolute;
-    run( \@samtools_view_command,
+    run( \@samtools_sort_command,
         '|',
-        \@samtools_sort_command,
-        '|',
-        \@samtools_view_command2,
+        \@samtools_view_command,
         '>',  $bam_file->stringify,
         '2>', $log_file->stringify
     ) or die (
@@ -219,16 +202,15 @@ sub sam_to_bam {
     return;
 }
 
-=head2 check_reads_overlap_target
+=head2 remove_reads_not_overlapping_target
 
-Index the bam file then check we have alignments that hit the target region.
-We use samtools view with the target region specified and -c option to return number
-or reads that overlap the target region.
+Index the bam file then filter out alignments that do not hit the target region.
+We use samtools view with the target region specified to do this.
 
 =cut
-sub check_reads_overlap_target {
+sub remove_reads_not_overlapping_target {
     my ( $self ) = @_;
-    $self->log->info('Checking reads overlap target region');
+    $self->log->info('Filter reads that do not overlap target region');
 
     my @samtools_index_command = (
         $SAMTOOLS_CMD,
@@ -243,26 +225,43 @@ sub check_reads_overlap_target {
     ) or die (
             "Failed to run samtools index, see log file: $log_file" );
 
-    my @samtools_view_command = (
+    # first check we have at least one read overlapping target region
+    my @check_command = (
         $SAMTOOLS_CMD,
         'view',                     # view command
-        '-c',                       # count the number of alignments
+        '-c',                       # output is compressed BAM file
         $self->bam_file->stringify, # bam file
         $self->target_string,       # string specifying target region for crispr
     );
-    $self->log->debug( "samtools view command: " . join( ' ', @samtools_view_command ) );
+    $self->log->debug( "samtools view count overlapping reads command: " . join( ' ', @check_command ) );
 
     my $out;
-    run( \@samtools_view_command,
+    run( \@check_command,
         '>', \$out,
         '2>', $log_file->stringify
     ) or die (
             "Failed to run samtools view, see log file: $log_file" );
-    chomp($out);
 
+    chomp( $out );
     die( "We don't have any reads that overlap the target region" ) unless $out;
     $self->log->info("We have $out reads that overlap the target region");
-    $self->target_overlapping_reads( $out );
+
+    # now do the actual filtering
+    my @filter_command = (
+        $SAMTOOLS_CMD,
+        'view',                     # view command
+        '-b',                       # output is compressed BAM file
+        $self->bam_file->stringify, # bam file
+        $self->target_string,       # string specifying target region for crispr
+    );
+    $self->log->debug( "samtools view filter command: " . join( ' ', @filter_command ) );
+
+    $self->filtered_bam_file( $self->dir->file('alignment_filtered.bam')->absolute );
+    run( \@filter_command,
+        '>', $self->filtered_bam_file->stringify,
+        '2>', $log_file->stringify
+    ) or die (
+            "Failed to run samtools view, see log file: $log_file" );
 
     return;
 }
@@ -290,7 +289,7 @@ sub run_mpileup {
         'mpileup',                                      # mpileup command
         '-Q', 0,                                        # minimum base quality
         '-f', $BWA_REF_GENOMES{ lc( $self->species ) }, # reference genome file, faidx-indexed
-        $self->bam_file->stringify,
+        $self->filtered_bam_file->stringify,
     );
 
     $self->log->debug( "mpileup command: " . join( ' ', @mpileup_command ) );
@@ -307,7 +306,7 @@ sub run_mpileup {
         '-g',                                           # output is compressed BCF file
         '-Q', 0,                                        # minimum base quality
         '-f', $BWA_REF_GENOMES{ lc( $self->species ) }, # reference genome file, faidx-indexed
-        $self->bam_file->stringify,
+        $self->filtered_bam_file->stringify,
     );
 
     $self->log->debug( "mpileup bcf command: " . join( ' ', @mpileup_bcf_command ) );
@@ -336,6 +335,7 @@ sub parse_pileup_file {
         pileup_file  => $self->pileup_file,
         target_start => $self->target_start,
         target_end   => $self->target_end,
+        dir          => $self->dir,
     );
 
     $pileup_parser->calculate_pileup_alignment;
