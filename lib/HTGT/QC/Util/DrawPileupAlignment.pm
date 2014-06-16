@@ -15,7 +15,7 @@ The pileup file must consist of 2 reads, one forward and one reverse, that overl
 =cut
 
 use Moose;
-use MooseX::Types::Path::Class::MoreCoercions qw/AbsFile/;
+use MooseX::Types::Path::Class::MoreCoercions qw/AbsFile AbsDir/;
 use namespace::autoclean;
 
 with qw( MooseX::Log::Log4perl );
@@ -51,7 +51,7 @@ has active_reads => (
     default => sub{ {} },
 );
 
-has [ 'first_read', 'second_read' ] => (
+has [ 'first_read', 'second_read', 'last_active_read' ] => (
     is  => 'rw',
     isa => 'Str',
 );
@@ -71,6 +71,13 @@ has current_position => (
     },
 );
 
+has dir => (
+    is       => 'ro',
+    isa      => AbsDir,
+    coerce   => 1,
+);
+
+#TODO logging
 =head2 calculate_pileup_alignment
 
 Calculate the aligned sequences for the reads against the genome so we can build a
@@ -99,6 +106,7 @@ sub calculate_pileup_alignment {
     my ( $self ) = @_;
     my $fh = $self->pileup_file->openr() or die ('Can not open file: ' . $self->pileup_file->stringify);
 
+    #TODO if non-overlapping alignments I may have to throw error, cant build ref sequence
     my ( $chr, $genome_position, $ref, $depth, $reads, $quality );
     while ( <$fh> ) {
         chomp;
@@ -110,7 +118,6 @@ sub calculate_pileup_alignment {
 
         my $read_array = $self->split_reads( $reads, $depth );
 
-        # always add current reference base to reference sequence
         $self->seqs->{ref} .= $ref;
 
         $self->build_sequences( $read_array, $ref, $depth );
@@ -120,11 +127,17 @@ sub calculate_pileup_alignment {
 
     #remove empty alignments
     for my $align_type ( qw( forward reverse ) ) {
-        if ( $self->seqs->{$align_type} =~ /^\s+$/ ) {
+        if ( $self->seqs->{$align_type} =~ /^X+$/ ) {
             delete $self->seqs->{$align_type};
         }
     }
     $self->parse_insertions;
+
+    if ( $self->dir ) {
+        my $alignments_file = $self->dir->file('alignment.txt')->absolute;
+        my $output_fh = $alignments_file->openw;
+        print $output_fh $_ . "\n" for values %{ $self->seqs };
+    }
 
     return;
 }
@@ -192,7 +205,7 @@ sub split_reads {
         if ( $expr =~ /^\+/ ) {
             my $read = $seq =~ /^[ACTGN]+$/ ? 'forward' : 'reverse';
             push @{ $self->insertions->{$self->current_position} },{
-                seq    => $seq,
+                seq    => uc($seq),
                 length => $count,
                 read   => $read,
             };
@@ -230,9 +243,15 @@ sub split_reads {
             }
         }
         else {
-            # de-activate reads if depth is 1
-            $self->active_reads->{forward} = 0;
-            $self->active_reads->{reverse} = 0;
+            # depth of one, only 1 active read
+            if ( $self->active_reads->{forward} ) {
+                $self->active_reads->{forward} = 0;
+                $self->last_active_read('forward');
+            }
+            else {
+                $self->active_reads->{reverse} = 0;
+                $self->last_active_read('reverse');
+            }
         }
         $reads_string =~ s/\$//g;
     }
@@ -287,16 +306,22 @@ sub build_single_sequence {
 
     if ( $self->active_reads->{forward} ) {
         $self->seqs->{forward} .= $self->calculate_base( $read, $ref );
-        $self->seqs->{reverse} .= ' ';
+        $self->seqs->{reverse} .= 'X';
     }
     elsif ( $self->active_reads->{reverse} ) {
         $self->seqs->{reverse} .= $self->calculate_base( $read, $ref );
-        $self->seqs->{forward} .= ' ';
+        $self->seqs->{forward} .= 'X';
     }
     else {
-        # in the case where 2 reads do not overlap
-        $self->seqs->{$self->first_read}  .= $self->calculate_base( $read, $ref );
-        $self->seqs->{$self->second_read} .= ' ';
+        # end of reads
+        if ( $self->last_active_read eq 'forward' ) {
+            $self->seqs->{reverse}  .=  'X';
+            $self->seqs->{forward} .= $self->calculate_base( $read, $ref );
+        }
+        else {
+            $self->seqs->{forward}  .=  'X';
+            $self->seqs->{reverse} .= $self->calculate_base( $read, $ref );
+        }
     }
     return;
 }
@@ -370,8 +395,9 @@ sub add_insertion {
     $insert_seq //= 'Q';
 
     return unless exists $self->seqs->{$seq_name};
-
-    substr( $self->seqs->{$seq_name}, $position, 0, $insert_seq );
+    if ( substr( $self->seqs->{$seq_name}, $position, 1 ) ne 'X' ) {
+        substr( $self->seqs->{$seq_name}, $position, 0, $insert_seq );
+    }
 }
 
 =head2 truncated_sequence
