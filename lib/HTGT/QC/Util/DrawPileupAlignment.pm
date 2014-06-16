@@ -398,6 +398,9 @@ sub add_insertion {
     if ( substr( $self->seqs->{$seq_name}, $position, 1 ) ne 'X' ) {
         substr( $self->seqs->{$seq_name}, $position, 0, $insert_seq );
     }
+    else {
+        substr( $self->seqs->{$seq_name}, $position, 0, 'X');
+    }
 }
 
 =head2 truncated_sequence
