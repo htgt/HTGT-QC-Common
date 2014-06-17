@@ -106,6 +106,12 @@ has [
     isa => 'Path::Class::File',
 );
 
+has num_target_region_alignments => (
+    is      => 'rw',
+    isa     => 'Num',
+    default => 0,
+);
+
 has pileup_parser => (
     is  => 'rw',
     isa => 'HTGT::QC::Util::DrawPileupAlignment',
@@ -245,6 +251,7 @@ sub remove_reads_not_overlapping_target {
     chomp( $out );
     die( "We don't have any reads that overlap the target region" ) unless $out;
     $self->log->info("We have $out reads that overlap the target region");
+    $self->num_target_region_alignments($out);
 
     # now do the actual filtering
     my @filter_command = (
@@ -335,6 +342,7 @@ sub parse_pileup_file {
         pileup_file  => $self->pileup_file,
         target_start => $self->target_start,
         target_end   => $self->target_end,
+        target_chr   => $self->target_chr,
         dir          => $self->dir,
     );
 
@@ -504,6 +512,7 @@ sub bwa_mem {
     my @mem_command = (
         $BWA_MEM_CMD,
         'mem',                                    # align command
+        '-O', 2,                                  # reduce gap open penalty ( default 6 )
         $BWA_REF_GENOMES{ lc( $self->species ) }, # target genome file, indexed for bwa
         $query_file->stringify,                   # query file with read sequences
     );
