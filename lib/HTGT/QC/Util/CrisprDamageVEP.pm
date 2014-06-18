@@ -23,7 +23,6 @@ use namespace::autoclean;
 
 with qw( MooseX::Log::Log4perl );
 
-#TODO install own versions of bwa / samtools?
 const my $BWA_MEM_CMD  => $ENV{BWA_MEM_CMD}
     // '/software/vertres/bin-external/bwa-0.7.5a-r406/bwa';
 const my $SAMTOOLS_CMD => $ENV{SAMTOOLS_CMD}
@@ -58,16 +57,11 @@ has target_chr => (
     required => 1,
 );
 
-has target_string => (
-    is         => 'ro',
-    isa        => 'Str',
-    lazy_build => 1,
+has target_region_padding => (
+    is      => 'ro',
+    isa     => 'Int',
+    default => 10,
 );
-
-sub _build_target_string {
-    my $self = shift;
-    return $self->target_chr . ":" . $self->target_start . "-" . $self->target_end;
-}
 
 has forward_primer_read => (
     is        => 'ro',
@@ -157,8 +151,6 @@ sub analyse {
     $self->target_region_vcf_file;
     $self->variant_effect_predictor;
 
-    #TODO concordant_indel ??
-
     return;
 }
 
@@ -231,13 +223,14 @@ sub remove_reads_not_overlapping_target {
     ) or die (
             "Failed to run samtools index, see log file: $log_file" );
 
+    my $target_string = $self->target_chr . ":" . $self->target_start - 100 . "-" . $self->target_end + 100;
     # first check we have at least one read overlapping target region
     my @check_command = (
         $SAMTOOLS_CMD,
         'view',                     # view command
         '-c',                       # output is compressed BAM file
         $self->bam_file->stringify, # bam file
-        $self->target_string,       # string specifying target region for crispr
+        $target_string,             # string specifying target region for crispr
     );
     $self->log->debug( "samtools view count overlapping reads command: " . join( ' ', @check_command ) );
 
@@ -259,7 +252,7 @@ sub remove_reads_not_overlapping_target {
         'view',                     # view command
         '-b',                       # output is compressed BAM file
         $self->bam_file->stringify, # bam file
-        $self->target_string,       # string specifying target region for crispr
+        $target_string,             # string specifying target region for crispr
     );
     $self->log->debug( "samtools view filter command: " . join( ' ', @filter_command ) );
 
@@ -420,11 +413,14 @@ sub target_region_vcf_file {
             "Failed to index bcf file, see log file: $log_file" );
 
     # produce vcf filtered to the target region
+    my $target_string = $self->target_chr . ":"
+        . $self->target_start - $self->target_region_padding . "-"
+        . $self->target_end + $self->target_region_padding;
     my $filtered_vcf_file = $self->dir->file('filtered_analysis.vcf')->absolute;
     my @filter_vcf_command = (
         $BCFTOOLS_CMD,              # bcftools cmd
         'view',                     # view cmd
-        '-r', $self->target_string, # target region
+        '-r', $target_string,       # target region
         $bcf_file->stringify,       # input bcf file
     );
     $self->log->debug( "bcftools view filter command: " . join( ' ', @filter_vcf_command ) );
