@@ -26,6 +26,18 @@ has [ 'target_start', 'target_end' ] => (
     required => 1,
 );
 
+has target_chr => (
+    is       => 'ro',
+    isa      => 'Str',
+    required => 1,
+);
+
+has design_strand => (
+    is       => 'ro',
+    isa      => 'Int',
+    required => 1,
+);
+
 has pileup_file => (
     is       => 'ro',
     isa      => AbsFile,
@@ -77,7 +89,6 @@ has dir => (
     coerce   => 1,
 );
 
-#TODO logging
 =head2 calculate_pileup_alignment
 
 Calculate the aligned sequences for the reads against the genome so we can build a
@@ -106,8 +117,8 @@ sub calculate_pileup_alignment {
     my ( $self ) = @_;
     my $fh = $self->pileup_file->openr() or die ('Can not open file: ' . $self->pileup_file->stringify);
 
-    #TODO if non-overlapping alignments I may have to throw error, cant build ref sequence
-    my ( $chr, $genome_position, $ref, $depth, $reads, $quality );
+    $self->log->info('Generate alignments from pileup file');
+    my ( $chr, $genome_position, $ref, $depth, $reads, $quality, $last_genome_position );
     while ( <$fh> ) {
         chomp;
         ( $chr, $genome_position, $ref, $depth, $reads, $quality ) = split(/\t/);
@@ -115,13 +126,26 @@ sub calculate_pileup_alignment {
             $self->calculate_read_positions( $reads );
             $self->genome_start( $genome_position );
         }
+        else {
+            if ( $last_genome_position != $genome_position - 1 ) {
+                $self->log->warn( 'Reads do not overlap, insert temp symbol' );
+                my $missing_bases = $genome_position - $last_genome_position;
+                $self->seqs->{ref}     .= $missing_bases;
+                $self->seqs->{forward} .= $missing_bases;
+                $self->seqs->{reverse} .= $missing_bases;
+            }
+        }
+
+        if ( $self->target_chr ne $chr ) {
+            die( 'Expected chromosome ' . $self->target_chr . " in pileup, got $chr" );
+        }
 
         my $read_array = $self->split_reads( $reads, $depth );
-
         $self->seqs->{ref} .= $ref;
 
         $self->build_sequences( $read_array, $ref, $depth );
         $self->inc_position;
+        $last_genome_position = $genome_position;
     }
     $self->genome_end( $genome_position );
 
@@ -150,6 +174,7 @@ Work out the positions of the forward and reverse reads in the pileup file.
 sub calculate_read_positions {
     my ( $self, $read ) = @_;
 
+    $self->log->debug('Calculate read positions in pileup');
     $read =~ /^\^.(.)/;
     die ( "Can not calculate read positions: $read" ) unless $1;
 
@@ -286,7 +311,7 @@ sub build_sequences {
     }
     elsif ( $depth == 2 ) {
         $self->seqs->{$self->first_read}  .= $self->calculate_base( $read_array->[0], $ref );
-        $self->seqs->{$self->second_read} .= $self->calculate_base( $read_array->[0], $ref );
+        $self->seqs->{$self->second_read} .= $self->calculate_base( $read_array->[1], $ref );
     }
     elsif ( $depth == 0 ) {
         $self->seqs->{forward} .= ' ';
@@ -357,6 +382,7 @@ sequences.
 =cut
 sub parse_insertions {
     my ( $self ) = @_;
+    $self->log->debug('Parse insertions and place in alignment sequences');
     my @insert_positions = sort { $b <=> $a } keys %{ $self->insertions };
 
     for my $pos ( @insert_positions ) {
