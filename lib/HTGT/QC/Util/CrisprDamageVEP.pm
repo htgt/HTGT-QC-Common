@@ -453,12 +453,16 @@ sub variant_effect_predictor {
     my @vep_command = (
         'perl',
         $VEP_CMD,                                       # vep cmd
+        '--species', $self->species,                    # species
         '--cache',                                      # use cached data
         '--dir_cache', $VEP_CACHE_DIR,                  # directory where cache is stored
         '-i', $self->vcf_file_target_region->stringify, # input vcf file
         '-o', $vep_output->stringify,                   # output file
         '--no_progress',                                # do not show progresss bar
         '--force_overwrite',                            # overwrite output files if they exist
+        '--per_gene',                                   # Output the most severe consequence per gene
+        '--symbol',                                     # Output gene symbol
+        '--canonical',                                  # Mark if transcript is canonical
     );
 
     $self->log->debug( "vep command: " . join( ' ', @vep_command ) );
