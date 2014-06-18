@@ -51,6 +51,12 @@ has insertions => (
     default => sub{ {} },
 );
 
+has deletions => (
+    is      => 'rw',
+    isa     => 'HashRef',
+    default => sub{ {} },
+);
+
 has active_reads => (
     is      => 'rw',
     isa     => 'HashRef',
@@ -221,9 +227,16 @@ sub split_reads {
         $reads_string =~ s/(?<expr>[-+][0-9]+(?<seq>[A-za-z]{$count}))//;
         my $expr = $+{expr};
         my $seq = $+{seq};
+        my $read = $seq =~ /^[ACTGN]+$/ ? 'forward' : 'reverse';
         if ( $expr =~ /^\+/ ) {
-            my $read = $seq =~ /^[ACTGN]+$/ ? 'forward' : 'reverse';
             push @{ $self->insertions->{$self->current_position} },{
+                seq    => uc($seq),
+                length => $count,
+                read   => $read,
+            };
+        }
+        elsif ( $expr =~ /^-/ ) {
+            push @{ $self->deletions->{$self->current_position} },{
                 seq    => uc($seq),
                 length => $count,
                 read   => $read,
