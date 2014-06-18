@@ -16,9 +16,18 @@ The pileup file must consist of 2 reads, one forward and one reverse, that overl
 
 use Moose;
 use MooseX::Types::Path::Class::MoreCoercions qw/AbsFile AbsDir/;
+use Const::Fast;
 use namespace::autoclean;
 
 with qw( MooseX::Log::Log4perl );
+
+const my %INS_BASE_CODE => (
+    N => 'J',
+    A => 'L',
+    T => 'P',
+    C => 'Y',
+    G => 'Z',
+);
 
 has [ 'target_start', 'target_end' ] => (
     is       => 'ro',
@@ -395,20 +404,18 @@ sub parse_insertions {
     for my $pos ( @insert_positions ) {
         my $inserts = $self->insertions->{$pos};
         if ( scalar( @{ $inserts } ) == 1 ) {
-            if ( $inserts->[0]{read} eq 'forward'  ) {
-                $self->add_insertion( 'forward', $pos, '?' );
-                $self->add_insertion( 'reverse', $pos );
+            if ( $inserts->[0]{read} eq 'forward' ) {
+                $self->add_insertion( 'forward', $pos );
                 $self->add_insertion( 'ref', $pos );
             }
             else {
-                $self->add_insertion( 'reverse', $pos, '?' );
-                $self->add_insertion( 'forward', $pos );
+                $self->add_insertion( 'reverse', $pos );
                 $self->add_insertion( 'ref', $pos );
             }
         }
         elsif ( scalar( @{ $inserts } ) == 2 ) {
-            $self->add_insertion( 'forward', $pos, '?' );
-            $self->add_insertion( 'reverse', $pos, '?' );
+            $self->add_insertion( 'forward', $pos );
+            $self->add_insertion( 'reverse', $pos );
             $self->add_insertion( 'ref', $pos );
         }
         else {
@@ -424,16 +431,15 @@ Push the insert sequence into the named sequence string.
 
 =cut
 sub add_insertion {
-    my ( $self, $seq_name, $position, $insert_seq ) = @_;
-    $insert_seq //= 'Q';
+    my ( $self, $seq_name, $position ) = @_;
 
     return unless exists $self->seqs->{$seq_name};
-    if ( substr( $self->seqs->{$seq_name}, $position, 1 ) ne 'X' ) {
-        substr( $self->seqs->{$seq_name}, $position, 0, $insert_seq );
-    }
-    else {
-        substr( $self->seqs->{$seq_name}, $position, 0, 'X');
-    }
+    my $base_to_replace = substr( $self->seqs->{$seq_name}, $position, 1 );
+    my $replacement_base = $INS_BASE_CODE{ $base_to_replace };
+
+    substr( $self->seqs->{$seq_name}, $position, 1, $replacement_base);
+
+    return;
 }
 
 =head2 truncated_sequence
