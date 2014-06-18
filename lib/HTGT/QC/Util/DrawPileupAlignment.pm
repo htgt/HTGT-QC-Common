@@ -32,12 +32,6 @@ has target_chr => (
     required => 1,
 );
 
-has design_strand => (
-    is       => 'ro',
-    isa      => 'Int',
-    required => 1,
-);
-
 has pileup_file => (
     is       => 'ro',
     isa      => AbsFile,
