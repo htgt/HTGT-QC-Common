@@ -136,6 +136,8 @@ sub calculate_pileup_alignment {
             $self->genome_start( $genome_position );
         }
         else {
+            #TODO grap and insert sequence into ref here, add appropriate number of
+            #     X chars to the forward and reverse reads
             if ( $last_genome_position != $genome_position - 1 ) {
                 $self->log->warn( 'Reads do not overlap, insert temp symbol' );
                 my $missing_bases = $genome_position - $last_genome_position;
