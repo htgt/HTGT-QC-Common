@@ -28,6 +28,7 @@ const my %INS_BASE_CODE => (
     T => 'P',
     C => 'Y',
     G => 'Z',
+    X => 'X',
 );
 
 const my $SAMTOOLS_CMD => $ENV{SAMTOOLS_CMD}
