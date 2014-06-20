@@ -1,5 +1,9 @@
 {{$NEXT}}
 
+0.018     2014-06-20 08:22:23 Europe/London
+
+    Added modules for new Crispr es cell damange qc, these generate vcf and vep files.
+
 0.017     2014-04-24 11:53:03 Europe/London
 
     Added CrisprAlleleDamage module and util method to get cigar parsed read names
