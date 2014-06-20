@@ -1,7 +1,7 @@
 package HTGT::QC::Util::CrisprDamageVEP;
 ## no critic(RequireUseStrict,RequireUseWarnings)
 {
-    $HTGT::QC::Util::CrisprDamageVEP::VERSION = '0.018';
+    $HTGT::QC::Util::CrisprDamageVEP::VERSION = '0.019';
 }
 ## use critic
 

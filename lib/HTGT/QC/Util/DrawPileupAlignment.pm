@@ -1,7 +1,7 @@
 package HTGT::QC::Util::DrawPileupAlignment;
 ## no critic(RequireUseStrict,RequireUseWarnings)
 {
-    $HTGT::QC::Util::DrawPileupAlignment::VERSION = '0.018';
+    $HTGT::QC::Util::DrawPileupAlignment::VERSION = '0.019';
 }
 ## use critic
 
@@ -34,6 +34,7 @@ const my %INS_BASE_CODE => (
     T => 'P',
     C => 'Y',
     G => 'Z',
+    X => 'X',
 );
 
 const my $SAMTOOLS_CMD => $ENV{SAMTOOLS_CMD}
