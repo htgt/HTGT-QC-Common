@@ -223,7 +223,9 @@ sub remove_reads_not_overlapping_target {
     ) or die (
             "Failed to run samtools index, see log file: $log_file" );
 
-    my $target_string = $self->target_chr . ":" . $self->target_start - 100 . "-" . $self->target_end + 100;
+    my $target_string = $self->target_chr . ":"
+        . ( $self->target_start - 100 ) . "-"
+        . ( $self->target_end + 100 );
     # first check we have at least one read overlapping target region
     my @check_command = (
         $SAMTOOLS_CMD,
@@ -312,7 +314,7 @@ sub run_mpileup {
     $self->log->debug( "mpileup bcf command: " . join( ' ', @mpileup_bcf_command ) );
     run( \@mpileup_bcf_command,
         '>', $output_bcf_file->stringify,
-        '2>>', $log_file->stringify
+        '2>', $log_file->stringify
     ) or die(
             "Failed to run mpileup command, see log file: $log_file" );
 
@@ -337,6 +339,7 @@ sub parse_pileup_file {
         target_end   => $self->target_end,
         target_chr   => $self->target_chr,
         dir          => $self->dir,
+        species      => $self->species,
     );
 
     $pileup_parser->calculate_pileup_alignment;
@@ -414,8 +417,8 @@ sub target_region_vcf_file {
 
     # produce vcf filtered to the target region
     my $target_string = $self->target_chr . ":"
-        . $self->target_start - $self->target_region_padding . "-"
-        . $self->target_end + $self->target_region_padding;
+        . ( $self->target_start - $self->target_region_padding ) . "-"
+        . ( $self->target_end + $self->target_region_padding );
     my $filtered_vcf_file = $self->dir->file('filtered_analysis.vcf')->absolute;
     my @filter_vcf_command = (
         $BCFTOOLS_CMD,              # bcftools cmd
