@@ -17,6 +17,7 @@ The pileup file must consist of 2 reads, one forward and one reverse, that overl
 use Moose;
 use MooseX::Types::Path::Class::MoreCoercions qw/AbsFile AbsDir/;
 use Const::Fast;
+use IPC::Run 'run';
 use namespace::autoclean;
 
 with qw( MooseX::Log::Log4perl );
@@ -27,6 +28,20 @@ const my %INS_BASE_CODE => (
     T => 'P',
     C => 'Y',
     G => 'Z',
+);
+
+const my $SAMTOOLS_CMD => $ENV{SAMTOOLS_CMD}
+    // '/software/vertres/bin-external/samtools-0.2.0-rc8/bin/samtools';
+
+const my %BWA_REF_GENOMES => (
+    human => '/lustre/scratch109/blastdb/Users/team87/Human/bwa/Homo_sapiens.GRCh37.toplevel.clean_chr_names.fa',
+    mouse => '/lustre/scratch109/blastdb/Users/team87/Mouse/bwa/Mus_musculus.GRCm38.toplevel.clean_chr_names.fa',
+);
+
+has species => (
+    is       => 'ro',
+    isa      => 'Str',
+    required => 1,
 );
 
 has [ 'target_start', 'target_end' ] => (
@@ -136,14 +151,14 @@ sub calculate_pileup_alignment {
             $self->genome_start( $genome_position );
         }
         else {
-            #TODO grap and insert sequence into ref here, add appropriate number of
-            #     X chars to the forward and reverse reads
             if ( $last_genome_position != $genome_position - 1 ) {
-                $self->log->warn( 'Reads do not overlap, insert temp symbol' );
-                my $missing_bases = $genome_position - $last_genome_position;
-                $self->seqs->{ref}     .= $missing_bases;
-                $self->seqs->{forward} .= $missing_bases;
-                $self->seqs->{reverse} .= $missing_bases;
+                my $missing_genomic_seq
+                    = $self->grab_genomic_seq( $last_genome_position + 1, $genome_position - 1 );
+                $self->log->warn( 'Reads do not overlap, inserting missing genomic sequence' );
+                my $length = length( $missing_genomic_seq );
+                $self->seqs->{ref}     .= $missing_genomic_seq;
+                $self->seqs->{forward} .= 'X' x $length;
+                $self->seqs->{reverse} .= 'X' x $length;
             }
         }
 
@@ -460,6 +475,36 @@ sub truncated_sequence {
         $self->seqs->{ $seq_name . '_trunc' } = $trun_seq;
     }
 
+}
+
+=head2 grab_genomic_seq
+
+Grab genomic sequence from specified coordinates.
+
+=cut
+sub grab_genomic_seq {
+    my ( $self, $start, $end ) = @_;
+
+    my $target_string = $self->target_chr . ':' . $start . '-' . $end;
+    my @samtools_faidx_cmd = (
+        $SAMTOOLS_CMD,
+        'faidx',                                  # mpileup command
+        $BWA_REF_GENOMES{ lc( $self->species ) }, # reference genome file, faidx-indexed
+        $target_string
+    );
+
+    $self->log->debug( "samtools faidx command: " . join( ' ', @samtools_faidx_cmd ) );
+    my $missing_seq_file = $self->dir->file('missing_sequence.fa')->absolute;
+    my $log_file = $self->dir->file( 'samtools_faidx.log' )->absolute;
+    run( \@samtools_faidx_cmd,
+        '>',  $missing_seq_file->stringify,
+        '2>', $log_file->stringify
+    ) or die(
+            "Failed to run samtools faidx command, see log file: $log_file" );
+
+    my $missing_seq = Bio::SeqIO->new( -fh => $missing_seq_file->openr, -format => 'fasta' );
+
+    return $missing_seq->next_seq->seq;
 }
 
 __PACKAGE__->meta->make_immutable;
