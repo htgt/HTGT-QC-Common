@@ -83,6 +83,8 @@ sub _clean_read_seq {
 
     ( my $cleaned_seq = $bio_seq->seq ) =~ s/-/N/g;
     $bio_seq->seq( $cleaned_seq );
+
+    return;
 }
 
 has sam_file => (

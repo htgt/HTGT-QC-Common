@@ -201,19 +201,24 @@ sub calculate_read_positions {
     my ( $self, $read ) = @_;
 
     $self->log->debug('Calculate read positions in pileup');
-    $read =~ /^\^.(.)/;
-    die ( "Can not calculate read positions: $read" ) unless $1;
+    my $base;
+    if ( $read =~ /^\^.(.)/ ) {
+        $base = $1;
+    }
+    else {
+        die ( "Can not calculate read positions: $read" );
+    }
 
-    if ( $1 =~ /,/ || $1 =~ /[actgn]/ ) {
+    if ( $base =~ /,/ || $base =~ /[actgn]/ ) {
         $self->first_read('reverse');
         $self->second_read('forward');
     }
-    elsif ( $1 =~ /\./ || $1 =~ /[ACTGN]/ ) {
+    elsif ( $base =~ /\./ || $base =~ /[ACTGN]/ ) {
         $self->first_read('forward');
         $self->second_read('reverse');
     }
     else {
-        die( "Can not calculate read positions: $read" );
+        die( "Can not calculate read positions: $base" );
     }
 
     return;
@@ -242,6 +247,7 @@ End of read: $
     Mark appropriate read as inactive.
 
 =cut
+## no critic(ProhibitExcessComplexity)
 sub split_reads {
     my ( $self, $reads_string, $read_depth ) = @_;
 
@@ -330,6 +336,7 @@ sub split_reads {
 
     return;
 }
+## use critic
 
 =head2 build_sequences
 
@@ -475,6 +482,7 @@ sub truncated_sequence {
         $self->seqs->{ $seq_name . '_trunc' } = $trun_seq;
     }
 
+    return;
 }
 
 =head2 grab_genomic_seq
