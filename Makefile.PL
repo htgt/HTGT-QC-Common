@@ -26,8 +26,8 @@ my %WriteMakefileArgs = (
   },
   "DISTNAME" => "HTGT-QC-Common",
   "EXE_FILES" => [
-    "bin/fetch-seq-reads.sh",
-    "bin/crispr_allele_damage.pl"
+    "bin/crispr_allele_damage.pl",
+    "bin/fetch-seq-reads.sh"
   ],
   "LICENSE" => "perl",
   "NAME" => "HTGT::QC::Common",
@@ -68,7 +68,7 @@ my %WriteMakefileArgs = (
     "strict" => 0,
     "warnings" => 0
   },
-  "VERSION" => "0.017",
+  "VERSION" => "0.018",
   "test" => {
     "TESTS" => "t/*.t"
   }

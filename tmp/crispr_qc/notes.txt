@@ -1,0 +1,5 @@
+bwa index tp53_exon.fa
+
+bwa mem tp53_exon.fa tp53_a01.fq > tp53_a01_exon.sam
+
+/software/vertres/bin-external/samtools-0.2.0-rc7/bin/samtools mpileup -ug -f tp53_exon.fa tp53_a01_exon.bam | /software/vertres/bin-external/samtools-0.2.0-rc7/bin/bcftools call -Nvm - > tmp.vcf

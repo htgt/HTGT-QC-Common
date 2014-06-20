@@ -1,0 +1,13 @@
+## ENSEMBL VARIANT EFFECT PREDICTOR v75
+## Output produced at 2014-05-29 14:20:32
+## Connected to homo_sapiens_core_75_37 on ensembldb.ensembl.org
+## Using API version 75, DB version 75
+## Extra column keys:
+## DISTANCE : Shortest distance from variant to transcript
+## STRAND : Strand of the feature (1/-1)
+#Uploaded_variation	Location	Allele	Gene	Feature	Feature_type	Consequence	cDNA_position	CDS_position	Protein_position	Amino_acids	Codons	Existing_variation	Extra
+1_203678630_CGTATGTAC/C	1:203678630-203678638	C	ENSG00000058668	ENST00000341360	Transcript	frameshift_variant,feature_truncation	2156-2164	1759-1767	587-589	-	-	-	STRAND=1
+1_203678630_CGTATGTAC/C	1:203678630-203678638	C	ENSG00000058668	ENST00000367218	Transcript	frameshift_variant,feature_truncation	2643-2651	1759-1767	587-589	-	-	-	STRAND=1
+1_203678630_CGTATGTAC/C	1:203678630-203678638	C	ENSG00000058668	ENST00000391954	Transcript	frameshift_variant,feature_truncation	2643-2651	1759-1767	587-589	-	-	-	STRAND=1
+1_203678630_CGTATGTAC/C	1:203678630-203678638	C	ENSG00000058668	ENST00000367219	Transcript	frameshift_variant,feature_truncation	2607-2615	1723-1731	575-577	-	-	-	STRAND=1
+1_203678630_CGTATGTAC/C	1:203678630-203678638	C	ENSG00000058668	ENST00000357681	Transcript	frameshift_variant,feature_truncation	2882-2890	1759-1767	587-589	-	-	-	STRAND=1
