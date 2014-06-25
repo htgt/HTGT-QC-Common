@@ -97,7 +97,7 @@ has sam_file => (
 has [
     'bam_file', 'filtered_bam_file', 'bcf_file',      'pileup_file',
     'vcf_file', 'vep_file',          'vep_html_file', 'vcf_file_target_region',
-    'ref_protein_seq', 'mut_protein_seq',
+    'ref_aa_file', 'mut_aa_file',
     ] => (
     is  => 'rw',
     isa => 'Path::Class::File',
@@ -469,7 +469,8 @@ sub variant_effect_predictor {
         '--per_gene',                                   # Output the most severe consequence per gene
         '--symbol',                                     # Output gene symbol
         '--canonical',                                  # Mark if transcript is canonical
-        '--plugin', 'HTGT::QC::VEPPlugin::MutantProteinSeqs', # Use custom plugin to create protein sequence files
+        '--plugin', 'HTGT::QC::VEPPlugin::MutantProteinSeqs,' . $self->dir->stringify . '/',
+                                                        # Use custom plugin to create protein sequence files
     );
 
     $self->log->debug( "vep command: " . join( ' ', @vep_command ) );
@@ -483,8 +484,8 @@ sub variant_effect_predictor {
 
     my $ref_seq_file = $self->dir->file('reference.fa')->absolute;
     my $mut_seq_file = $self->dir->file('mutated.fa')->absolute;
-    $self->ref_protein_seq( $ref_seq_file ) if $self->dir->contains( $ref_seq_file );
-    $self->mut_protein_seq( $mut_seq_file ) if $self->dir->contains( $mut_seq_file );
+    $self->ref_aa_file( $ref_seq_file ) if $self->dir->contains( $ref_seq_file );
+    $self->mut_aa_file( $mut_seq_file ) if $self->dir->contains( $mut_seq_file );
 
     return;
 }
