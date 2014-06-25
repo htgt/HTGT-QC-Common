@@ -28,6 +28,7 @@ ignored.
 use strict;
 use warnings;
 
+use lib '/opt/t87/global/software/ensembl-tools-release-75/scripts/variant_effect_predictor';
 use Bio::EnsEMBL::Variation::Utils::BaseVepPlugin;
 
 use base qw(Bio::EnsEMBL::Variation::Utils::BaseVepPlugin);
@@ -44,22 +45,6 @@ sub variant_feature_types {
     return ['VariationFeature'];
 }
 
-sub new {
-    my $class = shift;
-
-    my $self = $class->SUPER::new(@_);
-
-    # use some default file names if none are supplied
-
-    my $ref_file = $self->params->[0] || 'reference.fa';
-    my $mut_file = $self->params->[1] || 'mutated.fa';
-
-    open( $self->{ref_file}, '>', $ref_file ) or die "Failed to open $ref_file";
-    open( $self->{mut_file}, '>', $mut_file ) or die "Failed to open $mut_file";
-
-    return $self;
-}
-
 sub run {
     my ($self, $tva) = @_;
 
@@ -67,6 +52,7 @@ sub run {
 
     # Deal with non frameshift variants, look at ProteinSeqs plugin for this
     if(grep {$_->SO_term eq 'frameshift_variant'} @ocs) {
+        $self->setup_files unless exists $self->{ref_file};
 
         # can't do it for splice sites
         return {} if grep {$_->SO_term =~ /splice/} @ocs;
@@ -129,14 +115,26 @@ sub run {
             ? $tr->{_variation_effect_feature_cache}->{peptide}
             : $tr->translation->seq;
 
-        $self->print_fasta($translation, $id, $self->{ref_file});
-            unless $self->{printed_ref}->{$id}++;
+        $self->print_fasta($translation, $id, $self->{ref_file}) unless $self->{printed_ref}->{$id}++;
         $self->print_fasta($new_pep, $id, $self->{mut_file});
 
         return {};
     }
 
     return {};
+}
+
+sub setup_files {
+    my $self = shift;
+
+    # use some default file names if none are supplied
+    my $ref_file = $self->params->[0] || 'reference.fa';
+    my $mut_file = $self->params->[1] || 'mutated.fa';
+
+    open( $self->{ref_file}, '>', $ref_file ) or die "Failed to open $ref_file";
+    open( $self->{mut_file}, '>', $mut_file ) or die "Failed to open $mut_file";
+
+    return;
 }
 
 sub print_fasta {
