@@ -78,10 +78,11 @@ sub run {
         my $is_insertion         = $tv->cds_start > $tv->cds_end ? 1 : 0;
         my $last_complete_codon  = int($low_pos / 3) * 3;
 
-        my $upto_var_seq = substr( $cds_seq, 0, $last_complete_codon );
+        my $upto_var_seq = substr( $cds_seq, 0, ( $last_complete_codon - 1 ) );
         # seq between last codon and variation feature
-        my $before_var_seq = substr( $cds_seq, $last_complete_codon,
-            ( $low_pos - $last_complete_codon - ( $is_insertion ? 0 : 1 ) ) );
+
+        my $before_var_count = $low_pos == $last_complete_codon ? 0 : (( $low_pos - $last_complete_codon ) +  1) - ( $is_insertion ? 0 : 1 );
+        my $before_var_seq = substr( $cds_seq, $last_complete_codon - 1, $before_var_count );
 
         my $after_var_seq = substr($cds_seq, $high_pos - ($is_insertion ? 1 : 0) );
         my $to_translate  = $upto_var_seq . $before_var_seq . $tva->feature_seq . $after_var_seq;
@@ -127,21 +128,16 @@ sub run {
 sub setup_files {
     my $self = shift;
 
-    # use some default file names if none are supplied
-    my $ref_file = $self->params->[0] || 'reference.fa';
-    my $mut_file = $self->params->[1] || 'mutated.fa';
+    my $base_dir = $self->params->[0] || '';
 
-    open( $self->{ref_file}, '>', $ref_file ) or die "Failed to open $ref_file";
-    open( $self->{mut_file}, '>', $mut_file ) or die "Failed to open $mut_file";
+    open( $self->{ref_file}, '>', $base_dir . 'reference.fa' ) or die "Failed to open reference.fa";
+    open( $self->{mut_file}, '>', $base_dir . 'mutated.fa' ) or die "Failed to open mutated.fa";
 
     return;
 }
 
 sub print_fasta {
     my ($self, $peptide, $id, $fh) = @_;
-
-    # break the sequence into 80 characters per line
-    $peptide =~ s/(.{80})/$1\n/g;
 
     # get rid of any trailing newline
     chomp $peptide;
