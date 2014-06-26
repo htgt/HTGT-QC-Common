@@ -22,6 +22,7 @@ meta-spec:
 name: HTGT-QC-Common
 requires:
   Array::Compare: 0
+  Bio::EnsEMBL::Variation::Utils::BaseVepPlugin: 0
   Bio::SeqIO: 0
   Config::Scoped: 0
   Const::Fast: 0
@@ -52,8 +53,9 @@ requires:
   Throwable::Error: 0
   Try::Tiny: 0
   YAML::Any: 0
+  base: 0
   feature: 0
   namespace::autoclean: 0
   strict: 0
   warnings: 0
-version: 0.019
+version: 0.020

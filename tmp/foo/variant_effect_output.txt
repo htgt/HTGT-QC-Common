@@ -1,0 +1,14 @@
+## ENSEMBL VARIANT EFFECT PREDICTOR v75
+## Output produced at 2014-06-26 07:27:52
+## Connected to homo_sapiens_core_75_37 on ensembldb.ensembl.org
+## Using cache in /lustre/scratch109/blastdb/Ensembl/vep/homo_sapiens/75
+## Using API version 75, DB version 75
+## Extra column keys:
+## CANONICAL : Indicates if transcript is canonical for this gene
+## DISTANCE : Shortest distance from variant to transcript
+## STRAND : Strand of the feature (1/-1)
+## SYMBOL : Gene symbol (e.g. HGNC)
+## SYMBOL_SOURCE : Source of gene symbol
+#Uploaded_variation	Location	Allele	Gene	Feature	Feature_type	Consequence	cDNA_position	CDS_position	Protein_position	Amino_acids	Codons	Existing_variation	Extra
+2_48018114_C/A	2:48018114	A	ENSG00000138081	ENST00000405808	Transcript	intron_variant	-	-	-	-	-	-	STRAND=-1;SYMBOL=FBXO11;SYMBOL_SOURCE=HGNC
+2_48018114_C/A	2:48018114	A	ENSG00000116062	ENST00000234420	Transcript	stop_gained	461	309	103	Y/*	taC/taA	-	STRAND=1;SYMBOL=MSH6;CANONICAL=YES;SYMBOL_SOURCE=HGNC

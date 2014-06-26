@@ -33,6 +33,7 @@ my %WriteMakefileArgs = (
   "NAME" => "HTGT::QC::Common",
   "PREREQ_PM" => {
     "Array::Compare" => 0,
+    "Bio::EnsEMBL::Variation::Utils::BaseVepPlugin" => 0,
     "Bio::SeqIO" => 0,
     "Config::Scoped" => 0,
     "Const::Fast" => 0,
@@ -63,12 +64,13 @@ my %WriteMakefileArgs = (
     "Throwable::Error" => 0,
     "Try::Tiny" => 0,
     "YAML::Any" => 0,
+    "base" => 0,
     "feature" => 0,
     "namespace::autoclean" => 0,
     "strict" => 0,
     "warnings" => 0
   },
-  "VERSION" => "0.019",
+  "VERSION" => "0.020",
   "test" => {
     "TESTS" => "t/*.t"
   }

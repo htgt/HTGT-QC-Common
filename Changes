@@ -1,3 +1,8 @@
+0.020     2014-06-26 07:58:57 Europe/London
+
+    Created VEP plugin that generates reference and mutant protein sequence files
+    for frameshift variants, using this in the crispr es qc.
+
 0.019     2014-06-20 13:44:58 Europe/London
 
     Bugfix: missed base in hash map.

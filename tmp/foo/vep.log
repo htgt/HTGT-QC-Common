@@ -1,0 +1,15 @@
+2014-06-26 07:27:52 - Read existing cache info
+2014-06-26 07:27:52 - Auto-detected FASTA file in cache directory
+2014-06-26 07:27:52 - Checking/creating FASTA index
+2014-06-26 07:27:52 - Loaded plugin: HTGT::QC::VEPPlugin::MutantProteinSeqs
+2014-06-26 07:27:52 - Starting...
+2014-06-26 07:27:52 - Detected format of input file as vcf
+2014-06-26 07:27:52 - Read 1 variants into buffer
+2014-06-26 07:27:52 - Reading transcript data from cache and/or database
+2014-06-26 07:27:52 - Retrieved 78 transcripts (0 mem, 78 cached, 0 DB, 0 duplicates)
+2014-06-26 07:27:52 - Analyzing chromosome 2
+2014-06-26 07:27:52 - Analyzing variants
+2014-06-26 07:27:52 - Calculating consequences
+2014-06-26 07:27:52 - Processed 1 total variants (1 vars/sec, 1 vars/sec total)
+2014-06-26 07:27:52 - Wrote stats summary to /nfs/users/nfs_s/sp12/workspace/HTGT-QC-Common/foo/variant_effect_output.txt_summary.html
+2014-06-26 07:27:52 - Finished!

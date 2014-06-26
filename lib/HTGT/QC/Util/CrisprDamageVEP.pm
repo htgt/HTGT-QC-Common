@@ -1,7 +1,7 @@
 package HTGT::QC::Util::CrisprDamageVEP;
 ## no critic(RequireUseStrict,RequireUseWarnings)
 {
-    $HTGT::QC::Util::CrisprDamageVEP::VERSION = '0.019';
+    $HTGT::QC::Util::CrisprDamageVEP::VERSION = '0.020';
 }
 ## use critic
 
@@ -103,6 +103,7 @@ has sam_file => (
 has [
     'bam_file', 'filtered_bam_file', 'bcf_file',      'pileup_file',
     'vcf_file', 'vep_file',          'vep_html_file', 'vcf_file_target_region',
+    'ref_aa_file', 'mut_aa_file',
     ] => (
     is  => 'rw',
     isa => 'Path::Class::File',
@@ -474,6 +475,8 @@ sub variant_effect_predictor {
         '--per_gene',                                   # Output the most severe consequence per gene
         '--symbol',                                     # Output gene symbol
         '--canonical',                                  # Mark if transcript is canonical
+        '--plugin', 'HTGT::QC::VEPPlugin::MutantProteinSeqs,' . $self->dir->stringify . '/',
+                                                        # Use custom plugin to create protein sequence files
     );
 
     $self->log->debug( "vep command: " . join( ' ', @vep_command ) );
@@ -484,6 +487,12 @@ sub variant_effect_predictor {
 
     $self->vep_file( $vep_output );
     $self->vep_html_file( $self->dir->file('variant_effect_output.txt_summary.html')->absolute );
+
+    my $ref_seq_file = $self->dir->file('reference.fa')->absolute;
+    my $mut_seq_file = $self->dir->file('mutated.fa')->absolute;
+    $self->ref_aa_file( $ref_seq_file ) if $self->dir->contains( $ref_seq_file );
+    $self->mut_aa_file( $mut_seq_file ) if $self->dir->contains( $mut_seq_file );
+
     return;
 }
 

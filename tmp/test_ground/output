@@ -1,0 +1,15 @@
+2014-06-24 14:08:15 - Read existing cache info
+2014-06-24 14:08:15 - Auto-detected FASTA file in cache directory
+2014-06-24 14:08:15 - Checking/creating FASTA index
+2014-06-24 14:08:15 - Loaded plugin: Custom::FrameShiftSeq
+2014-06-24 14:08:15 - Starting...
+2014-06-24 14:08:15 - Detected format of input file as vcf
+2014-06-24 14:08:15 - Read 1 variants into buffer
+2014-06-24 14:08:15 - Reading transcript data from cache and/or database
+2014-06-24 14:08:15 - Retrieved 102 transcripts (0 mem, 102 cached, 0 DB, 0 duplicates)
+2014-06-24 14:08:15 - Analyzing chromosome 2
+2014-06-24 14:08:15 - Analyzing variants
+2014-06-24 14:08:15 - Calculating consequences
+2014-06-24 14:08:15 - Processed 1 total variants (1 vars/sec, 1 vars/sec total)
+2014-06-24 14:08:15 - Wrote stats summary to variant_effect_output.txt_summary.html
+2014-06-24 14:08:15 - Finished!

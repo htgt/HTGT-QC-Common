@@ -14,24 +14,21 @@ use feature qw( say );
 
 my $log_level = $WARN;
 
-my ( $well_name, $forward_primer_name, $reverse_primer_name, $primer_reads_file, $dir,
-    $crispr_es_qc_well_id, $commit, $sam_file );
+my ( $forward_primer_name, $reverse_primer_name, $primer_reads_file, $dir, $sam_file, $well_id );
 GetOptions(
     'help'                  => sub { pod2usage( -verbose    => 1 ) },
     'man'                   => sub { pod2usage( -verbose    => 2 ) },
     'debug'                 => sub { $log_level = $DEBUG },
     'verbose'               => sub { $log_level = $INFO },
-    'well_name=s'           => \$well_name,
+    'es_well_id=s'          => \$well_id,
     'forward_primer_name=s' => \$forward_primer_name,
     'reverse_primer_name=s' => \$reverse_primer_name,
     'primer_reads_file=s'   => \$primer_reads_file,
     'dir=s'                 => \$dir,
     'sam_file=s'            => \$sam_file,
-    'crispr_qc_id=i'        => \$crispr_es_qc_well_id,
-    'commit'                => \$commit,
 ) or pod2usage(2);
 
-die('Must specify a well name') unless $well_name;
+die('Must specify a well id') unless $well_id;
 
 my $model = LIMS2::Model->new( user => 'lims2' );
 Log::Log4perl->easy_init( { level => $log_level, layout => '%p %m%n' } );
@@ -39,6 +36,10 @@ $forward_primer_name //= 'SF1';
 $reverse_primer_name //= 'SR1';
 my $parser =  HTGT::QC::Util::CigarParser->new(
         primers => [ $forward_primer_name, $reverse_primer_name ] );
+
+my $well = $model->retrieve_well( { id => $well_id } );
+my $well_name = $well->name;
+my $crispr = crispr_for_well( $well );
 
 my $primer_reads_io = Bio::SeqIO->new( -file => $primer_reads_file, -format => 'Fasta' );
 
@@ -62,13 +63,9 @@ $work_dir->mkpath();
 my %params = (
     species      => 'Human',
     dir          => $work_dir,
-    #target_start => 48018114, # MSH6
-    target_end   => 48018176,
-    target_start => 47637239, #MSH2
-    #target_end => 47637303,
-    #target_start => 203678601,
-    #target_end   => 203678646,
-    target_chr   => 2,
+    target_start => $crispr->start,
+    target_end   => $crispr->end,
+    target_chr   => $crispr->chr_name,
 );
 
 $params{sam_file} = $sam_file if $sam_file;
@@ -86,28 +83,40 @@ my $qc = HTGT::QC::Util::CrisprDamageVEP->new( %params );
 
 $qc->analyse;
 
-if ( $crispr_es_qc_well_id ) {
-    my $vcf_data = $qc->vcf_file->slurp;
+sub crispr_for_well {
+    my ( $well ) = @_;
 
-    # grab crispr_es_qc_well record
-    my $crispr_es_qc_well = $model->schema->resultset('CrisprEsQcWell')->find( { id => $crispr_es_qc_well_id } );
+    my ( $left_crispr_well, $right_crispr_well ) = $well->left_and_right_crispr_wells;
 
-    FATAL( "No crispr es qc well record with id $crispr_es_qc_well_id" ) unless $crispr_es_qc_well;
+    if ( $left_crispr_well && $right_crispr_well ) {
+        my $left_crispr  = $left_crispr_well->crispr;
+        my $right_crispr = $right_crispr_well->crispr;
 
-    if ( $crispr_es_qc_well->well->name ne $well_name ) {
-        FATAL( "Specified well name $well_name and the crispr_es_qc_well do not match: "
-                . $crispr_es_qc_well->well->name );
+        my $crispr_pair = $model->schema->resultset('CrisprPair')->find(
+            {
+                left_crispr_id  => $left_crispr->id,
+                right_crispr_id => $right_crispr->id,
+            }
+        );
+
+        unless ( $crispr_pair ) {
+            die(
+                "Unable to find crispr pair: left crispr $left_crispr, right crispr $right_crispr" );
+        }
+        DEBUG("Crispr pair for well $well: $crispr_pair" );
+
+        return $crispr_pair;
+    }
+    elsif ( $left_crispr_well ) {
+        my $crispr = $left_crispr_well->crispr;
+        DEBUG("Crispr pair for $well: $crispr" );
+        return $crispr;
+    }
+    else {
+        die( "Unable to determine crispr pair or crispr for well $well" );
     }
 
-    $model->txn_do(
-        sub {
-            $crispr_es_qc_well->update( { vcf_file => $vcf_data } );
-            unless ( $commit ) {
-                WARN("non-commit mode, rollback");
-                $model->txn_rollback;
-            }
-        }
-    );
+    return;
 }
 
 __END__

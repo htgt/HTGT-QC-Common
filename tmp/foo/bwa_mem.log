@@ -1,0 +1,4 @@
+[M::main_mem] read 2 sequences (1627 bp)...
+[main] Version: 0.7.5a-r406
+[main] CMD: /software/vertres/bin-external/bwa-0.7.5a-r406/bwa mem -O 2 /lustre/scratch109/blastdb/Users/team87/Human/bwa/Homo_sapiens.GRCh37.toplevel.clean_chr_names.fa /nfs/users/nfs_s/sp12/workspace/HTGT-QC-Common/foo/primer_reads.fa
+[main] Real time: 23.646 sec; CPU: 13.520 sec

@@ -1,0 +1,10 @@
+## ENSEMBL VARIANT EFFECT PREDICTOR v75
+## Output produced at 2014-06-23 10:22:49
+## Connected to homo_sapiens_core_75_37 on ensembldb.ensembl.org
+## Using cache in /lustre/scratch109/blastdb/Ensembl/vep/homo_sapiens/75
+## Using API version 75, DB version 75
+## Extra column keys:
+## DISTANCE : Shortest distance from variant to transcript
+## STRAND : Strand of the feature (1/-1)
+#Uploaded_variation	Location	Allele	Gene	Feature	Feature_type	Consequence	cDNA_position	CDS_position	Protein_position	Amino_acids	Codons	Existing_variation	Extra
+12_109539754_AGC/-	12:109539754-109539756	-	ENSG00000076248	ENST00000242576	Transcript	inframe_deletion	589-591	483-485	161-162	QA/H	caAGCt/cat	-	STRAND=1
