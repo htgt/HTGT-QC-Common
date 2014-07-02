@@ -102,14 +102,19 @@
 ##INFO=<ID=QS,Number=R,Type=Float,Description="Auxiliary tag used for calling">
 ##FORMAT=<ID=PL,Number=G,Type=Integer,Description="List of Phred-scaled genotype likelihoods">
 ##FORMAT=<ID=GT,Number=1,Type=String,Description="Genotype">
-##INFO=<ID=ICB,Number=1,Type=Float,Description="Inbreeding Coefficient Binomial test (bigger is better)">
-##INFO=<ID=HOB,Number=1,Type=Float,Description="Bias in the number of HOMs number (smaller is better)">
-##INFO=<ID=AC,Number=A,Type=Integer,Description="Allele count in genotypes for each ALT allele, in the same order as listed">
-##INFO=<ID=AN,Number=1,Type=Integer,Description="Total number of alleles in called genotypes">
+##INFO=<ID=AF1,Number=1,Type=Float,Description="Max-likelihood estimate of the first ALT allele frequency (assuming HWE)">
+##INFO=<ID=AF2,Number=1,Type=Float,Description="Max-likelihood estimate of the first and second group ALT allele frequency (assuming HWE)">
+##INFO=<ID=AC1,Number=1,Type=Float,Description="Max-likelihood estimate of the first ALT allele count (no HWE assumption)">
+##INFO=<ID=MQ,Number=1,Type=Integer,Description="Root-mean-square mapping quality of covering reads">
+##INFO=<ID=FQ,Number=1,Type=Float,Description="Phred probability of all samples being the same">
+##INFO=<ID=PV4,Number=4,Type=Float,Description="P-values for strand bias, baseQ bias, mapQ bias and tail distance bias">
+##INFO=<ID=G3,Number=3,Type=Float,Description="ML estimate of genotype frequencies">
+##INFO=<ID=HWE,Number=1,Type=Float,Description="Chi^2 based HWE test P-value based on G3">
 ##INFO=<ID=DP4,Number=4,Type=Integer,Description="Number of high-quality ref-forward , ref-reverse, alt-forward and alt-reverse bases">
-##INFO=<ID=MQ,Number=1,Type=Integer,Description="Average mapping quality">
 ##bcftools_callVersion=0.2.0-rc8+htslib-0.2.0-rc8
-##bcftools_callCommand=call -vm raw_analysis.bcf
+##bcftools_callCommand=call -vc -p 1 raw_analysis.bcf
 #CHROM	POS	ID	REF	ALT	QUAL	FILTER	INFO	FORMAT	/nfs/users/nfs_s/sp12/workspace/HTGT-QC-Common/foo/alignment_filtered.bam
-2	48018114	.	C	A	95	.	DP=2;VDB=0.86;SGB=-0.453602;MQSB=1;MQ0F=0;AC=2;AN=2;DP4=0,0,1,1;MQ=60	GT:PL	1/1:120,6,0
-2	48018314	.	T	A	95	.	DP=2;VDB=0.84;SGB=-0.453602;MQSB=1;MQ0F=0;AC=2;AN=2;DP4=0,0,1,1;MQ=60	GT:PL	1/1:120,6,0
+2	48018112	.	TAC	TACAC	0.00363	.	INDEL;IDV=2;IMF=1;DP=2;VDB=0.86;SGB=-0.453602;MQSB=1;MQ0F=0;AF1=1;AC1=2;DP4=0,0,1,1;MQ=60;FQ=-41.1643	GT:PL	0/0:8,6,0
+2	48018114	.	C	A	88.7651	.	DP=2;VDB=0.86;SGB=-0.453602;MQSB=1;MQ0F=0;AF1=1;AC1=2;DP4=0,0,1,1;MQ=60;FQ=-32.988	GT:PL	1/1:120,6,0
+2	48018114	.	CCCCTGGT	C	0.223297	.	INDEL;IDV=2;IMF=1;DP=2;VDB=0.86;SGB=-0.453602;MQSB=1;MQ0F=0;AF1=1;AC1=2;DP4=0,0,1,1;MQ=60;FQ=-40.5363	GT:PL	0/1:26,6,0
+2	48018314	.	T	A	88.7651	.	DP=2;VDB=0.84;SGB=-0.453602;MQSB=1;MQ0F=0;AF1=1;AC1=2;DP4=0,0,1,1;MQ=60;FQ=-32.988	GT:PL	1/1:120,6,0

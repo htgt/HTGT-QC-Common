@@ -134,11 +134,15 @@ tmp/foo/check_overlap.log
 tmp/foo/filtered_analysis.vcf
 tmp/foo/generate_target_region_vcf_file.log
 tmp/foo/mpileup.log
+tmp/foo/mutated.fa
 tmp/foo/output.vcf
 tmp/foo/primer_reads.fa
 tmp/foo/raw_analysis.bcf
+tmp/foo/reference.fa
 tmp/foo/sam_to_bam.log
 tmp/foo/variant_effect_output.txt
+tmp/foo/variant_effect_output.txt.new
+tmp/foo/variant_effect_output.txt.old
 tmp/foo/variant_effect_output.txt_summary.html
 tmp/foo/vep.log
 tmp/test_ground/a03.vcf
