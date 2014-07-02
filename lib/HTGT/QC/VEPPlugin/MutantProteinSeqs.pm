@@ -162,11 +162,13 @@ sub non_frameshift_variant {
     my $tl_end = $tva->transcript_variation->translation_end;
 
     # and our reference sequence
+    ## no critic(Subroutines::ProtectPrivateSubs)
     my $ref_seq = $tva->transcript_variation->_peptide;
+    ## use critic
 
     # splice the mutant peptide sequence into the reference sequence
     my $mut_seq = $ref_seq;
-    substr($mut_seq, $tl_start-1, $tl_end - $tl_start + 1) = $mut_aa;
+    substr($mut_seq, $tl_start-1, $tl_end - $tl_start + 1, $mut_aa);
 
     # print out our reference and mutant sequences
     my $translation_id = $tva->transcript->translation->stable_id;
@@ -178,6 +180,8 @@ sub non_frameshift_variant {
     # we always print the mutated sequence as each mutation may have
     # a different consequence
     $self->print_fasta($mut_seq, $tva->hgvs_protein, $self->{mut_file});
+
+    return;
 }
 
 sub print_fasta {
