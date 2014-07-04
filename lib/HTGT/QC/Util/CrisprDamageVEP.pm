@@ -365,7 +365,9 @@ sub variant_calling {
         $BCFTOOLS_CMD,              # bcftools cmd
         'call',                     # call cmd
         '-v',                       # output variant sites only
-        '-m',                       # alternative model for multiallelic and rare-variant calling
+        #'-m',                       # alternative model for multiallelic and rare-variant calling
+        '-c',                       # original calling method
+        '-p', 1,                    # pval threshhold to accept variant, 1 means accept all
         $self->bcf_file->stringify, # input bcf file
     );
 
