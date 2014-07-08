@@ -1,5 +1,9 @@
 {{$NEXT}}
 
+0.022     2014-07-08 09:38:20 Europe/London
+
+    Change bcftools call to call all variants.
+
 0.021     2014-07-02 08:19:34 Europe/London
 
     Update VEP protein sequence plugin to produce sequence files for non frameshift variants.
