@@ -145,6 +145,7 @@ tmp/foo/variant_effect_output.txt.new
 tmp/foo/variant_effect_output.txt.old
 tmp/foo/variant_effect_output.txt_summary.html
 tmp/foo/vep.log
+tmp/protein-seq-issues.md
 tmp/test_ground/a03.vcf
 tmp/test_ground/analysis.vcf
 tmp/test_ground/b05.vcf

@@ -1,7 +1,7 @@
 package HTGT::QC::Util::CrisprDamageVEP;
 ## no critic(RequireUseStrict,RequireUseWarnings)
 {
-    $HTGT::QC::Util::CrisprDamageVEP::VERSION = '0.021';
+    $HTGT::QC::Util::CrisprDamageVEP::VERSION = '0.022';
 }
 ## use critic
 
@@ -371,7 +371,9 @@ sub variant_calling {
         $BCFTOOLS_CMD,              # bcftools cmd
         'call',                     # call cmd
         '-v',                       # output variant sites only
-        '-m',                       # alternative model for multiallelic and rare-variant calling
+        #'-m',                       # alternative model for multiallelic and rare-variant calling
+        '-c',                       # original calling method
+        '-p', 1,                    # pval threshhold to accept variant, 1 means accept all
         $self->bcf_file->stringify, # input bcf file
     );
 
