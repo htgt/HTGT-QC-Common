@@ -28,10 +28,11 @@ const my %BWA_REF_GENOMES => (
     mouse => '/lustre/scratch109/blastdb/Users/team87/Mouse/bwa/Mus_musculus.GRCm38.toplevel.clean_chr_names.fa',
 );
 
-# TEMP
-$ENV{PATH} = '/software/badger/bin:' . '~/applications/usr/bin:' . $ENV{PATH};
-$ENV{PERL5LIB} = '~/applications/usr/lib/perl5/vendor_perl/5.8.5:' . $ENV{PERL5LIB};
+# setup env variables needed to run the trace_recalling script
 $ENV{PHRED_PARAMETER_FILE} = '/software/badger/etc/phredpar.dat';
+$ENV{PERL5LIB} = '/opt/t87/global/software/trace_recalling-0.5-2/lib/perl5/vendor_perl/5.8.5:' . $ENV{PERL5LIB};
+$ENV{PATH} = '/software/badger/bin:' . $ENV{PATH};
+$ENV{PATH} = '/opt/t87/global/software/trace_recalling-0.5-2/bin:' . $ENV{PATH};
 
 has species => (
     is       => 'ro',
@@ -92,7 +93,7 @@ sub _build_work_dir {
 
 =head2 get_seq_from_scf
 
-
+Extract the variant sequence from the SCF file.
 
 =cut
 sub get_seq_from_scf {
@@ -109,7 +110,7 @@ sub get_seq_from_scf {
 
 =head2 run_trace_recalling
 
-desc
+Run the main trace_recalling.pl script that extracts the variant sequence.
 
 =cut
 sub run_trace_recalling {
@@ -135,7 +136,9 @@ sub run_trace_recalling {
 
 =head2 get_variant_seq_file
 
-desc
+Grab the variant sequence file from the directory that is created by
+the trace_recalling.pl script.
+Also cleanup the output to remove X characters, spaces and uppercase the sequence.
 
 =cut
 sub get_variant_seq_file {
