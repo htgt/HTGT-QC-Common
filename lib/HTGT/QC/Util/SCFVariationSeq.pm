@@ -157,8 +157,7 @@ sub get_variant_seq_file {
     my $seq = $bio_seq->seq;
     $seq =~ s/X+//g;
     $seq =~ s/\s+//g;
-    # upper case?
-    $bio_seq->seq( $seq );
+    $bio_seq->seq( uc( $seq ) );
     $bio_seq->display_id( $recall_file->basename );
 
     my $cleaned_variant_seq_file = $self->base_dir->file('variant_seq.fa')->absolute;
