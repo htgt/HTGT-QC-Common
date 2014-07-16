@@ -403,7 +403,7 @@ sub calculate_base {
     if ( $read =~ /[.,]/ ) {
         return $ref;
     }
-    elsif ( $read =~ /^([A-za-z])$/ ) {
+    elsif ( $read =~ /^([A-Za-z])$/ ) {
         return lc($1);
     }
     elsif ( $read eq '*' ) {
@@ -460,7 +460,7 @@ sub add_insertion {
 
     return unless exists $self->seqs->{$seq_name};
     my $base_to_replace = substr( $self->seqs->{$seq_name}, $position, 1 );
-    my $replacement_base = $INS_BASE_CODE{ $base_to_replace };
+    my $replacement_base = $INS_BASE_CODE{ uc( $base_to_replace ) };
 
     substr( $self->seqs->{$seq_name}, $position, 1, $replacement_base);
 
