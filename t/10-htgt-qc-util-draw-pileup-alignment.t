@@ -2,6 +2,17 @@
 use strict;
 use warnings FATAL => 'all';
 
+=head1 NAME
+
+10-htgt-qc-util-draw-pileup-alignment
+
+=head1 DESCRIPTION
+
+Black box testing of HTGT::QC::Util::DrawPileupAlignment
+checking the pileup file plus parameters produces the expected aligned sequence.
+
+=cut
+
 use Test::Most;
 use Path::Class;
 use FindBin;

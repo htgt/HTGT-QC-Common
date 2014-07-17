@@ -2,6 +2,17 @@
 use strict;
 use warnings FATAL => 'all';
 
+=head1 NAME
+
+10-htgt-qc-util-scf-variation-seq
+
+=head1 DESCRIPTION
+
+Black box testing of HTGT::QC::Util::SCFVariationSeq
+Checking a scf file plus some standard parameters produces the expected fasta file output.
+
+=cut
+
 use Test::Most;
 use Path::Class;
 use FindBin;
@@ -18,7 +29,7 @@ my $data_dir = dir($FindBin::Bin)->absolute->subdir('test_data/scf_variation_seq
     note( 'Test SCFVariationSeq generated the expected sequence file for given scf input' );
 
     # setup multiple matches scf and fasta files to test against
-    for my $test ( qw( one two three four ) ) {
+    for my $test ( 1..4 ) {
         note( "Test set $test" );
         my $temp_dir = Path::Class::tempdir(CLEANUP => 1);
         my $scf_file = $data_dir->file( $test . '.scf' )->absolute;
