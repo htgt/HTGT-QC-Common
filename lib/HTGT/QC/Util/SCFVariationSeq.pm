@@ -15,7 +15,6 @@ use Moose;
 use Bio::SeqIO;
 use MooseX::Types::Path::Class::MoreCoercions qw/AbsFile AbsDir/;
 use IPC::Run 'run';
-use Const::Fast;
 use HTGT::QC::Constants qw(
     $SAMTOOLS_CMD
     %BWA_REF_GENOMES
