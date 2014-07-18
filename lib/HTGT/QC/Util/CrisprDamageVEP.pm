@@ -18,26 +18,17 @@ use HTGT::QC::Util::DrawPileupAlignment;
 use Bio::SeqIO;
 use MooseX::Types::Path::Class::MoreCoercions qw/AbsDir/;
 use IPC::Run 'run';
-use Const::Fast;
+use HTGT::QC::Constants qw(
+    $BWA_MEM_CMD
+    $SAMTOOLS_CMD
+    $BCFTOOLS_CMD
+    $VEP_CMD
+    $VEP_CACHE_DIR
+    %BWA_REF_GENOMES
+);
 use namespace::autoclean;
 
 with qw( MooseX::Log::Log4perl );
-
-const my $BWA_MEM_CMD  => $ENV{BWA_MEM_CMD}
-    // '/software/vertres/bin-external/bwa-0.7.5a-r406/bwa';
-const my $SAMTOOLS_CMD => $ENV{SAMTOOLS_CMD}
-    // '/software/vertres/bin-external/samtools-0.2.0-rc8/bin/samtools';
-const my $BCFTOOLS_CMD => $ENV{BCFTOOLS_CMD}
-    // '/software/vertres/bin-external/samtools-0.2.0-rc8/bin/bcftools';
-const my $VEP_CMD => $ENV{VEP_CMD}
-    // '/opt/t87/global/software/ensembl-tools-release-75/scripts/variant_effect_predictor/variant_effect_predictor.pl';
-const my $VEP_CACHE_DIR => $ENV{VEP_CACHE_DIR}
-    // '/lustre/scratch109/blastdb/Ensembl/vep';
-
-const my %BWA_REF_GENOMES => (
-    human => '/lustre/scratch109/blastdb/Users/team87/Human/bwa/Homo_sapiens.GRCh37.toplevel.clean_chr_names.fa',
-    mouse => '/lustre/scratch109/blastdb/Users/team87/Mouse/bwa/Mus_musculus.GRCm38.toplevel.clean_chr_names.fa',
-);
 
 has species => (
     is       => 'ro',
