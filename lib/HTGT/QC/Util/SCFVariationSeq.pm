@@ -16,17 +16,13 @@ use Bio::SeqIO;
 use MooseX::Types::Path::Class::MoreCoercions qw/AbsFile AbsDir/;
 use IPC::Run 'run';
 use Const::Fast;
+use HTGT::QC::Constants qw(
+    $SAMTOOLS_CMD
+    %BWA_REF_GENOMES
+);
 use namespace::autoclean;
 
 with qw( MooseX::Log::Log4perl );
-
-const my $SAMTOOLS_CMD => $ENV{SAMTOOLS_CMD}
-    // '/software/vertres/bin-external/samtools-0.2.0-rc8/bin/samtools';
-
-const my %BWA_REF_GENOMES => (
-    human => '/lustre/scratch109/blastdb/Users/team87/Human/bwa/Homo_sapiens.GRCh37.toplevel.clean_chr_names.fa',
-    mouse => '/lustre/scratch109/blastdb/Users/team87/Mouse/bwa/Mus_musculus.GRCm38.toplevel.clean_chr_names.fa',
-);
 
 # setup env variables needed to run the trace_recalling script
 $ENV{PHRED_PARAMETER_FILE} = '/software/badger/etc/phredpar.dat';

@@ -18,6 +18,10 @@ use Moose;
 use MooseX::Types::Path::Class::MoreCoercions qw/AbsFile AbsDir/;
 use Const::Fast;
 use IPC::Run 'run';
+use HTGT::QC::Constants qw(
+    $SAMTOOLS_CMD
+    %BWA_REF_GENOMES
+);
 use namespace::autoclean;
 
 with qw( MooseX::Log::Log4perl );
@@ -29,14 +33,6 @@ const my %INS_BASE_CODE => (
     C => 'Y',
     G => 'Z',
     X => 'X',
-);
-
-const my $SAMTOOLS_CMD => $ENV{SAMTOOLS_CMD}
-    // '/software/vertres/bin-external/samtools-0.2.0-rc8/bin/samtools';
-
-const my %BWA_REF_GENOMES => (
-    human => '/lustre/scratch109/blastdb/Users/team87/Human/bwa/Homo_sapiens.GRCh37.toplevel.clean_chr_names.fa',
-    mouse => '/lustre/scratch109/blastdb/Users/team87/Mouse/bwa/Mus_musculus.GRCm38.toplevel.clean_chr_names.fa',
 );
 
 has species => (
