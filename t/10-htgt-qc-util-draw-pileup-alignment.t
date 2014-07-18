@@ -16,7 +16,6 @@ checking the pileup file plus parameters produces the expected aligned sequence.
 use Test::Most;
 use Path::Class;
 use FindBin;
-use File::Compare;
 use Log::Log4perl ':levels';
 use YAML::Any qw( LoadFile );
 
