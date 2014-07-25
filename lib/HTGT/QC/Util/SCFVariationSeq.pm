@@ -54,9 +54,11 @@ has scf_file => (
     coerce   => 1,
 );
 
+# fasta file
 has ref_seq_file => (
-    is  => 'rw',
-    isa => AbsFile,
+    is        => 'rw',
+    isa       => AbsFile,
+    predicate => 'have_ref_seq_file',
 );
 
 has variant_seq_file => (
@@ -96,7 +98,7 @@ sub get_seq_from_scf {
     $self->log->info('Extracting variant sequence from heterozygous SCF file');
 
     $self->scf_file->copy_to( $self->work_dir );
-    $self->create_ref_seq_file;
+    $self->create_ref_seq_file unless $self->have_ref_seq_file;
     $self->run_trace_recalling;
     $self->get_variant_seq_file;
 
@@ -177,8 +179,8 @@ sub create_ref_seq_file {
 
     my $target_string
         = $self->target_chr . ':'
-        . ( $self->target_start - 100 ) . '-'
-        . ( $self->target_end + 100 );
+        . ( $self->target_start - 300 ) . '-'
+        . ( $self->target_end + 300 );
     my @samtools_faidx_cmd = (
         $SAMTOOLS_CMD,
         'faidx',                                  # mpileup command
