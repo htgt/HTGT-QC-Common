@@ -284,12 +284,12 @@ using each variant, working 3' to 5'.
 
 =cut
 sub create_variant_seq {
-    my ( $self, $ref_seq, $alts ) = @_;
+    my ( $self, $ref_seq ) = @_;
     $self->log->debug( 'Creating alternate variant sequence for merged variant' );
 
     my $var_seq = $ref_seq;
 
-    for my $alt ( @{ $alts } ) {
+    for my $alt ( @{ $self->variant_alt_seqs } ) {
         substr( $var_seq, $alt->{pos}, length($alt->{ref_seq}), $alt->{var_seq} );
     }
 
