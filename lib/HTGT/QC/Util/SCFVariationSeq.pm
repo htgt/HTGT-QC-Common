@@ -24,10 +24,12 @@ use namespace::autoclean;
 with qw( MooseX::Log::Log4perl );
 
 # setup env variables needed to run the trace_recalling script
+## no critic (Variables::RequireLocalizedPunctuationVars)
 $ENV{PHRED_PARAMETER_FILE} = '/software/badger/etc/phredpar.dat';
 $ENV{PERL5LIB} = '/opt/t87/global/software/trace_recalling-0.5-2/lib/perl5/vendor_perl/5.8.5:' . $ENV{PERL5LIB};
 $ENV{PATH} = '/software/badger/bin:' . $ENV{PATH};
 $ENV{PATH} = '/opt/t87/global/software/trace_recalling-0.5-2/bin:' . $ENV{PATH};
+## use critic
 
 has species => (
     is       => 'ro',
@@ -127,7 +129,7 @@ sub run_trace_recalling {
         '&>', $log_file->stringify
     ) or die(
             "Failed to run trace_recalling command, see log file: $log_file" );
-    
+
     return;
 }
 
@@ -140,7 +142,7 @@ Also cleanup the output to remove X characters, spaces and uppercase the sequenc
 =cut
 sub get_variant_seq_file {
     my ( $self ) = @_;
-    
+
     # find scf work dir
     my $trace_recalling_dir = $self->work_dir->subdir( $self->scf_file->basename . '_dir' );
     die( "Can not find trace recalling dir: $trace_recalling_dir" )
