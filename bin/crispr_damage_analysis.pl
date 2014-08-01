@@ -24,7 +24,7 @@ my $log_level = $INFO;
 
 my ($seq_filename,  $scf_filename, $het_scf_filename,
     $target_start,  $target_end,   $target_chr,
-    $target_strand, $species,      $dir
+    $target_strand, $species,
 );
 GetOptions(
     'help'            => sub { pod2usage( -verbose => 1 ) },
@@ -97,7 +97,7 @@ containing the variant sequence.
 sub variant_scf_to_fasta {
     my $scf_file = shift;
 
-    my %params = (
+    my %variant_params = (
         scf_file      => $scf_file,
         species       => $species,
         base_dir      => $work_dir,
@@ -107,7 +107,7 @@ sub variant_scf_to_fasta {
         target_strand => $target_strand,
     );
 
-    my $scf_converter = HTGT::QC::Util::SCFVariationSeq->new( %params );
+    my $scf_converter = HTGT::QC::Util::SCFVariationSeq->new( %variant_params );
 
     return $scf_converter->get_seq_from_scf;
 }
