@@ -20,7 +20,7 @@ use File::Compare qw( compare_text compare );
 use Log::Log4perl ':levels';
 use YAML::Any qw( LoadFile );
 
-Log::Log4perl->easy_init( $WARN );
+Log::Log4perl->easy_init( $ERROR );
 
 use_ok 'HTGT::QC::Util::CrisprDamageVEP';
 

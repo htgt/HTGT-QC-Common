@@ -19,7 +19,7 @@ use FindBin;
 use YAML::Any qw( LoadFile );
 use Log::Log4perl ':levels';
 
-Log::Log4perl->easy_init( $WARN );
+Log::Log4perl->easy_init( $ERROR );
 
 use_ok 'HTGT::QC::Util::MergeVariantsVCF';
 
