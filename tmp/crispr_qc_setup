@@ -1,3 +1,0 @@
-export PATH=/software/vertres/bin-external/bwa-0.7.5a-r406:$PATH
-export PATH=/opt/t87/global/software/ensembl-tools-release-75/scripts/variant_effect_predictor:$PATH
-export PATH=/software/vertres/bin-external/samtools-0.2.0-rc8/bin:$PATH
