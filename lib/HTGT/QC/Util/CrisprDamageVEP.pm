@@ -15,6 +15,7 @@ Try to predict the effect of the damage using Ensemble's Varient Effect Predicto
 
 use Moose;
 use HTGT::QC::Util::DrawPileupAlignment;
+use HTGT::QC::Util::MergeVariantsVCF;
 use Bio::SeqIO;
 use MooseX::Types::Path::Class::MoreCoercions qw/AbsDir/;
 use IPC::Run 'run';
@@ -88,7 +89,7 @@ has sam_file => (
 has [
     'bam_file', 'filtered_bam_file', 'bcf_file',      'pileup_file',
     'vcf_file', 'vep_file',          'vep_html_file', 'vcf_file_target_region',
-    'ref_aa_file', 'mut_aa_file',
+    'ref_aa_file', 'mut_aa_file', 'non_merged_vcf_file'
     ] => (
     is  => 'rw',
     isa => 'Path::Class::File',
@@ -143,6 +144,7 @@ sub analyse {
     $self->parse_pileup_file;
     $self->variant_calling;
     $self->target_region_vcf_file;
+    $self->merge_variants;
     $self->variant_effect_predictor;
 
     return;
@@ -430,6 +432,31 @@ sub target_region_vcf_file {
             "Failed to filter vcf file, see log file: $log_file" );
 
     $self->vcf_file_target_region( $filtered_vcf_file );
+    return;
+}
+
+=head2 merge_variants
+
+
+=cut
+sub merge_variants {
+    my ( $self ) = @_;
+
+    my $work_dir = $self->dir->subdir( 'merge_vcf' );
+    $work_dir->mkpath;
+    my $merge_vcf_util = HTGT::QC::Util::MergeVariantsVCF->new(
+        vcf_file => $self->vcf_file_target_region->absolute,
+        dir      => $work_dir,
+        species  => $self->species,
+    );
+
+    my $merged_vcf = $merge_vcf_util->create_merged_vcf;
+
+    if ( $merged_vcf ) {
+        $self->non_merged_vcf_file( $self->vcf_file_target_region );
+        $self->vcf_file_target_region( $merged_vcf );
+    }
+
     return;
 }
 
