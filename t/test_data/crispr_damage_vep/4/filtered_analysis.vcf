@@ -1,7 +1,7 @@
 ##fileformat=VCFv4.2
 ##FILTER=<ID=PASS,Description="All filters passed">
 ##samtoolsVersion=0.2.0-rc8+htslib-0.2.0-rc8
-##samtoolsCommand=samtools mpileup -g -Q 0 -f /lustre/scratch109/blastdb/Users/team87/Human/bwa/Homo_sapiens.GRCh37.toplevel.clean_chr_names.fa /lustre/scratch109/sanger/team87/lims2_crispr_es_qc/1EC0414A-0B45-11E4-B117-24522CEFA7E5/HUEPD0012_1_H02/alignment_filtered.bam
+##samtoolsCommand=samtools mpileup -g -Q 0 -f /lustre/scratch109/blastdb/Users/team87/Human/bwa/Homo_sapiens.GRCh37.toplevel.clean_chr_names.fa /tmp/4ZyqPAgQdD/alignment_filtered.bam
 ##reference=file:///lustre/scratch109/blastdb/Users/team87/Human/bwa/Homo_sapiens.GRCh37.toplevel.clean_chr_names.fa
 ##contig=<ID=10,length=135534747>
 ##contig=<ID=11,length=135006516>
@@ -112,18 +112,9 @@
 ##INFO=<ID=HWE,Number=1,Type=Float,Description="Chi^2 based HWE test P-value based on G3">
 ##INFO=<ID=DP4,Number=4,Type=Integer,Description="Number of high-quality ref-forward , ref-reverse, alt-forward and alt-reverse bases">
 ##bcftools_callVersion=0.2.0-rc8+htslib-0.2.0-rc8
-##bcftools_callCommand=call -v -c -p 1 /lustre/scratch109/sanger/team87/lims2_crispr_es_qc/1EC0414A-0B45-11E4-B117-24522CEFA7E5/HUEPD0012_1_H02/raw_analysis.bcf
+##bcftools_callCommand=call -v -c -p 1 /tmp/4ZyqPAgQdD/raw_analysis.bcf
 ##bcftools_viewVersion=0.2.0-rc8+htslib-0.2.0-rc8
-##bcftools_viewCommand=view -O b /lustre/scratch109/sanger/team87/lims2_crispr_es_qc/1EC0414A-0B45-11E4-B117-24522CEFA7E5/HUEPD0012_1_H02/analysis.vcf
-##bcftools_viewCommand=view -r 2:48018155-48018237 /lustre/scratch109/sanger/team87/lims2_crispr_es_qc/1EC0414A-0B45-11E4-B117-24522CEFA7E5/HUEPD0012_1_H02/analysis.bcf
-#CHROM	POS	ID	REF	ALT	QUAL	FILTER	INFO	FORMAT	/lustre/scratch109/sanger/team87/lims2_crispr_es_qc/1EC0414A-0B45-11E4-B117-24522CEFA7E5/HUEPD0012_1_H02/alignment_filtered.bam
-2	48018201	.	G	GGAAA	0.00192637	.	INDEL;IDV=1;IMF=1;DP=1;SGB=-0.379885;MQ0F=0;AF1=1;AC1=2;DP4=0,0,0,1;MQ=60;FQ=-38.981	GT:PL	0/0:4,3,0
-2	48018202	.	T	TCAG	0.00192637	.	INDEL;IDV=1;IMF=1;DP=1;SGB=-0.379885;MQ0F=0;AF1=1;AC1=2;DP4=0,0,0,1;MQ=60;FQ=-38.981	GT:PL	0/0:4,3,0
-2	48018203	.	T	TCCG	0.00192637	.	INDEL;IDV=1;IMF=1;DP=1;SGB=-0.379885;MQ0F=0;AF1=1;AC1=2;DP4=0,0,0,1;MQ=60;FQ=-38.981	GT:PL	0/0:4,3,0
-2	48018205	.	T	G	30.0164	.	DP=1;SGB=-0.379885;MQ0F=0;AF1=1;AC1=2;DP4=0,0,0,1;MQ=60;FQ=-29.9901	GT:PL	1/1:60,3,0
-2	48018208	.	G	C	30.0164	.	DP=1;SGB=-0.379885;MQ0F=0;AF1=1;AC1=2;DP4=0,0,0,1;MQ=60;FQ=-29.9901	GT:PL	1/1:60,3,0
-2	48018211	.	G	GT	0.00192637	.	INDEL;IDV=1;IMF=1;DP=1;SGB=-0.379885;MQ0F=0;AF1=1;AC1=2;DP4=0,0,0,1;MQ=60;FQ=-38.981	GT:PL	0/0:4,3,0
-2	48018215	.	G	GGAAATCAGT	0.00192637	.	INDEL;IDV=1;IMF=1;DP=1;SGB=-0.379885;MQ0F=0;AF1=1;AC1=2;DP4=0,0,0,1;MQ=60;FQ=-38.981	GT:PL	0/0:4,3,0
-2	48018217	.	C	CGTGTT	0.00192637	.	INDEL;IDV=1;IMF=1;DP=1;SGB=-0.379885;MQ0F=0;AF1=1;AC1=2;DP4=0,0,0,1;MQ=60;FQ=-38.981	GT:PL	0/0:4,3,0
-2	48018219	.	A	ATGTAC	0.00192637	.	INDEL;IDV=1;IMF=1;DP=1;SGB=-0.379885;MQ0F=0;AF1=1;AC1=2;DP4=0,0,0,1;MQ=60;FQ=-38.981	GT:PL	0/0:4,3,0
-2	48018220	.	A	AGTTT	0.00192637	.	INDEL;IDV=1;IMF=1;DP=1;SGB=-0.379885;MQ0F=0;AF1=1;AC1=2;DP4=0,0,0,1;MQ=60;FQ=-38.981	GT:PL	0/0:4,3,0
+##bcftools_viewCommand=view -O b /tmp/4ZyqPAgQdD/analysis.vcf
+##bcftools_viewCommand=view -r 2:48018155-48018237 /tmp/4ZyqPAgQdD/analysis.bcf
+#CHROM	POS	ID	REF	ALT	QUAL	FILTER	INFO	FORMAT	/tmp/4ZyqPAgQdD/alignment_filtered.bam
+2	48018201	.	GTTTTTTGATGACAGCCCAA	GGAAATCAGTCCGTGTTCATGTACAGGAAATCAGTCCGTGTTCATGTACAGTTT	.	.	.	.	.
