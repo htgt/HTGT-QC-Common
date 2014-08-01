@@ -14,6 +14,7 @@ my %WriteMakefileArgs = (
   "BUILD_REQUIRES" => {
     "Bio::Seq" => 0,
     "English" => 0,
+    "File::Compare" => 0,
     "File::Find" => 0,
     "File::Temp" => 0,
     "FindBin" => 0,
@@ -27,7 +28,9 @@ my %WriteMakefileArgs = (
   "DISTNAME" => "HTGT-QC-Common",
   "EXE_FILES" => [
     "bin/crispr_allele_damage.pl",
-    "bin/fetch-seq-reads.sh"
+    "bin/fetch-seq-reads.sh",
+    "bin/crispr_damage_analysis.pl",
+    "bin/merge_vcf_variants.pl"
   ],
   "LICENSE" => "perl",
   "NAME" => "HTGT::QC::Common",
@@ -39,14 +42,15 @@ my %WriteMakefileArgs = (
     "Const::Fast" => 0,
     "Data::Dump" => 0,
     "Data::Dumper" => 0,
+    "Data::UUID" => 0,
     "DesignCreate::Util::Exonerate" => 0,
+    "Exporter" => 0,
     "File::Which" => 0,
     "Getopt::Long" => 0,
     "IO::Handle" => 0,
     "IPC::Run" => 0,
     "IPC::System::Simple" => 0,
     "Iterator::Simple" => 0,
-    "LIMS2::Model" => 0,
     "List::MoreUtils" => 0,
     "List::Util" => 0,
     "Log::Log4perl" => 0,
@@ -70,7 +74,7 @@ my %WriteMakefileArgs = (
     "strict" => 0,
     "warnings" => 0
   },
-  "VERSION" => "0.022",
+  "VERSION" => "0.023",
   "test" => {
     "TESTS" => "t/*.t"
   }

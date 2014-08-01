@@ -1,0 +1,14 @@
+## ENSEMBL VARIANT EFFECT PREDICTOR v75
+## Output produced at 2014-08-01 08:40:44
+## Connected to homo_sapiens_core_75_37 on ensembldb.ensembl.org
+## Using cache in /lustre/scratch109/blastdb/Ensembl/vep/homo_sapiens/75
+## Using API version 75, DB version 75
+## Extra column keys:
+## CANONICAL : Indicates if transcript is canonical for this gene
+## DISTANCE : Shortest distance from variant to transcript
+## STRAND : Strand of the feature (1/-1)
+## SYMBOL : Gene symbol (e.g. HGNC)
+## SYMBOL_SOURCE : Source of gene symbol
+#Uploaded_variation	Location	Allele	Gene	Feature	Feature_type	Consequence	cDNA_position	CDS_position	Protein_position	Amino_acids	Codons	Existing_variation	Extra
+2_48018202_TTTTTTGATGACAGCCCAA/GAAATCAGTCCGTGTTCATGTACAGGAAATCAGTCCGTGTTCATGTACAGTTT	2:48018202-48018220	GAAATCAGTCCGTGTTCATGTACAGGAAATCAGTCCGTGTTCATGTACAGTTT	ENSG00000138081	ENST00000405808	Transcript	intron_variant,feature_elongation	-	-	-	-	-	-	STRAND=-1;SYMBOL=FBXO11;SYMBOL_SOURCE=HGNC
+2_48018202_TTTTTTGATGACAGCCCAA/GAAATCAGTCCGTGTTCATGTACAGGAAATCAGTCCGTGTTCATGTACAGTTT	2:48018202-48018220	GAAATCAGTCCGTGTTCATGTACAGGAAATCAGTCCGTGTTCATGTACAGTTT	ENSG00000116062	ENST00000234420	Transcript	frameshift_variant,feature_elongation	549-567	397-415	133-139	-	-	-	STRAND=1;SYMBOL=MSH6;CANONICAL=YES;SYMBOL_SOURCE=HGNC

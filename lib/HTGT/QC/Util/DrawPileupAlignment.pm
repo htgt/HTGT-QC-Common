@@ -1,7 +1,7 @@
 package HTGT::QC::Util::DrawPileupAlignment;
 ## no critic(RequireUseStrict,RequireUseWarnings)
 {
-    $HTGT::QC::Util::DrawPileupAlignment::VERSION = '0.022';
+    $HTGT::QC::Util::DrawPileupAlignment::VERSION = '0.023';
 }
 ## use critic
 
@@ -24,6 +24,11 @@ use Moose;
 use MooseX::Types::Path::Class::MoreCoercions qw/AbsFile AbsDir/;
 use Const::Fast;
 use IPC::Run 'run';
+use Bio::SeqIO;
+use HTGT::QC::Constants qw(
+    $SAMTOOLS_CMD
+    %BWA_REF_GENOMES
+);
 use namespace::autoclean;
 
 with qw( MooseX::Log::Log4perl );
@@ -35,14 +40,6 @@ const my %INS_BASE_CODE => (
     C => 'Y',
     G => 'Z',
     X => 'X',
-);
-
-const my $SAMTOOLS_CMD => $ENV{SAMTOOLS_CMD}
-    // '/software/vertres/bin-external/samtools-0.2.0-rc8/bin/samtools';
-
-const my %BWA_REF_GENOMES => (
-    human => '/lustre/scratch109/blastdb/Users/team87/Human/bwa/Homo_sapiens.GRCh37.toplevel.clean_chr_names.fa',
-    mouse => '/lustre/scratch109/blastdb/Users/team87/Mouse/bwa/Mus_musculus.GRCm38.toplevel.clean_chr_names.fa',
 );
 
 has species => (
@@ -409,7 +406,7 @@ sub calculate_base {
     if ( $read =~ /[.,]/ ) {
         return $ref;
     }
-    elsif ( $read =~ /^([A-za-z])$/ ) {
+    elsif ( $read =~ /^([A-Za-z])$/ ) {
         return lc($1);
     }
     elsif ( $read eq '*' ) {
@@ -466,7 +463,7 @@ sub add_insertion {
 
     return unless exists $self->seqs->{$seq_name};
     my $base_to_replace = substr( $self->seqs->{$seq_name}, $position, 1 );
-    my $replacement_base = $INS_BASE_CODE{ $base_to_replace };
+    my $replacement_base = $INS_BASE_CODE{ uc( $base_to_replace ) };
 
     substr( $self->seqs->{$seq_name}, $position, 1, $replacement_base);
 

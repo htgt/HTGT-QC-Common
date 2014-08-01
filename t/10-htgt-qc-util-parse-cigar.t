@@ -1,12 +1,11 @@
 #!/usr/bin/env perl
-
 use strict;
 use warnings FATAL => 'all';
 
 use Test::Most;
 use Log::Log4perl qw( :levels );
 
-Log::Log4perl->easy_init( $TRACE );
+Log::Log4perl->easy_init( $WARN );
 
 die_on_fail;
 

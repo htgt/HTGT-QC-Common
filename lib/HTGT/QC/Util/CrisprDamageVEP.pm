@@ -1,7 +1,7 @@
 package HTGT::QC::Util::CrisprDamageVEP;
 ## no critic(RequireUseStrict,RequireUseWarnings)
 {
-    $HTGT::QC::Util::CrisprDamageVEP::VERSION = '0.022';
+    $HTGT::QC::Util::CrisprDamageVEP::VERSION = '0.023';
 }
 ## use critic
 
@@ -21,29 +21,21 @@ Try to predict the effect of the damage using Ensemble's Varient Effect Predicto
 
 use Moose;
 use HTGT::QC::Util::DrawPileupAlignment;
+use HTGT::QC::Util::MergeVariantsVCF;
 use Bio::SeqIO;
 use MooseX::Types::Path::Class::MoreCoercions qw/AbsDir/;
 use IPC::Run 'run';
-use Const::Fast;
+use HTGT::QC::Constants qw(
+    $BWA_MEM_CMD
+    $SAMTOOLS_CMD
+    $BCFTOOLS_CMD
+    $VEP_CMD
+    $VEP_CACHE_DIR
+    %BWA_REF_GENOMES
+);
 use namespace::autoclean;
 
 with qw( MooseX::Log::Log4perl );
-
-const my $BWA_MEM_CMD  => $ENV{BWA_MEM_CMD}
-    // '/software/vertres/bin-external/bwa-0.7.5a-r406/bwa';
-const my $SAMTOOLS_CMD => $ENV{SAMTOOLS_CMD}
-    // '/software/vertres/bin-external/samtools-0.2.0-rc8/bin/samtools';
-const my $BCFTOOLS_CMD => $ENV{BCFTOOLS_CMD}
-    // '/software/vertres/bin-external/samtools-0.2.0-rc8/bin/bcftools';
-const my $VEP_CMD => $ENV{VEP_CMD}
-    // '/opt/t87/global/software/ensembl-tools-release-75/scripts/variant_effect_predictor/variant_effect_predictor.pl';
-const my $VEP_CACHE_DIR => $ENV{VEP_CACHE_DIR}
-    // '/lustre/scratch109/blastdb/Ensembl/vep';
-
-const my %BWA_REF_GENOMES => (
-    human => '/lustre/scratch109/blastdb/Users/team87/Human/bwa/Homo_sapiens.GRCh37.toplevel.clean_chr_names.fa',
-    mouse => '/lustre/scratch109/blastdb/Users/team87/Mouse/bwa/Mus_musculus.GRCm38.toplevel.clean_chr_names.fa',
-);
 
 has species => (
     is       => 'ro',
@@ -103,7 +95,7 @@ has sam_file => (
 has [
     'bam_file', 'filtered_bam_file', 'bcf_file',      'pileup_file',
     'vcf_file', 'vep_file',          'vep_html_file', 'vcf_file_target_region',
-    'ref_aa_file', 'mut_aa_file',
+    'ref_aa_file', 'mut_aa_file', 'non_merged_vcf_file'
     ] => (
     is  => 'rw',
     isa => 'Path::Class::File',
@@ -158,6 +150,7 @@ sub analyse {
     $self->parse_pileup_file;
     $self->variant_calling;
     $self->target_region_vcf_file;
+    $self->merge_variants;
     $self->variant_effect_predictor;
 
     return;
@@ -445,6 +438,31 @@ sub target_region_vcf_file {
             "Failed to filter vcf file, see log file: $log_file" );
 
     $self->vcf_file_target_region( $filtered_vcf_file );
+    return;
+}
+
+=head2 merge_variants
+
+
+=cut
+sub merge_variants {
+    my ( $self ) = @_;
+
+    my $work_dir = $self->dir->subdir( 'merge_vcf' );
+    $work_dir->mkpath;
+    my $merge_vcf_util = HTGT::QC::Util::MergeVariantsVCF->new(
+        vcf_file => $self->vcf_file_target_region->absolute,
+        dir      => $work_dir,
+        species  => $self->species,
+    );
+
+    my $merged_vcf = $merge_vcf_util->create_merged_vcf;
+
+    if ( $merged_vcf ) {
+        $self->non_merged_vcf_file( $self->vcf_file_target_region );
+        $self->vcf_file_target_region( $merged_vcf );
+    }
+
     return;
 }
 
