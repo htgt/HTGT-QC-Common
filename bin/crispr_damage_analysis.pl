@@ -24,7 +24,7 @@ my $log_level = $INFO;
 
 my ($seq_filename,  $scf_filename, $het_scf_filename,
     $target_start,  $target_end,   $target_chr,
-    $target_strand, $species,
+    $target_strand, $species, $dir_name,
 );
 GetOptions(
     'help'            => sub { pod2usage( -verbose => 1 ) },
@@ -38,6 +38,7 @@ GetOptions(
     'target-chr=s'    => \$target_chr,
     'target-strand=s' => \$target_strand,
     'species=s'       => \$species,
+    'dir=s'           => \$dir_name,
 ) or pod2usage(2);
 
 pod2usage('Must provide target location information')
@@ -45,7 +46,7 @@ pod2usage('Must provide target location information')
 
 Log::Log4perl->easy_init( { level => $log_level, layout => '%p %m%n' } );
 
-my $work_dir = dir( $DEFAULT_QC_DIR )->subdir( Data::UUID->new->create_str );
+my $work_dir = dir( $DEFAULT_QC_DIR )->subdir( $dir_name || Data::UUID->new->create_str );
 $work_dir->mkpath;
 INFO( "Created work directory $work_dir" );
 
@@ -160,6 +161,7 @@ crispr_damage_analysis.pl - Analyse crispr damage using one primer read
       --target-chr                * Chromosome name of target region
       --target-strand             * Strand of target region
       --species                   * Species, either Mouse or Human supported
+      --dir                       Set name of work directory
 
 The parameters marked with a * are required.
 You must specify a sequence-file or a scf-file.
