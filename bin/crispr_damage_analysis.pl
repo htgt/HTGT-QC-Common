@@ -15,7 +15,7 @@ use Data::UUID;
 use Try::Tiny;
 
 const my $EXTRACT_SEQ_CMD => $ENV{EXTRACT_SEQ_CMD}
-    // '/software/badger/bin/extract_seq';
+    // '/opt/t87/global/software/io_lib/bin/extract_seq';
 
 const my $DEFAULT_QC_DIR => $ENV{ DEFAULT_CRISPR_DAMAGE_QC_DIR }
     // '/lustre/scratch109/sanger/team87/imits_crispr_damage_qc';
