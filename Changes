@@ -1,3 +1,8 @@
+0.024     2014-08-05 14:36:30 Europe/London
+
+    Update crispr_damage_analysis.pl script to take optional dir argument plus
+        point to version of staden installed in the vms.
+
 0.023     2014-08-01 08:55:18 Europe/London
 
     Add module that takes the variant sequence from a SCF trace file.
