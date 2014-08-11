@@ -19,6 +19,7 @@ use MooseX::Types::Path::Class::MoreCoercions qw/AbsFile AbsDir/;
 use Const::Fast;
 use IPC::Run 'run';
 use Bio::SeqIO;
+use YAML::Any qw( DumpFile );
 use HTGT::QC::Constants qw(
     $SAMTOOLS_CMD
     %BWA_REF_GENOMES
@@ -109,6 +110,7 @@ has dir => (
     is       => 'ro',
     isa      => AbsDir,
     coerce   => 1,
+    required => 1,
 );
 
 =head2 calculate_pileup_alignment
@@ -181,11 +183,30 @@ sub calculate_pileup_alignment {
     }
     $self->parse_insertions;
 
-    if ( $self->dir ) {
-        my $alignments_file = $self->dir->file('alignment.txt')->absolute;
-        my $output_fh = $alignments_file->openw;
-        print $output_fh $_ . "\n" for values %{ $self->seqs };
-    }
+    $self->create_output_files;
+
+    return;
+}
+
+=head2 create_output_files
+
+Create output files holding data required to build alignment text.
+
+=cut
+sub create_output_files {
+    my ( $self ) = @_;
+
+    my $alignments_file = $self->dir->file('alignment.txt')->absolute;
+    my $output_fh = $alignments_file->openw;
+    print $output_fh $_ . "\n" for values %{ $self->seqs };
+
+    my %data;
+    my $alignment_data_file = $self->dir->file('alignment_data.yaml')->absolute;
+    $data{target_sequence_start} = $self->genome_start;
+    $data{target_sequence_end}   = $self->genome_end;
+    $data{insertions}            = $self->insertions;
+    $data{deletions}             = $self->deletions;
+    DumpFile( $alignment_data_file, \%data );
 
     return;
 }
