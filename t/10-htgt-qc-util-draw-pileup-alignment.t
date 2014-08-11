@@ -53,6 +53,10 @@ my $data_dir = dir($FindBin::Bin)->absolute->subdir('test_data/draw_pileup_align
             is $pileup_parser->seqs->{$seq_type}, $alignments->{$seq_type},
                 "The $seq_type sequence is correct";
         }
+
+        ok $temp_dir->contains( $temp_dir->file('alignment.txt') ), 'created alignment.txt file';
+        ok $temp_dir->contains( $temp_dir->file('alignment_data.yaml') ), 'created alignment_data.yaml file';
+
     }
 
 }
