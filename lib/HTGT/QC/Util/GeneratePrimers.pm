@@ -136,7 +136,7 @@ has valid_oligo_pairs => (
     traits  => [ 'Array' ],
     default => sub { [] },
     handles => {
-        add_valid_oligo_pair => 'push',
+        add_valid_oligo_pair   => 'push',
         have_valid_oligo_pairs => 'count',
     }
 );
@@ -151,6 +151,7 @@ sub generate_primers {
     $self->log->info( 'Starting generate primers process' );
 
     my $result = $self->run_primer3;
+    return unless $result;
     $self->parse_primer3_results( $result );
 
     if ( $self->check_genomic_specificity ) {
@@ -159,7 +160,7 @@ sub generate_primers {
 
         if ( $self->have_valid_oligo_pairs ) {
             $self->log->info('Found oligo pair, passed genomic specificity check');
-            return $self->valid_oligo_pairs->[0];
+            return $self->valid_oligo_pairs;
         }
         else {
             $self->log->warn('Primer3 did not find any primer pairs');
@@ -169,7 +170,7 @@ sub generate_primers {
     else {
         if ( $self->have_oligo_pairs ) {
             $self->log->info('Found oligo pair, not done genomic specificity check');
-            return $self->oligo_pairs->[0];
+            return $self->oligo_pairs;
 
         }
         else {
@@ -235,6 +236,7 @@ sub run_primer3 {
     else {
         # TODO info from $primer3_explain?
         $self->log->warn( "Failed to generate primer pairs" );
+        return;
     }
 
     return $result;
