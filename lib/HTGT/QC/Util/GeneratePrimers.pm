@@ -206,7 +206,7 @@ These will mostly be fixed...
 =cut
 sub run_primer3 {
     my ( $self ) = @_;
-    $self->log->info( 'Running Primer3' );
+    $self->log->debug( 'Running Primer3' );
 
     my %primer3_params = ( configfile => $self->primer3_config_file->stringify );
     $primer3_params{primer_product_size_range} = $self->primer_product_size_range;
@@ -231,7 +231,7 @@ sub run_primer3 {
     die( "Error running primer3, see logfile: $log_file" ) unless $result;
 
     if ( $result->num_primer_pairs ) {
-        $self->log->info( "primer pairs found: " . $result->num_primer_pairs );
+        $self->log->debug( "primer pairs found: " . $result->num_primer_pairs );
     }
     else {
         # TODO info from $primer3_explain?
@@ -250,7 +250,7 @@ It outputs information about each primer pair.
 =cut
 sub parse_primer3_results {
     my ( $self, $result ) = @_;
-    $self->log->info( 'Parsing Primer3 results' );
+    $self->log->debug( 'Parsing Primer3 results' );
 
     while ( my $pair = $result->next_primer_pair ) {
         my $forward_primer = $self->parse_primer( $pair->forward_primer, 'forward' );
@@ -335,7 +335,7 @@ desc
 =cut
 sub filter_primers {
     my ( $self ) = @_;
-    $self->log->info( 'Filtering primers of genomic specificity' );
+    $self->log->debug( 'Filtering primers of genomic specificity' );
 
     for my $oligo_pair ( $self->all_oligo_pairs ) {
 
@@ -363,7 +363,7 @@ sub filter_primers {
 =cut
 sub run_bwa {
     my $self = shift;
-    $self->log->info( 'Running BWA aln' );
+    $self->log->debug( 'Running BWA aln' );
 
     my $bwa_query_file = $self->define_bwa_query_file;
 
