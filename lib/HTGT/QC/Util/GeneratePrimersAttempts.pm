@@ -21,10 +21,7 @@ use Path::Class;
 use Try::Tiny;
 use namespace::autoclean;
 
-with qw(
-MooseX::Log::Log4perl
-DesignCreate::Role::EnsEMBL
-);
+with qw( MooseX::Log::Log4perl );
 
 has base_dir => (
     is       => 'ro',
@@ -51,6 +48,7 @@ has chromosome => (
     required => 1,
 );
 
+# TODO start always before end
 has [ 'target_start', 'target_end' ] => (
     is       => 'ro',
     isa      => 'Int',
@@ -78,6 +76,13 @@ sub _build_ensembl_util {
 # Primer Regions
 #
 
+# if we have a forward primer, only look for reverse primer
+has forward_primer => (
+    is        => 'ro',
+    isa       => 'HashRef',
+    predicate => 'have_forward_primer',
+);
+
 has [
     'five_prime_region_size',   'three_prime_region_size',
     'five_prime_region_offset', 'three_prime_region_offset'
@@ -99,6 +104,11 @@ has repeat_mask_class => (
     },
 );
 
+has [ 'max_five_prime_region_size', 'max_three_prime_region_size' ] => (
+    is  => 'ro',
+    isa => 'Int',
+);
+
 #
 # Primer3 Parameters
 #
@@ -109,17 +119,37 @@ has primer3_config_file => (
     required => 1,
 );
 
-# any additional parameters not specified in primer3 config file
+# any additional optional parameters not specified in primer3 config file
+# passed directly to Primer3 Util module
 has additional_primer3_params => (
     is      => 'ro',
     isa     => 'HashRef',
     default => sub{ {} },
 );
 
-# set custom primer product size ranges, normally we can work it out
+# Set custom primer product size ranges, normally we can work it out.
+# Should be left blank unless you have strict requirements for the
+# product size, may not work with retry attempts
 has primer_product_size_range => (
+    is  => 'rw',
+    isa => 'Str',
+);
+
+has product_size_avoid => (
     is  => 'ro',
     isa => 'Int',
+);
+
+has product_size_avoid_offset => (
+    is      => 'ro',
+    isa     => 'Int',
+    default => 30,
+);
+
+has product_size_array => (
+    is      => 'rw',
+    isa     => 'ArrayRef',
+    default => sub{ [] },
 );
 
 #
@@ -155,10 +185,14 @@ sub find_primers {
     my ( $self ) = @_;
     $self->log->info( 'ATTEMPT ' . $self->current_attempt . ' at primer generation' );
 
+    if ( $self->have_forward_primer ) {
+        $self->additional_primer3_params->{sequence_primer} = $self->forward_primer->{oligo_seq};
+    }
+
     my $primers;
     $primers = $self->generate_primer_attempt;
     while ( !$primers && $self->current_attempt < $self->retry_attempts ) {
-        $self->setup_new_attempt;
+        last unless $self->setup_new_attempt;
         $self->log->info( '--------' );
         $self->log->info( 'ATTEMPT ' . $self->current_attempt . ' at primer generation' );
         $primers = $self->generate_primer_attempt;
@@ -169,21 +203,28 @@ sub find_primers {
 =head2 generate_primer_attempt
 
 Run the HTGT::QC::Util::GeneratePrimers modules.
+Grab target sequence slice from EnsEMBL.
 
 =cut
 sub generate_primer_attempt {
     my ( $self ) = @_;
 
-    my $start = $self->target_start - $self->five_prime_region_size;
-    my $end   = $self->target_end + $self->three_prime_region_size;
+    my ( $start, $end );
+    if ( $self->strand == 1 ) {
+        $start = $self->target_start - $self->five_prime_region_size;
+        $end   = $self->target_end + $self->three_prime_region_size;
+    }
+    else {
+        $start = $self->target_start - $self->three_prime_region_size;
+        $end   = $self->target_end + $self->five_prime_region_size;
+    }
     my $seq_slice = $self->build_region_slice( $start, $end );
     my $bio_seq = Bio::Seq->new( -display_id => 'primer_search_region', -seq => $seq_slice->seq );
 
     my $work_dir = $self->base_dir->subdir( $self->current_attempt );
     $work_dir->mkpath;
     my $target_string = $self->generate_target_string;
-    my $primer_product_size_range = $self->primer_product_size_range
-        || $self->generate_primer_product_size_range( $start, $end );
+    $self->generate_primer_product_size_range( $start, $end );
 
     my $util = HTGT::QC::Util::GeneratePrimers->new(
         dir                       => $work_dir,
@@ -194,7 +235,7 @@ sub generate_primer_attempt {
         strand                    => $self->strand,
         primer3_config_file       => $self->primer3_config_file,
         primer3_target_string     => $target_string,
-        primer_product_size_range => $primer_product_size_range,
+        primer_product_size_range => join( ' ', @{ $self->product_size_array } ),
         additional_primer3_params => $self->additional_primer3_params,
     );
 
@@ -211,7 +252,9 @@ sub generate_primer_attempt {
 
 =head2 setup_new_attempt
 
-Expand primer search region.
+Expand primer search region after failing to find primers.
+If we have a forward primer ( so are only looking for a reverse primer )
+we do not expand the five prime region.
 
 =cut
 sub setup_new_attempt {
@@ -220,10 +263,35 @@ sub setup_new_attempt {
     $self->current_attempt( $self->current_attempt + 1 );
     $self->log->info( 'Last attempt failed, expanding primer search region' );
 
-    $self->five_prime_region_size( $self->five_prime_region_size + $self->primer_search_region_expand );
-    $self->three_prime_region_size( $self->three_prime_region_size + $self->primer_search_region_expand );
+    my $new_five_prime_region_size;
+    if ( $self->have_forward_primer ) {
+        $new_five_prime_region_size = $self->five_prime_region_size;
+    }
+    else {
+        $new_five_prime_region_size = $self->five_prime_region_size + $self->primer_search_region_expand;
+    }
 
-    return;
+    my $new_three_prime_region_size = $self->three_prime_region_size + $self->primer_search_region_expand;
+
+    if (   $self->max_five_prime_region_size
+        && $new_five_prime_region_size > $self->max_five_prime_region_size )
+    {
+        $self->log->warn( 'Can not expand five prime any more, hitting used specified limit: '
+                . $self->max_five_prime_region_size );
+        return;
+    }
+    elsif ( $self->max_three_prime_region_size
+        &&  $new_three_prime_region_size > $self->max_three_prime_region_size )
+    {
+        $self->log->warn( 'Can not expand three prime any more, hitting used specified limit: '
+                . $self->max_three_prime_region_size );
+        return;
+    }
+
+    $self->five_prime_region_size( $new_five_prime_region_size );
+    $self->three_prime_region_size( $new_three_prime_region_size );
+
+    return 1;
 }
 
 =head2 generate_target_string
@@ -256,19 +324,60 @@ It is in the form: <x>-<y>
 <x> is the minimum size
 <y> is the maximum size
 
-You can specify a list of ranges ( e.g. 100-200,400-500 )
+You can specify a list of ranges ( e.g. 100-200 400-500 ). If this is done Primer3 tries
+to make products in the first size range, only expanding the the other ranges if it can't anything.
+We use this property when expaning the search region, favoring products that would be produced by
+primers found in the expanded region.
+
+If we have a forward primer specified then the product is always anchored to that primer
+so the calculations for the size range is different.
+
+If we have user specified value ( primer_product_size_range attribute ) always use this.
+
 This is the PRIMER_PRODUCT_SIZE_RANGE parameter sent into Primer3.
 
 =cut
 sub generate_primer_product_size_range {
     my ( $self, $start, $end ) = @_;
 
-    my $min_size = $self->target_end - $self->target_start;
-    my $max_size = $end - $start;
-    my $primer_product_size_range = $min_size . '-' . $max_size;
-    $self->log->debug( "Primer produect size range string: $primer_product_size_range" );
+    # user has set custom primer product size range, always use this
+    if ( $self->primer_product_size_range ) {
+        $self->product_size_array( [ $self->primer_product_size_range ] );
+        return;
+    }
 
-    return $primer_product_size_range;
+    my ( $min_size, $max_size );
+    if ( $self->have_forward_primer ) {
+        my $forward_primer_start = $self->forward_primer->{oligo_start};
+        die ('No start value for forward primer') unless $forward_primer_start;
+
+        $max_size = $end - $forward_primer_start;
+        if ( $self->current_attempt == 1 ) {
+            $min_size = $self->target_end - $forward_primer_start;
+        }
+        else {
+            my $last_size_range = $self->product_size_array->[0];
+            $min_size = ( split( /-/, $last_size_range ) )[1];
+        }
+    }
+    else {
+        $max_size = $end - $start;
+        if ( $self->current_attempt == 1 ) {
+            $min_size = $self->target_end - $self->target_start;
+        }
+        else {
+            my $last_size_range = $self->product_size_array->[0];
+            $min_size = ( split( /-/, $last_size_range ) )[1];
+        }
+    }
+    my $new_size_range = $min_size . '-' . $max_size;
+
+    unshift @{ $self->product_size_array }, $new_size_range;
+    $self->log->info( 'Primer product size ranges: ' . join( ' ', @{ $self->product_size_array } ) );
+
+    $self->process_avoid_product_size if $self->product_size_avoid;
+
+    return;
 }
 
 =head2 build_region_slice
@@ -287,6 +396,46 @@ sub build_region_slice {
     # primer3 expects sequence in a 5' to 3' direction, so reverse compliment if
     # target is on the -ve strand
     return $self->strand == 1 ? $slice : $slice->invert;
+}
+
+=head2 process_avoid_product_size
+
+If user has set a certain size of product to avoid recalculate
+the product size range values to avoid this size.
+
+=cut
+sub process_avoid_product_size {
+    my ( $self ) = @_;
+    
+    my $avoid_min = $self->product_size_avoid - $self->product_size_avoid_offset;
+    my $avoid_max = $self->product_size_avoid + $self->product_size_avoid_offset;
+    my @new_product_size_array;
+
+    for my $range ( @{ $self->product_size_array } ) {
+        my ( $min, $max ) = split( '-', $range );
+
+        # avoid range wholy encompasses range
+        if ( $avoid_min <= $min && $avoid_max >= $max ) {
+            next;
+        }
+        # range does not overlap avoid min / max
+        elsif ( $min >= $avoid_max || $avoid_min >= $max  ) {
+            push @new_product_size_array, $min . '-' . $max;
+            next;
+        }
+
+        if ( $avoid_min > $min && $avoid_min < $max ) {
+            push @new_product_size_array, $min . '-' . $avoid_min;
+        }
+
+        if ( $avoid_max > $min && $avoid_max < $max ) {
+            push @new_product_size_array, $avoid_max . '-' . $max;
+        }
+
+    }
+
+    $self->product_size_array( \@new_product_size_array );
+    return;
 }
 
 __PACKAGE__->meta->make_immutable;
