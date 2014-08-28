@@ -7,6 +7,11 @@ HTGT::QC::Util::GeneratePrimers
 =head1 DESCRIPTION
 
 Generate a primer pair for a given target.
+Input:
+    - Bio::Seq object with the target sequence
+    - Target coordinates
+    - Primer3 parameters
+    - optional genomic specificifty check options
 
 =cut
 
@@ -143,7 +148,7 @@ has valid_oligo_pairs => (
 
 =head2 generate_primers
 
-desc
+Find primers for target region specified inside sequence.
 
 =cut
 sub generate_primers {
@@ -184,24 +189,7 @@ sub generate_primers {
 
 =head2 run_primer3
 
-Possible additional attributes to send to Primer3 Runner
-These will mostly be fixed...
-    'primer_num_return',
-    'primer_min_size',
-    'primer_max_size',
-    'primer_opt_size',
-    'primer_opt_gc_percent',
-    'primer_max_gc',
-    'primer_min_gc',
-    'primer_opt_tm',
-    'primer_max_tm',
-    'primer_min_tm',
-    'primer_lowercase_masking',
-    'primer_explain_flag',
-    'primer_min_three_prime_distance',
-    'primer_product_size_range',
-    'primer_thermodynamic_parameters_path',
-    'primer_gc_clamp',
+Run Primer3 using DesignCreate::Util::Primer3 module.
 
 =cut
 sub run_primer3 {
@@ -330,7 +318,7 @@ sub calculate_oligo_coords_and_sequence {
 
 =head2 filter_primers
 
-desc
+Filter out primers that do not meet the genomic specificity criteria.
 
 =cut
 sub filter_primers {
@@ -359,6 +347,7 @@ sub filter_primers {
 
 =head2 run_bwa
 
+Run bwa aln against all the candidate primers.
 
 =cut
 sub run_bwa {
@@ -369,7 +358,7 @@ sub run_bwa {
 
     my $bwa = DesignCreate::Util::BWA->new(
         query_file        => $bwa_query_file,
-        work_dir          => $self->dir, #TODO this ok?
+        work_dir          => $self->dir,
         species           => $self->species,
         num_bwa_threads   => $self->num_bwa_threads,
     );
@@ -378,7 +367,6 @@ sub run_bwa {
         $bwa->run_bwa_checks;
     }
     catch{
-        #TODO need this?
         die("Error running bwa " . $_);
     };
 
@@ -388,6 +376,8 @@ sub run_bwa {
 }
 
 =head2 define_bwa_query_file
+
+Generate a fasta file containing all the candidate primers to run against bwa aln.
 
 =cut
 sub define_bwa_query_file {
