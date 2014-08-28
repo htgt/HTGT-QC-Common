@@ -48,7 +48,6 @@ has chromosome => (
     required => 1,
 );
 
-# TODO start always before end
 has [ 'target_start', 'target_end' ] => (
     is       => 'ro',
     isa      => 'Int',
@@ -135,11 +134,15 @@ has primer_product_size_range => (
     isa => 'Str',
 );
 
+# primer product size you want to avoid
 has product_size_avoid => (
     is  => 'ro',
     isa => 'Int',
 );
 
+# offset around product_size_avoid
+# e.g. if we specify product_size_avoid = 100 then we avoid
+#      product sizes from 70 - 130 by default
 has product_size_avoid_offset => (
     is      => 'ro',
     isa     => 'Int',
@@ -189,15 +192,15 @@ sub find_primers {
         $self->additional_primer3_params->{sequence_primer} = $self->forward_primer->{oligo_seq};
     }
 
-    my $primers;
-    $primers = $self->generate_primer_attempt;
+    my ( $primers, $seq );
+    ( $primers, $seq ) = $self->generate_primer_attempt;
     while ( !$primers && $self->current_attempt < $self->retry_attempts ) {
         last unless $self->setup_new_attempt;
         $self->log->info( '--------' );
         $self->log->info( 'ATTEMPT ' . $self->current_attempt . ' at primer generation' );
-        $primers = $self->generate_primer_attempt;
+        ( $primers, $seq ) = $self->generate_primer_attempt;
     }
-    return $primers;
+    return ( $primers, $seq );
 }
 
 =head2 generate_primer_attempt
@@ -247,7 +250,7 @@ sub generate_primer_attempt {
         $self->log->error("Problem running GeneratePrimers: $_");
     };
 
-    return $primer_data;
+    return ( $primer_data, $bio_seq );
 }
 
 =head2 setup_new_attempt
@@ -255,6 +258,8 @@ sub generate_primer_attempt {
 Expand primer search region after failing to find primers.
 If we have a forward primer ( so are only looking for a reverse primer )
 we do not expand the five prime region.
+
+Return true if we are okay to setup new attempt, otherwise false.
 
 =cut
 sub setup_new_attempt {
@@ -406,7 +411,7 @@ the product size range values to avoid this size.
 =cut
 sub process_avoid_product_size {
     my ( $self ) = @_;
-    
+
     my $avoid_min = $self->product_size_avoid - $self->product_size_avoid_offset;
     my $avoid_max = $self->product_size_avoid + $self->product_size_avoid_offset;
     my @new_product_size_array;
