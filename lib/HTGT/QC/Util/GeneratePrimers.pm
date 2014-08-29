@@ -9,7 +9,7 @@ HTGT::QC::Util::GeneratePrimers
 Generate a primer pair for a given target.
 Input:
     - Bio::Seq object with the target sequence
-    - Target coordinates
+    - Coordinates of sequence in Bio::Seq object
     - Primer3 parameters
     - optional genomic specificifty check options
 
@@ -43,6 +43,7 @@ has bio_seq => (
     required => 1,
 );
 
+# genomic start and end coordinates for the bio_seq
 has [ 'region_start', 'region_end' ] => (
     is       => 'ro',
     isa      => 'Int',
@@ -55,6 +56,7 @@ has species => (
     required => 1,
 );
 
+# strand the target bio_seq belongs to
 has strand => (
     is       => 'ro',
     isa      => 'Int',
@@ -295,8 +297,6 @@ sub calculate_oligo_coords_and_sequence {
     $oligo_data->{target_region_start} = $self->region_start;
     $oligo_data->{target_region_end}   = $self->region_end;
 
-    # TODO check how primers stored in LIMS2, always 5' to 3'?
-    #      if not then all the below has to change
     if ( $self->strand == 1 ) {
         $oligo_data->{oligo_start} = $self->region_start + $primer->start - 1;
         $oligo_data->{oligo_end}   = $self->region_start + $primer->end - 1;
