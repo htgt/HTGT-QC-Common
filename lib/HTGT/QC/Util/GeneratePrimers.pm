@@ -85,6 +85,7 @@ has primer_product_size_range => (
     required => 1,
 );
 
+# hash of extra parameters we will send to DesignCreate::Util::Primer3
 has additional_primer3_params => (
     is      => 'ro',
     isa     => 'HashRef',
@@ -125,6 +126,7 @@ has bwa_matches => (
 # Primer Storage
 #
 
+# Array of all the primer pairs found
 has oligo_pairs => (
     is      => 'rw',
     isa     => 'ArrayRef',
@@ -137,6 +139,7 @@ has oligo_pairs => (
 );
 
 
+# array of the valid primer pairs ( after genomic specificity check )
 has valid_oligo_pairs => (
     is      => 'rw',
     isa     => 'ArrayRef',
