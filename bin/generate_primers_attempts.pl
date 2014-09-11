@@ -9,12 +9,8 @@ use Path::Class;
 
 my $log_level = $WARN;
 
-my ($seq_file,               $dir,                      $species,
-    $start,                  $end,                      $strand,
-    $chromosome,             $p3_config,                $target_string,
-    $five_prime_region_size, $five_prime_region_offset, $three_prime_region_size,
-    $three_prime_region_offset
-);
+my ( $dir, $species, $start, $end, $strand, $chromosome, $p3_config, $five_prime_region_size,
+    $five_prime_region_offset, $three_prime_region_size, $three_prime_region_offset );
 GetOptions(
     'help'            => sub { pod2usage( -verbose => 1 ) },
     'man'             => sub { pod2usage( -verbose => 2 ) },
