@@ -1,0 +1,250 @@
+---
+test_name: 'Primer Pair Finder'
+target_start: 28692718 
+target_end: 28694023
+strand: 1
+species: 'Mouse'
+chromosome: 2
+five_prime_region_size: 300
+five_prime_region_offset: 20
+three_prime_region_size: 300
+three_prime_region_offset: 20
+expected_attempt_number: 1
+num_valid_pairs: 9
+expected_product_size_array:
+    - '1305-1905'
+valid_primers:
+    - forward:
+        gc_content: '40.000'
+        id: forward-1
+        melting_temp: '59.930'
+        offset: 213
+        oligo_direction: forward
+        oligo_end: 28692654
+        oligo_length: 25
+        oligo_seq: TGTTAGAAGTGAAAGGCAAGAGAGA
+        oligo_start: 28692630
+        rank: 1
+        target_region_end: 28694323
+        target_region_start: 28692418
+      reverse:
+        gc_content: '40.000'
+        id: reverse-1
+        melting_temp: '60.163'
+        offset: 1748
+        oligo_direction: reverse
+        oligo_end: 28694189
+        oligo_length: 25
+        oligo_seq: AGAAACCTTTGAGCTGGTTGTACTA
+        oligo_start: 28694165
+        rank: 1
+        target_region_end: 28694323
+        target_region_start: 28692418
+    - forward:
+        gc_content: '40.000'
+        id: forward-2
+        melting_temp: '60.278'
+        offset: 207
+        oligo_direction: forward
+        oligo_end: 28692648
+        oligo_length: 25
+        oligo_seq: CGGAAATGTTAGAAGTGAAAGGCAA
+        oligo_start: 28692624
+        rank: 2
+        target_region_end: 28694323
+        target_region_start: 28692418
+      reverse:
+        gc_content: '44.000'
+        id: reverse-2
+        melting_temp: '60.279'
+        offset: 1854
+        oligo_direction: reverse
+        oligo_end: 28694295
+        oligo_length: 25
+        oligo_seq: CAGATCCAGAGAACAACTACAGTGT
+        oligo_start: 28694271
+        rank: 2
+        target_region_end: 28694323
+        target_region_start: 28692418
+    - forward:
+        gc_content: '40.000'
+        id: forward-3
+        melting_temp: '59.629'
+        offset: 237
+        oligo_direction: forward
+        oligo_end: 28692678
+        oligo_length: 25
+        oligo_seq: AGATTCTCAATAGTGTATTGGCCCT
+        oligo_start: 28692654
+        rank: 3
+        target_region_end: 28694323
+        target_region_start: 28692418
+      reverse:
+        gc_content: '44.000'
+        id: reverse-3
+        melting_temp: '60.515'
+        offset: 1724
+        oligo_direction: reverse
+        oligo_end: 28694165
+        oligo_length: 25
+        oligo_seq: CCAAACCACTGAGGAGGAGAAATAA
+        oligo_start: 28694141
+        rank: 3
+        target_region_end: 28694323
+        target_region_start: 28692418
+    - forward:
+        gc_content: '40.000'
+        id: forward-4
+        melting_temp: '60.745'
+        offset: 201
+        oligo_direction: forward
+        oligo_end: 28692642
+        oligo_length: 25
+        oligo_seq: AAGAGGCGGAAATGTTAGAAGTGAA
+        oligo_start: 28692618
+        rank: 4
+        target_region_end: 28694323
+        target_region_start: 28692418
+      reverse:
+        gc_content: '44.000'
+        id: reverse-4
+        melting_temp: '60.626'
+        offset: 1774
+        oligo_direction: reverse
+        oligo_end: 28694215
+        oligo_length: 25
+        oligo_seq: ATTCTAGAGTTAGTGTGCTTCAGGC
+        oligo_start: 28694191
+        rank: 4
+        target_region_end: 28694323
+        target_region_start: 28692418
+    - forward:
+        gc_content: '44.000'
+        id: forward-5
+        melting_temp: '61.514'
+        offset: 246
+        oligo_direction: forward
+        oligo_end: 28692687
+        oligo_length: 25
+        oligo_seq: ATAGTGTATTGGCCCTAGCGAGAAT
+        oligo_start: 28692663
+        rank: 5
+        target_region_end: 28694323
+        target_region_start: 28692418
+      reverse:
+        gc_content: '40.000'
+        id: reverse-5
+        melting_temp: '59.212'
+        offset: 1731
+        oligo_direction: reverse
+        oligo_end: 28694172
+        oligo_length: 25
+        oligo_seq: ACTGAGGAGGAGAAATAAGAAACCT
+        oligo_start: 28694148
+        rank: 5
+        target_region_end: 28694323
+        target_region_start: 28692418
+    - forward:
+        gc_content: '48.000'
+        id: forward-7
+        melting_temp: '61.811'
+        offset: 181
+        oligo_direction: forward
+        oligo_end: 28692622
+        oligo_length: 25
+        oligo_seq: CTTTCATCAACACGGAGGTCAAGAG
+        oligo_start: 28692598
+        rank: 7
+        target_region_end: 28694323
+        target_region_start: 28692418
+      reverse:
+        gc_content: '48.000'
+        id: reverse-7
+        melting_temp: '61.196'
+        offset: 1675
+        oligo_direction: reverse
+        oligo_end: 28694116
+        oligo_length: 25
+        oligo_seq: GACTGACTTGCCTCCTCATACAATC
+        oligo_start: 28694092
+        rank: 7
+        target_region_end: 28694323
+        target_region_start: 28692418
+    - forward:
+        gc_content: '50.000'
+        id: forward-8
+        melting_temp: '60.925'
+        offset: 170
+        oligo_direction: forward
+        oligo_end: 28692610
+        oligo_length: 24
+        oligo_seq: GAGAGGGGATCCTTTCATCAACAC
+        oligo_start: 28692587
+        rank: 8
+        target_region_end: 28694323
+        target_region_start: 28692418
+      reverse:
+        gc_content: '45.833'
+        id: reverse-8
+        melting_temp: '60.202'
+        offset: 1861
+        oligo_direction: reverse
+        oligo_end: 28694301
+        oligo_length: 24
+        oligo_seq: AGAGAACAACTACAGTGTGTGGAG
+        oligo_start: 28694278
+        rank: 8
+        target_region_end: 28694323
+        target_region_start: 28692418
+    - forward:
+        gc_content: '50.000'
+        id: forward-10
+        melting_temp: '61.448'
+        offset: 195
+        oligo_direction: forward
+        oligo_end: 28692635
+        oligo_length: 24
+        oligo_seq: GAGGTCAAGAGGCGGAAATGTTAG
+        oligo_start: 28692612
+        rank: 10
+        target_region_end: 28694323
+        target_region_start: 28692418
+      reverse:
+        gc_content: '47.826'
+        id: reverse-10
+        melting_temp: '60.056'
+        offset: 1808
+        oligo_direction: reverse
+        oligo_end: 28694247
+        oligo_length: 23
+        oligo_seq: GAGATGACTGTCCACAGACCAAT
+        oligo_start: 28694225
+        rank: 10
+        target_region_end: 28694323
+        target_region_start: 28692418
+    - forward:
+        gc_content: '44.000'
+        id: forward-11
+        melting_temp: '62.584'
+        offset: 9
+        oligo_direction: forward
+        oligo_end: 28692450
+        oligo_length: 25
+        oligo_seq: CTTCAGTTTGCCTTTGTGGGTCAAA
+        oligo_start: 28692426
+        rank: 11
+        target_region_end: 28694323
+        target_region_start: 28692418
+      reverse:
+        gc_content: '47.826'
+        id: reverse-11
+        melting_temp: '60.118'
+        offset: 1681
+        oligo_direction: reverse
+        oligo_end: 28694120
+        oligo_length: 23
+        oligo_seq: CTTGCCTCCTCATACAATCCCTT
+        oligo_start: 28694098
+        rank: 11
+        target_region_end: 28694323
+        target_region_start: 28692418

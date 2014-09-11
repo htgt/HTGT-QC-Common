@@ -12,7 +12,6 @@ my %WriteMakefileArgs = (
   "ABSTRACT" => "Common QC Code",
   "AUTHOR" => "Wellcome Trust Sanger Institute",
   "BUILD_REQUIRES" => {
-    "Bio::Seq" => 0,
     "English" => 0,
     "File::Compare" => 0,
     "File::Find" => 0,
@@ -30,20 +29,24 @@ my %WriteMakefileArgs = (
     "bin/crispr_allele_damage.pl",
     "bin/fetch-seq-reads.sh",
     "bin/crispr_damage_analysis.pl",
-    "bin/merge_vcf_variants.pl"
+    "bin/merge_vcf_variants.pl",
+    "bin/generate_primers_attempts.pl"
   ],
   "LICENSE" => "perl",
   "NAME" => "HTGT::QC::Common",
   "PREREQ_PM" => {
     "Array::Compare" => 0,
     "Bio::EnsEMBL::Variation::Utils::BaseVepPlugin" => 0,
+    "Bio::Seq" => 0,
     "Bio::SeqIO" => 0,
     "Config::Scoped" => 0,
     "Const::Fast" => 0,
     "Data::Dump" => 0,
     "Data::Dumper" => 0,
     "Data::UUID" => 0,
+    "DesignCreate::Util::BWA" => 0,
     "DesignCreate::Util::Exonerate" => 0,
+    "DesignCreate::Util::Primer3" => 0,
     "Exporter" => 0,
     "File::Which" => 0,
     "Getopt::Long" => 0,
@@ -67,6 +70,7 @@ my %WriteMakefileArgs = (
     "Sub::Exporter" => 0,
     "Throwable::Error" => 0,
     "Try::Tiny" => 0,
+    "WebAppCommon::Util::EnsEMBL" => 0,
     "YAML::Any" => 0,
     "base" => 0,
     "feature" => 0,
@@ -74,7 +78,7 @@ my %WriteMakefileArgs = (
     "strict" => 0,
     "warnings" => 0
   },
-  "VERSION" => "0.025",
+  "VERSION" => "0.026",
   "test" => {
     "TESTS" => "t/*.t"
   }

@@ -1,7 +1,7 @@
 package HTGT::QC::Util::CrisprDamageVEP;
 ## no critic(RequireUseStrict,RequireUseWarnings)
 {
-    $HTGT::QC::Util::CrisprDamageVEP::VERSION = '0.025';
+    $HTGT::QC::Util::CrisprDamageVEP::VERSION = '0.026';
 }
 ## use critic
 
@@ -272,12 +272,8 @@ sub remove_reads_not_overlapping_target {
 
 =head2 run_mpileup
 
-Run mpileup, input is bam file.
+Run mpileup, input is sorted bam file.
 We want pileup and bcf output.
-
-    # run mpileup on the sorted bam file ( we want both the pileup and bcf format out here )
-        # can convert pileup to vcf / vice versa
-        # do we want vcf or pileup from mpileup?
 
 =cut
 sub run_mpileup {

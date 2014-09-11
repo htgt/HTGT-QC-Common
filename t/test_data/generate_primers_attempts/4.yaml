@@ -1,0 +1,28 @@
+---
+test_name: 'Primer Pair Finder - forward primer specified'
+target_start: 28692718 
+target_end: 28694023
+strand: 1
+species: 'Mouse'
+chromosome: 2
+five_prime_region_size: 300
+five_prime_region_offset: 20
+three_prime_region_size: 300
+three_prime_region_offset: 20
+expected_attempt_number: 1
+num_valid_pairs: 1
+expected_product_size_array:
+    - '1393-1693'
+forward_primer:
+    gc_content: '40.000'
+    id: forward-1
+    melting_temp: '59.930'
+    offset: 213
+    oligo_direction: forward
+    oligo_end: 28692654
+    oligo_length: 25
+    oligo_seq: TGTTAGAAGTGAAAGGCAAGAGAGA
+    oligo_start: 28692630
+    rank: 1
+    target_region_end: 28694323
+    target_region_start: 28692418

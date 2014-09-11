@@ -7,6 +7,7 @@ README
 bin/crispr_allele_damage.pl
 bin/crispr_damage_analysis.pl
 bin/fetch-seq-reads.sh
+bin/generate_primers_attempts.pl
 bin/merge_vcf_variants.pl
 lib/HTGT/QC/Config.pm
 lib/HTGT/QC/Config/Profile.pm
@@ -19,6 +20,8 @@ lib/HTGT/QC/Util/CreateSuggestedQcPlateMap.pm
 lib/HTGT/QC/Util/CrisprAlleleDamage.pm
 lib/HTGT/QC/Util/CrisprDamageVEP.pm
 lib/HTGT/QC/Util/DrawPileupAlignment.pm
+lib/HTGT/QC/Util/GeneratePrimers.pm
+lib/HTGT/QC/Util/GeneratePrimersAttempts.pm
 lib/HTGT/QC/Util/KillQCFarmJobs.pm
 lib/HTGT/QC/Util/ListLatestRuns.pm
 lib/HTGT/QC/Util/MergeVariantsVCF.pm
@@ -31,6 +34,8 @@ t/10-htgt-qc-util-create-suggested-qc-platemap.t
 t/10-htgt-qc-util-crispr-allele-damage.t
 t/10-htgt-qc-util-crispr-damage-vep.t
 t/10-htgt-qc-util-draw-pileup-alignment.t
+t/10-htgt-qc-util-generate-primers-attempts.t
+t/10-htgt-qc-util-generate-primers.t
 t/10-htgt-qc-util-merge-variants-vcf.t
 t/10-htgt-qc-util-parse-cigar.t
 t/10-htgt-qc-util-scf-variation-seq.t
@@ -88,6 +93,17 @@ t/test_data/draw_pileup_alignment/6_params.yaml
 t/test_data/draw_pileup_alignment/7.pileup
 t/test_data/draw_pileup_alignment/7_align.yaml
 t/test_data/draw_pileup_alignment/7_params.yaml
+t/test_data/generate_primers/1.yaml
+t/test_data/generate_primers/2.yaml
+t/test_data/generate_primers/3.yaml
+t/test_data/generate_primers/4.yaml
+t/test_data/generate_primers/5.yaml
+t/test_data/generate_primers/test_primer3_config.yaml
+t/test_data/generate_primers_attempts/1.yaml
+t/test_data/generate_primers_attempts/2.yaml
+t/test_data/generate_primers_attempts/3.yaml
+t/test_data/generate_primers_attempts/4.yaml
+t/test_data/generate_primers_attempts/test_primer3_config.yaml
 t/test_data/merge_vcf/1.vcf
 t/test_data/merge_vcf/1.yaml
 t/test_data/merge_vcf/2.vcf

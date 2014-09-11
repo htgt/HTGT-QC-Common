@@ -1,3 +1,8 @@
+0.026     2014-09-11 13:29:18 Europe/London
+
+    Add GeneratePrimers and GeneratePrimersAttempts module, base objects used to generate primers
+    for a given target.
+
 0.025     2014-08-11 08:53:36 Europe/London
 
     Dump of yaml file from Pileup Parser module with data on insertions / deletions and coordinates.
