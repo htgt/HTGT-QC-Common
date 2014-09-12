@@ -1,3 +1,48 @@
+0.027     2014-09-12 16:08:30 Europe/London
+
+    Added merge_wells option to a QC profile
+
+0.026     2014-09-11 13:29:18 Europe/London
+
+    Add GeneratePrimers and GeneratePrimersAttempts module, base objects used to generate primers
+    for a given target.
+
+0.025     2014-08-11 08:53:36 Europe/London
+
+    Dump of yaml file from Pileup Parser module with data on insertions / deletions and coordinates.
+
+0.024     2014-08-05 14:36:30 Europe/London
+
+    Update crispr_damage_analysis.pl script to take optional dir argument plus
+        point to version of staden installed in the vms.
+
+0.023     2014-08-01 08:55:18 Europe/London
+
+    Add module that takes the variant sequence from a SCF trace file.
+    Add module that attempts to merge multiple variants in a VCF file into one, for a given small region.
+    Integrated the merge VCF module into the crispr es qc workflow.
+
+0.022     2014-07-08 09:38:20 Europe/London
+
+    Change bcftools call to call all variants.
+
+0.021     2014-07-02 08:19:34 Europe/London
+
+    Update VEP protein sequence plugin to produce sequence files for non frameshift variants.
+
+0.020     2014-06-26 07:58:57 Europe/London
+
+    Created VEP plugin that generates reference and mutant protein sequence files
+    for frameshift variants, using this in the crispr es qc.
+
+0.019     2014-06-20 13:44:58 Europe/London
+
+    Bugfix: missed base in hash map.
+
+0.018     2014-06-20 08:22:23 Europe/London
+
+    Added modules for new Crispr es cell damange qc, these generate vcf and vep files.
+
 0.017     2014-04-24 11:53:03 Europe/London
 
     Added CrisprAlleleDamage module and util method to get cigar parsed read names
@@ -25,7 +70,7 @@
     Added flag to identify if a run is ESCell
 
 0.008     2013-01-10 10:56:44 Europe/London
-Fixed bug in KillQCFarmJobs causing kill_and_notify logs to appear in htgt
+    Fixed bug in KillQCFarmJobs causing kill_and_notify logs to appear in htgt
 
 0.007     2013-01-04 15:19:47 Europe/London
 

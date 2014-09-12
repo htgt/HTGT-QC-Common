@@ -1,0 +1,16 @@
+---
+primer_opt_size: 25
+primer_max_size: 28
+primer_min_size: 22
+primer_opt_gc_percent: 50
+primer_max_gc: 80
+primer_min_gc: 20
+# make primer pairs have different left / right primers, 3' end must be at least this far apart
+primer_min_three_prime_distance: 6
+primer_num_return: 12
+primer_thermodynamic_parameters_path: '/nfs/team87/farm3_lims2_vms/software/primer3/src/primer3_config/'
+primer_explain_flag: 1
+primer_lowercase_masking: 1
+primer_opt_tm: 60
+primer_max_tm: 63
+primer_min_tm: 57

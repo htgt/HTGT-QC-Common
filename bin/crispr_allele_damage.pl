@@ -4,7 +4,6 @@ use warnings FATAL => 'all';
 
 use HTGT::QC::Util::CrisprAlleleDamage;
 use HTGT::QC::Util::CigarParser;
-use LIMS2::Model;
 use Getopt::Long;
 use Log::Log4perl ':easy';
 use Bio::SeqIO;
@@ -29,7 +28,6 @@ GetOptions(
 ) or pod2usage(2);
 
 Log::Log4perl->easy_init( { level => $log_level, layout => '%p %m%n' } );
-#my $model = LIMS2::Model->new( user => 'lims2', audit_user => $ENV{USER}.'@sanger.ac.uk' );
 my $parser =  HTGT::QC::Util::CigarParser->new(
         primers => [ $forward_primer_name, $reverse_primer_name ] );
 

@@ -1,7 +1,7 @@
 package HTGT::QC::Config::Profile;
 ## no critic(RequireUseStrict,RequireUseWarnings)
 {
-    $HTGT::QC::Config::Profile::VERSION = '0.017';
+    $HTGT::QC::Config::Profile::VERSION = '0.027';
 }
 ## use critic
 
@@ -87,6 +87,12 @@ has vector_stage => (
     is       => 'ro',
     isa      => 'Str',
     required => 1
+);
+
+has merge_wells => (
+    is      => 'ro',
+    isa     => 'Bool',
+    default => 0,
 );
 
 # XXX END legacy attributes
