@@ -83,6 +83,12 @@ has vector_stage => (
     required => 1
 );
 
+has merge_wells => (
+    is      => 'ro',
+    isa     => 'Bool',
+    default => 0,
+);
+
 # XXX END legacy attributes
 
 sub _build_primer_regions {
