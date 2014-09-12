@@ -1,5 +1,9 @@
 {{$NEXT}}
 
+0.028     2014-09-12 16:15:03 Europe/London
+
+    Fix releases branch
+
 0.027     2014-09-12 16:08:30 Europe/London
 
     Added merge_wells option to a QC profile
