@@ -26,6 +26,7 @@ use HTGT::QC::Constants qw(
     $VEP_CMD
     $VEP_CACHE_DIR
     %BWA_REF_GENOMES
+    %CURRENT_ASSEMBLY
 );
 use namespace::autoclean;
 
@@ -474,19 +475,22 @@ sub variant_effect_predictor {
     my $log_file = $self->dir->file( 'vep.log' )->absolute;
     my @vep_command = (
         'perl',
-        $VEP_CMD,                                       # vep cmd
-        '--species', $self->species,                    # species
-        '--cache',                                      # use cached data
-        '--dir_cache', $VEP_CACHE_DIR,                  # directory where cache is stored
-        '-i', $self->vcf_file_target_region->stringify, # input vcf file
-        '-o', $vep_output->stringify,                   # output file
-        '--no_progress',                                # do not show progresss bar
-        '--force_overwrite',                            # overwrite output files if they exist
-        '--per_gene',                                   # Output the most severe consequence per gene
-        '--symbol',                                     # Output gene symbol
-        '--canonical',                                  # Mark if transcript is canonical
+        $VEP_CMD,                                        # vep cmd
+        '--species', $self->species,                     # species
+        '--assembly', $CURRENT_ASSEMBLY{$self->species}, # assembly
+        '--cache',                                       # use cached data
+        '--dir_cache', $VEP_CACHE_DIR,                   # directory where cache is stored
+        '-i', $self->vcf_file_target_region->stringify,  # input vcf file
+        '-o', $vep_output->stringify,                    # output file
+        '--no_progress',                                 # do not show progresss bar
+        '--force_overwrite',                             # overwrite output files if they exist
+        '--per_gene',                                    # Output the most severe consequence per gene
+        '--symbol',                                      # Output gene symbol
+        '--canonical',                                   # Mark if transcript is canonical
         '--plugin', 'HTGT::QC::VEPPlugin::MutantProteinSeqs,' . $self->dir->stringify . '/',
-                                                        # Use custom plugin to create protein sequence files
+                                                         # Use custom plugin to create protein sequence files
+                                                         # pass in work dir as argument so plugin knows where to
+                                                         # put sequence files
     );
 
     $self->log->debug( "vep command: " . join( ' ', @vep_command ) );
