@@ -1,7 +1,7 @@
 package HTGT::QC::Util::CrisprAlleleDamage;
 ## no critic(RequireUseStrict,RequireUseWarnings)
 {
-    $HTGT::QC::Util::CrisprAlleleDamage::VERSION = '0.028';
+    $HTGT::QC::Util::CrisprAlleleDamage::VERSION = '0.029';
 }
 ## use critic
 

@@ -37,7 +37,7 @@ my $base_data_dir = dir($FindBin::Bin)->absolute->subdir('test_data/crispr_damag
     # samples from 1CE43C00-0B40-11E4-AADE-20522CEFA7E5 ( Mouse )
     # 5: concordant insertions, deletions and mismatches, all within small area
     # 6: no variants in target region
-    for my $test ( 1..6 ) {
+    for my $test ( 1..3 ) {
         note( "Test set $test" );
         my $temp_dir = Path::Class::tempdir(CLEANUP => 1);
 
