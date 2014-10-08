@@ -1,8 +1,8 @@
 ##fileformat=VCFv4.2
 ##FILTER=<ID=PASS,Description="All filters passed">
 ##samtoolsVersion=0.2.0-rc8+htslib-0.2.0-rc8
-##samtoolsCommand=samtools mpileup -g -Q 0 -f /lustre/scratch109/blastdb/Users/team87/Human/bwa/Homo_sapiens.GRCh37.toplevel.clean_chr_names.fa /tmp/4ZyqPAgQdD/alignment_filtered.bam
-##reference=file:///lustre/scratch109/blastdb/Users/team87/Human/bwa/Homo_sapiens.GRCh37.toplevel.clean_chr_names.fa
+##samtoolsCommand=samtools mpileup -g -Q 0 -f /lustre/scratch109/blastdb/Users/team87/Human/bwa/Homo_sapiens.GRCh38.dna.primary_assembly.clean_chr_names.fa /tmp/rnJYLjYO5d/alignment_filtered.bam
+##reference=file:///lustre/scratch109/blastdb/Users/team87/Human/bwa/Homo_sapiens.GRCh38.dna.primary_assembly.clean_chr_names.fa
 ##contig=<ID=10,length=135534747>
 ##contig=<ID=11,length=135006516>
 ##contig=<ID=12,length=133851895>
@@ -112,9 +112,9 @@
 ##INFO=<ID=HWE,Number=1,Type=Float,Description="Chi^2 based HWE test P-value based on G3">
 ##INFO=<ID=DP4,Number=4,Type=Integer,Description="Number of high-quality ref-forward , ref-reverse, alt-forward and alt-reverse bases">
 ##bcftools_callVersion=0.2.0-rc8+htslib-0.2.0-rc8
-##bcftools_callCommand=call -v -c -p 1 /tmp/4ZyqPAgQdD/raw_analysis.bcf
+##bcftools_callCommand=call -v -c -p 1 /tmp/rnJYLjYO5d/raw_analysis.bcf
 ##bcftools_viewVersion=0.2.0-rc8+htslib-0.2.0-rc8
-##bcftools_viewCommand=view -O b /tmp/4ZyqPAgQdD/analysis.vcf
-##bcftools_viewCommand=view -r 2:48018155-48018237 /tmp/4ZyqPAgQdD/analysis.bcf
-#CHROM	POS	ID	REF	ALT	QUAL	FILTER	INFO	FORMAT	/tmp/4ZyqPAgQdD/alignment_filtered.bam
-2	48018201	.	GTTTTTTGATGACAGCCCAA	GGAAATCAGTCCGTGTTCATGTACAGGAAATCAGTCCGTGTTCATGTACAGTTT	.	.	.	.	.
+##bcftools_viewCommand=view -O b /tmp/rnJYLjYO5d/analysis.vcf
+##bcftools_viewCommand=view -r 2:48018155-48018237 /tmp/rnJYLjYO5d/analysis.bcf
+#CHROM	POS	ID	REF	ALT	QUAL	FILTER	INFO	FORMAT	/tmp/rnJYLjYO5d/alignment_filtered.bam
+2	48018155	.	TCACTTTCCATTCCTCCCTCAACTCCCAGCCTCTTAGGCAATGGCTAATCTACTTACATCTCTGTAGATTTGCCTATTCTGGG	GAACATTCATCCGCGAGAAAGGGAAATCAGTCCGTGTTCATGTACAGGAAATCAGTTGTTCATGACAGGAAATCAGTCCGTGTTGTTGTACACAAGGGGCTGGGTTAGC	.	.	.	.	.

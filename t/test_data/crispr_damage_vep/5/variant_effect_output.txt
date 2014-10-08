@@ -1,13 +1,14 @@
-## ENSEMBL VARIANT EFFECT PREDICTOR v75
-## Output produced at 2014-08-01 08:40:47
-## Connected to mus_musculus_core_75_38 on ensembldb.ensembl.org
-## Using cache in /lustre/scratch109/blastdb/Ensembl/vep/mus_musculus/75
-## Using API version 75, DB version 75
+## ENSEMBL VARIANT EFFECT PREDICTOR v76
+## Output produced at 2014-10-08 07:22:34
+## Connected to mus_musculus_core_76_38 on ensembldb.ensembl.org
+## Using cache in /lustre/scratch109/blastdb/Ensembl/vep/mus_musculus/76_GRCm38
+## Using API version 76, DB version 76
 ## Extra column keys:
-## CANONICAL : Indicates if transcript is canonical for this gene
 ## DISTANCE : Shortest distance from variant to transcript
 ## STRAND : Strand of the feature (1/-1)
 ## SYMBOL : Gene symbol (e.g. HGNC)
 ## SYMBOL_SOURCE : Source of gene symbol
+## HGNC_ID : Stable identifer of HGNC gene symbol
+## CANONICAL : Indicates if transcript is canonical for this gene
 #Uploaded_variation	Location	Allele	Gene	Feature	Feature_type	Consequence	cDNA_position	CDS_position	Protein_position	Amino_acids	Codons	Existing_variation	Extra
-16_17018380_ATCCTGAGAGGGCTAAA/GGTTAGGGTTAGG	16:17018380-17018396	GGTTAGGGTTAGG	ENSMUSG00000063358	ENSMUST00000069107	Transcript	frameshift_variant,feature_truncation	636-652	391-407	131-136	-	-	-	STRAND=1;SYMBOL=Mapk1;CANONICAL=YES;SYMBOL_SOURCE=MGI
+16_17018380_ATCCTGAGAGGGCTAAA/GGTTAGGGTTAGG	16:17018380-17018396	GGTTAGGGTTAGG	ENSMUSG00000063358	ENSMUST00000069107	Transcript	frameshift_variant,feature_truncation	636-652	391-407	131-136	-	-	-	STRAND=1;SYMBOL=Mapk1;SYMBOL_SOURCE=MGI;CANONICAL=YES
