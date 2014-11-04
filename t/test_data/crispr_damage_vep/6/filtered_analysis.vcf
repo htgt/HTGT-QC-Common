@@ -1,7 +1,7 @@
 ##fileformat=VCFv4.2
 ##FILTER=<ID=PASS,Description="All filters passed">
 ##samtoolsVersion=0.2.0-rc8+htslib-0.2.0-rc8
-##samtoolsCommand=samtools mpileup -g -Q 0 -f /lustre/scratch109/blastdb/Users/team87/Mouse/bwa/Mus_musculus.GRCm38.toplevel.clean_chr_names.fa /lustre/scratch109/sanger/team87/lims2_crispr_es_qc/1CE43C00-0B40-11E4-AADE-20522CEFA7E5/PIQ_EDQ0002_A03/alignment_filtered.bam
+##samtoolsCommand=samtools mpileup -g -Q 0 -f /lustre/scratch109/blastdb/Users/team87/Mouse/bwa/Mus_musculus.GRCm38.toplevel.clean_chr_names.fa /tmp/vBmJ7uOi1y/alignment_filtered.bam
 ##reference=file:///lustre/scratch109/blastdb/Users/team87/Mouse/bwa/Mus_musculus.GRCm38.toplevel.clean_chr_names.fa
 ##contig=<ID=X,length=171031299>
 ##contig=<ID=18,length=90702639>
@@ -93,8 +93,8 @@
 ##INFO=<ID=HWE,Number=1,Type=Float,Description="Chi^2 based HWE test P-value based on G3">
 ##INFO=<ID=DP4,Number=4,Type=Integer,Description="Number of high-quality ref-forward , ref-reverse, alt-forward and alt-reverse bases">
 ##bcftools_callVersion=0.2.0-rc8+htslib-0.2.0-rc8
-##bcftools_callCommand=call -v -c -p 1 /lustre/scratch109/sanger/team87/lims2_crispr_es_qc/1CE43C00-0B40-11E4-AADE-20522CEFA7E5/PIQ_EDQ0002_A03/raw_analysis.bcf
+##bcftools_callCommand=call -v -c -p 1 /tmp/vBmJ7uOi1y/raw_analysis.bcf
 ##bcftools_viewVersion=0.2.0-rc8+htslib-0.2.0-rc8
-##bcftools_viewCommand=view -O b /lustre/scratch109/sanger/team87/lims2_crispr_es_qc/1CE43C00-0B40-11E4-AADE-20522CEFA7E5/PIQ_EDQ0002_A03/analysis.vcf
-##bcftools_viewCommand=view -r 5:76199380-76199422 /lustre/scratch109/sanger/team87/lims2_crispr_es_qc/1CE43C00-0B40-11E4-AADE-20522CEFA7E5/PIQ_EDQ0002_A03/analysis.bcf
-#CHROM	POS	ID	REF	ALT	QUAL	FILTER	INFO	FORMAT	/lustre/scratch109/sanger/team87/lims2_crispr_es_qc/1CE43C00-0B40-11E4-AADE-20522CEFA7E5/PIQ_EDQ0002_A03/alignment_filtered.bam
+##bcftools_viewCommand=view -O b /tmp/vBmJ7uOi1y/analysis.vcf
+##bcftools_viewCommand=view -r 5:76199380-76199422 /tmp/vBmJ7uOi1y/analysis.bcf
+#CHROM	POS	ID	REF	ALT	QUAL	FILTER	INFO	FORMAT	/tmp/vBmJ7uOi1y/alignment_filtered.bam
