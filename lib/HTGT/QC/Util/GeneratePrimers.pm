@@ -290,8 +290,8 @@ sub parse_primer {
 
 =head2 calculate_oligo_coords_and_sequence
 
-Primer3 takes in sequence 5' to 3' so we need to work out the sequence in the
-+ve strand plus its coordinates
+Primer3 takes in sequence 5' to 3' so we need to work out the primer
+sequence and coordiantes if the target was on the +ve or -ve strand.
 
 =cut
 sub calculate_oligo_coords_and_sequence {
@@ -304,16 +304,14 @@ sub calculate_oligo_coords_and_sequence {
         $oligo_data->{oligo_start} = $self->region_start + $primer->start - 1;
         $oligo_data->{oligo_end}   = $self->region_start + $primer->end - 1;
         $oligo_data->{offset}      = $primer->start;
-        $oligo_data->{oligo_seq}
-            = $direction eq 'forward' ? $primer->seq->seq : $primer->seq->revcom->seq;
+        $oligo_data->{oligo_seq}   = $primer->seq->seq;
     }
     else {
         $oligo_data->{oligo_start} = $self->region_end - $primer->end + 1;
         $oligo_data->{oligo_end}   = $self->region_end - $primer->start + 1;
         $oligo_data->{offset}
             = ( $self->region_end - $self->region_start + 1 ) - $primer->end;
-        $oligo_data->{oligo_seq}
-            = $direction eq 'forward' ? $primer->seq->revcom->seq : $primer->seq->seq;
+        $oligo_data->{oligo_seq}   = $primer->seq->revcom->seq;
     }
 
     return;
