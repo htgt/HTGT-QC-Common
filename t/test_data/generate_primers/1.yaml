@@ -1,144 +1,144 @@
 ---
-test_name: 'Primer Pair Finding'
-region_start: 75434818
-region_end: 75436036
-strand: 1
-species: Mouse
-primer3_target_string: '280,658'
-product_size_string: '618-1218'
-num_genomic_hits: 1
+test_name: Primer Pair Finding
 check_genomic_specificity: 1
-seq: TAAAAGAAATATGACCAGCCAATAAATATTTTTAAAGTGTTTAATATATAGCCATCAAGGATATGTAAATCAAAATTATGTGGTACACTCATTTAAGTCAAGATGTCAGTCGTTGGTTATGTTTTAATATAGGTAATTTGTAGGAAAACTAGGCAGCATTTTACAGGATAGAAGAAACTGAACTGTCattcataatgtacaattatagttattaagtagcaaaaagataattttatggttgaggatcactacaacacaaggtactgtattaaagggttgcatcactaggaaggttgagaaccaatgGACATGTacacacacacacacacTTTATTATGTTTCTTTACCAAAAGTGGGAGTGGACAGAGAAGTCAGAAGATTCTCAAGTTGAAAATATAAAAGAATCCTGAAGGTTGAAACAAGCTTCTTTGCAGAGAATGGAAAGATTTGGATAACCAAACATTTGCACAATTAGAATAAGATAATGTAATAGAAATACAAATAATATTTAAAGAAAAGACTAACTTTAAGGTATAACATTGGCAGTTCTGGTCATGAACCTTATTTCACCATTAATTATGTATTTTGACCCTTTATTATAAGCATAAAGAtttttttttattttGAAAAGACCTTGACAAACATACAGGTTGGCTGAACTAACAGGTCGTCCCATGAGAGTTGTTGGCTGGTATCATTCCCACCCTCATATAACTGTTTGGCCTTCACATGTTGGTAAGTTTTTATATCATTTCTCCTCCATTACATATCACAGTCATCAAAAGGCTTTTATTCTAAAAAATATTTTTGTCACTTCCAAAGCCTATCTTCTAGACCTTGAGGGAGTTATCAAGTTTTGGGGGTAGCTGAAGTTTTCAATGTTTTTCTATGTTTCATTTCAGAGTAGGGACACTCTTGGGCTAAGCAGCTTGGAGTTACTTCTTAATAGCAAACTTTTCATAATATTTCTTTAACTTGGCAAAATATGCTCTAACATTCATATTATTACAGTATATCCCTATTTTCCTATGGAATATGAATGTTGATAGGATAATTGATAGACATTACTGTTATCTCTGGATAAACTCTGTTAAATAAGATTCCTCCCTAACCCCCCTCTAagacagggtttctctgtgtagccctggttgtccttggaacacactttgtagacagagctggcctggaactgaaagatctgcctgcttctgcctccaga
+num_genomic_hits: 1
 num_pairs: 8
 num_valid_pairs: 5
+primer3_target_string: 280,658
+product_size_string: 618-1218
+region_end: 75436036
+region_start: 75434818
+seq: TAAAAGAAATATGACCAGCCAATAAATATTTTTAAAGTGTTTAATATATAGCCATCAAGGATATGTAAATCAAAATTATGTGGTACACTCATTTAAGTCAAGATGTCAGTCGTTGGTTATGTTTTAATATAGGTAATTTGTAGGAAAACTAGGCAGCATTTTACAGGATAGAAGAAACTGAACTGTCattcataatgtacaattatagttattaagtagcaaaaagataattttatggttgaggatcactacaacacaaggtactgtattaaagggttgcatcactaggaaggttgagaaccaatgGACATGTacacacacacacacacTTTATTATGTTTCTTTACCAAAAGTGGGAGTGGACAGAGAAGTCAGAAGATTCTCAAGTTGAAAATATAAAAGAATCCTGAAGGTTGAAACAAGCTTCTTTGCAGAGAATGGAAAGATTTGGATAACCAAACATTTGCACAATTAGAATAAGATAATGTAATAGAAATACAAATAATATTTAAAGAAAAGACTAACTTTAAGGTATAACATTGGCAGTTCTGGTCATGAACCTTATTTCACCATTAATTATGTATTTTGACCCTTTATTATAAGCATAAAGAtttttttttattttGAAAAGACCTTGACAAACATACAGGTTGGCTGAACTAACAGGTCGTCCCATGAGAGTTGTTGGCTGGTATCATTCCCACCCTCATATAACTGTTTGGCCTTCACATGTTGGTAAGTTTTTATATCATTTCTCCTCCATTACATATCACAGTCATCAAAAGGCTTTTATTCTAAAAAATATTTTTGTCACTTCCAAAGCCTATCTTCTAGACCTTGAGGGAGTTATCAAGTTTTGGGGGTAGCTGAAGTTTTCAATGTTTTTCTATGTTTCATTTCAGAGTAGGGACACTCTTGGGCTAAGCAGCTTGGAGTTACTTCTTAATAGCAAACTTTTCATAATATTTCTTTAACTTGGCAAAATATGCTCTAACATTCATATTATTACAGTATATCCCTATTTTCCTATGGAATATGAATGTTGATAGGATAATTGATAGACATTACTGTTATCTCTGGATAAACTCTGTTAAATAAGATTCCTCCCTAACCCCCCTCTAagacagggtttctctgtgtagccctggttgtccttggaacacactttgtagacagagctggcctggaactgaaagatctgcctgcttctgcctccaga
+species: Mouse
+strand: 1
 valid_primers:
-    - forward:
-        gc_content: '40.000'
-        id: forward-2
-        melting_temp: '59.817'
-        offset: 144
-        oligo_direction: forward
-        oligo_end: 75434985
-        oligo_length: 25
-        oligo_seq: GAAAACTAGGCAGCATTTTACAGGA
-        oligo_start: 75434961
-        rank: 2
-        target_region_end: 75436036
-        target_region_start: 75434818
-      reverse:
-        gc_content: '36.000'
-        id: reverse-2
-        melting_temp: '57.274'
-        offset: 1067
-        oligo_direction: reverse
-        oligo_end: 75435908
-        oligo_length: 25
-        oligo_seq: ACTGTTATCTCTGGATAAACTCTGT
-        oligo_start: 75435884
-        rank: 2
-        target_region_end: 75436036
-        target_region_start: 75434818
-    - forward:
-        gc_content: '36.000'
-        id: forward-3
-        melting_temp: '59.462'
-        offset: 138
-        oligo_direction: forward
-        oligo_end: 75434979
-        oligo_length: 25
-        oligo_seq: TTGTAGGAAAACTAGGCAGCATTTT
-        oligo_start: 75434955
-        rank: 3
-        target_region_end: 75436036
-        target_region_start: 75434818
-      reverse:
-        gc_content: '36.000'
-        id: reverse-3
-        melting_temp: '57.243'
-        offset: 1085
-        oligo_direction: reverse
-        oligo_end: 75435926
-        oligo_length: 25
-        oligo_seq: ACTCTGTTAAATAAGATTCCTCCCT
-        oligo_start: 75435902
-        rank: 3
-        target_region_end: 75436036
-        target_region_start: 75434818
-    - forward:
-        gc_content: '40.000'
-        id: forward-5
-        melting_temp: '58.540'
-        offset: 163
-        oligo_direction: forward
-        oligo_end: 75435004
-        oligo_length: 25
-        oligo_seq: ACAGGATAGAAGAAACTGAACTGTC
-        oligo_start: 75434980
-        rank: 5
-        target_region_end: 75436036
-        target_region_start: 75434818
-      reverse:
-        gc_content: '33.333'
-        id: reverse-5
-        melting_temp: '57.662'
-        offset: 1025
-        oligo_direction: reverse
-        oligo_end: 75435868
-        oligo_length: 27
-        oligo_seq: TCCTATGGAATATGAATGTTGATAGGA
-        oligo_start: 75435842
-        rank: 5
-        target_region_end: 75436036
-        target_region_start: 75434818
-    - forward:
-        gc_content: '36.000'
-        id: forward-6
-        melting_temp: '58.214'
-        offset: 131
-        oligo_direction: forward
-        oligo_end: 75434972
-        oligo_length: 25
-        oligo_seq: AGGTAATTTGTAGGAAAACTAGGCA
-        oligo_start: 75434948
-        rank: 6
-        target_region_end: 75436036
-        target_region_start: 75434818
-      reverse:
-        gc_content: '32.143'
-        id: reverse-6
-        melting_temp: '58.403'
-        offset: 1016
-        oligo_direction: reverse
-        oligo_end: 75435860
-        oligo_length: 28
-        oligo_seq: TCCCTATTTTCCTATGGAATATGAATGT
-        oligo_start: 75435833
-        rank: 6
-        target_region_end: 75436036
-        target_region_start: 75434818
-    - forward:
-        gc_content: '33.333'
-        id: forward-7
-        melting_temp: '59.557'
-        offset: 101
-        oligo_direction: forward
-        oligo_end: 75434944
-        oligo_length: 27
-        oligo_seq: AGATGTCAGTCGTTGGTTATGTTTTAA
-        oligo_start: 75434918
-        rank: 7
-        target_region_end: 75436036
-        target_region_start: 75434818
-      reverse:
-        gc_content: '33.333'
-        id: reverse-7
-        melting_temp: '57.370'
-        offset: 1008
-        oligo_direction: reverse
-        oligo_end: 75435851
-        oligo_length: 27
-        oligo_seq: ACAGTATATCCCTATTTTCCTATGGAA
-        oligo_start: 75435825
-        rank: 7
-        target_region_end: 75436036
-        target_region_start: 75434818
+- forward:
+    gc_content: '40.000'
+    id: forward-2
+    melting_temp: '59.817'
+    offset: 144
+    oligo_direction: forward
+    oligo_end: 75434985
+    oligo_length: 25
+    oligo_seq: GAAAACTAGGCAGCATTTTACAGGA
+    oligo_start: 75434961
+    rank: 2
+    target_region_end: 75436036
+    target_region_start: 75434818
+  reverse:
+    gc_content: '36.000'
+    id: reverse-2
+    melting_temp: '57.274'
+    offset: 1067
+    oligo_direction: reverse
+    oligo_end: 75435908
+    oligo_length: 25
+    oligo_seq: ACAGAGTTTATCCAGAGATAACAGT
+    oligo_start: 75435884
+    rank: 2
+    target_region_end: 75436036
+    target_region_start: 75434818
+- forward:
+    gc_content: '36.000'
+    id: forward-3
+    melting_temp: '59.462'
+    offset: 138
+    oligo_direction: forward
+    oligo_end: 75434979
+    oligo_length: 25
+    oligo_seq: TTGTAGGAAAACTAGGCAGCATTTT
+    oligo_start: 75434955
+    rank: 3
+    target_region_end: 75436036
+    target_region_start: 75434818
+  reverse:
+    gc_content: '36.000'
+    id: reverse-3
+    melting_temp: '57.243'
+    offset: 1085
+    oligo_direction: reverse
+    oligo_end: 75435926
+    oligo_length: 25
+    oligo_seq: AGGGAGGAATCTTATTTAACAGAGT
+    oligo_start: 75435902
+    rank: 3
+    target_region_end: 75436036
+    target_region_start: 75434818
+- forward:
+    gc_content: '40.000'
+    id: forward-5
+    melting_temp: '58.540'
+    offset: 163
+    oligo_direction: forward
+    oligo_end: 75435004
+    oligo_length: 25
+    oligo_seq: ACAGGATAGAAGAAACTGAACTGTC
+    oligo_start: 75434980
+    rank: 5
+    target_region_end: 75436036
+    target_region_start: 75434818
+  reverse:
+    gc_content: '33.333'
+    id: reverse-5
+    melting_temp: '57.662'
+    offset: 1025
+    oligo_direction: reverse
+    oligo_end: 75435868
+    oligo_length: 27
+    oligo_seq: TCCTATCAACATTCATATTCCATAGGA
+    oligo_start: 75435842
+    rank: 5
+    target_region_end: 75436036
+    target_region_start: 75434818
+- forward:
+    gc_content: '36.000'
+    id: forward-6
+    melting_temp: '58.214'
+    offset: 131
+    oligo_direction: forward
+    oligo_end: 75434972
+    oligo_length: 25
+    oligo_seq: AGGTAATTTGTAGGAAAACTAGGCA
+    oligo_start: 75434948
+    rank: 6
+    target_region_end: 75436036
+    target_region_start: 75434818
+  reverse:
+    gc_content: '32.143'
+    id: reverse-6
+    melting_temp: '58.403'
+    offset: 1016
+    oligo_direction: reverse
+    oligo_end: 75435860
+    oligo_length: 28
+    oligo_seq: ACATTCATATTCCATAGGAAAATAGGGA
+    oligo_start: 75435833
+    rank: 6
+    target_region_end: 75436036
+    target_region_start: 75434818
+- forward:
+    gc_content: '33.333'
+    id: forward-7
+    melting_temp: '59.557'
+    offset: 101
+    oligo_direction: forward
+    oligo_end: 75434944
+    oligo_length: 27
+    oligo_seq: AGATGTCAGTCGTTGGTTATGTTTTAA
+    oligo_start: 75434918
+    rank: 7
+    target_region_end: 75436036
+    target_region_start: 75434818
+  reverse:
+    gc_content: '33.333'
+    id: reverse-7
+    melting_temp: '57.370'
+    offset: 1008
+    oligo_direction: reverse
+    oligo_end: 75435851
+    oligo_length: 27
+    oligo_seq: TTCCATAGGAAAATAGGGATATACTGT
+    oligo_start: 75435825
+    rank: 7
+    target_region_end: 75436036
+    target_region_start: 75434818
