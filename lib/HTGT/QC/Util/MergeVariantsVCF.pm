@@ -9,6 +9,14 @@ HTGT::QC::Util::MergeVariantsVCF
 Take a vcf file and attempt to produce a new vcf file with all
 the variants merged into one.
 
+This is hack that lets us run the resultant merged vcf file through VEP
+which will then produce one mutant protein sequence ( instead of multiple sequences
+for each variant ). The output from VEP when doing this is not optimal.
+
+We should find another way to produce the reference and mutant protein sequences and
+stop merging the variants.
+
+
 =cut
 
 use Moose;
