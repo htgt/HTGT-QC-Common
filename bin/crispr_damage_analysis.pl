@@ -53,6 +53,7 @@ $work_dir->mkpath;
 INFO( "Created work directory $work_dir" );
 
 my $seq_file;
+## no critic ( ControlStructures::ProhibitCascadingIfElse )
 if ( $scf_filename ) {
     my $scf_file = file( $scf_filename )->absolute;
     $seq_file = scf_to_fasta( $scf_file );
@@ -70,7 +71,8 @@ elsif ( $sam_filename ) {
 else {
     pod2usage( 'Must provide a sequence file or scf file' );
 }
-
+## use critic
+#
 my $bio_seq;
 if ( $seq_file ) {
     my $seq_io = Bio::SeqIO->new( -fh => $seq_file->openr, -format => 'Fasta' );
