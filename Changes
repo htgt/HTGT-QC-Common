@@ -1,3 +1,7 @@
+0.031     2014-12-03 11:50:03 Europe/London
+
+    Add automatic crispr damage calling to crispr es qc
+
 0.030     2014-11-04 09:04:30 Europe/London
 
     Bugfix: primer sequence was being incorrectly reverse complimented

@@ -28,10 +28,8 @@ requires:
   Config::Scoped: 0
   Const::Fast: 0
   Data::Dump: 0
-  Data::Dumper: 0
   Data::UUID: 0
   DesignCreate::Util::BWA: 0
-  DesignCreate::Util::Exonerate: 0
   DesignCreate::Util::Primer3: 0
   Exporter: 0
   File::Which: 0
@@ -63,4 +61,4 @@ requires:
   namespace::autoclean: 0
   strict: 0
   warnings: 0
-version: 0.030
+version: 0.031

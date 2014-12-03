@@ -26,9 +26,8 @@ my %WriteMakefileArgs = (
   },
   "DISTNAME" => "HTGT-QC-Common",
   "EXE_FILES" => [
-    "bin/crispr_allele_damage.pl",
-    "bin/fetch-seq-reads.sh",
     "bin/crispr_damage_analysis.pl",
+    "bin/fetch-seq-reads.sh",
     "bin/merge_vcf_variants.pl",
     "bin/generate_primers_attempts.pl"
   ],
@@ -42,10 +41,8 @@ my %WriteMakefileArgs = (
     "Config::Scoped" => 0,
     "Const::Fast" => 0,
     "Data::Dump" => 0,
-    "Data::Dumper" => 0,
     "Data::UUID" => 0,
     "DesignCreate::Util::BWA" => 0,
-    "DesignCreate::Util::Exonerate" => 0,
     "DesignCreate::Util::Primer3" => 0,
     "Exporter" => 0,
     "File::Which" => 0,
@@ -78,7 +75,7 @@ my %WriteMakefileArgs = (
     "strict" => 0,
     "warnings" => 0
   },
-  "VERSION" => "0.030",
+  "VERSION" => "0.031",
   "test" => {
     "TESTS" => "t/*.t"
   }

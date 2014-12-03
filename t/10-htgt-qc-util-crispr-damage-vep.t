@@ -88,6 +88,9 @@ my $base_data_dir = dir($FindBin::Bin)->absolute->subdir('test_data/crispr_damag
            ) == 0
            , 'we have expected output from vep program';
 
+        is $qc->variant_type, $params->{expected_variant_type}, 'frameshift have expected variant type';
+        is $qc->variant_size, $params->{expected_variant_size}, 'we have expected variant size';
+
     }
 }
 

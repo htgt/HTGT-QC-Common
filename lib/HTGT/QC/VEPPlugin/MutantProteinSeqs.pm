@@ -1,7 +1,7 @@
 package HTGT::QC::VEPPlugin::MutantProteinSeqs;
 ## no critic(RequireUseStrict,RequireUseWarnings)
 {
-    $HTGT::QC::VEPPlugin::MutantProteinSeqs::VERSION = '0.030';
+    $HTGT::QC::VEPPlugin::MutantProteinSeqs::VERSION = '0.031';
 }
 ## use critic
 

@@ -4,7 +4,6 @@ MANIFEST
 META.yml
 Makefile.PL
 README
-bin/crispr_allele_damage.pl
 bin/crispr_damage_analysis.pl
 bin/fetch-seq-reads.sh
 bin/generate_primers_attempts.pl
@@ -17,7 +16,6 @@ lib/HTGT/QC/Exception/InvalidConfiguration.pm
 lib/HTGT/QC/Util/Alignment.pm
 lib/HTGT/QC/Util/CigarParser.pm
 lib/HTGT/QC/Util/CreateSuggestedQcPlateMap.pm
-lib/HTGT/QC/Util/CrisprAlleleDamage.pm
 lib/HTGT/QC/Util/CrisprDamageVEP.pm
 lib/HTGT/QC/Util/DrawPileupAlignment.pm
 lib/HTGT/QC/Util/GeneratePrimers.pm
@@ -31,7 +29,6 @@ t/00-compile.t
 t/05-config-profile.t
 t/10-config.t
 t/10-htgt-qc-util-create-suggested-qc-platemap.t
-t/10-htgt-qc-util-crispr-allele-damage.t
 t/10-htgt-qc-util-crispr-damage-vep.t
 t/10-htgt-qc-util-draw-pileup-alignment.t
 t/10-htgt-qc-util-generate-primers-attempts.t
