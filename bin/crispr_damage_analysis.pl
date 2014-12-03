@@ -86,7 +86,7 @@ my %params = (
 );
 
 if ( $sam_filename ) {
-    $params{sam_file} = $sam_filename,
+    $params{sam_file} = $sam_filename;
 }
 else {
     $params{forward_primer_read} = $bio_seq;
