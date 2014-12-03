@@ -19,6 +19,7 @@ use HTGT::QC::Util::MergeVariantsVCF;
 use Bio::SeqIO;
 use MooseX::Types::Path::Class::MoreCoercions qw/AbsDir/;
 use IPC::Run 'run';
+use List::MoreUtils qw( any );
 use HTGT::QC::Constants qw(
     $BWA_MEM_CMD
     $SAMTOOLS_CMD
@@ -114,6 +115,22 @@ has dir => (
     coerce   => 1,
 );
 
+has merge_vcf_util => (
+    is  => 'rw',
+    isa => 'HTGT::QC::Util::MergeVariantsVCF',
+);
+
+has variant_type => (
+    is      => 'rw',
+    isa     => 'Str',
+    default => 'no-call',
+);
+
+has variant_size => (
+    is  => 'rw',
+    isa => 'Int',
+);
+
 =read2 BUILD
 
 Hopefully can send provide a SAM alignment file for the reads we are interested in,
@@ -146,6 +163,7 @@ sub analyse {
     $self->variant_calling;
     $self->target_region_vcf_file;
     $self->merge_variants;
+    $self->call_variant_type;
     $self->variant_effect_predictor;
 
     return;
@@ -434,6 +452,13 @@ sub target_region_vcf_file {
 
 =head2 merge_variants
 
+Attempt to merge all the variants from the target region vcf file into one variant.
+This is hack that lets us run the resultant merged vcf file through VEP
+which will then produce one mutant protein sequence ( instead of multiple sequences
+for each variant ). The output from VEP when doing this is not optimal.
+
+We should find another way to produce the reference and mutant protein sequences and
+stop merging the variants.
 
 =cut
 sub merge_variants {
@@ -448,10 +473,75 @@ sub merge_variants {
     );
 
     my $merged_vcf = $merge_vcf_util->create_merged_vcf;
+    $self->merge_vcf_util( $merge_vcf_util );
 
     if ( $merged_vcf ) {
         $self->non_merged_vcf_file( $self->vcf_file_target_region );
         $self->vcf_file_target_region( $merged_vcf );
+    }
+
+    return;
+}
+
+=head2 call_variant_type
+
+Attempt to make a overall call of the variant type to aid in human analysis of results.
+Can only do this when variant is supported by 2 reads.
+Use the MergeVariantsVCF object to get the parsed variants details from the vcf file.
+
+=cut
+sub call_variant_type {
+    my ( $self ) = @_;
+
+    # if we don't have 2 reads overlapping target region do nothing
+    return unless $self->num_target_region_alignments == 2;
+    # if this object has not been created do nothing
+    return unless $self->merge_vcf_util;
+
+    # If no variants then call it wildtype
+    if ( $self->merge_vcf_util->no_variants ) {
+        $self->log->info( 'No variants in target region, setting variant type to: wildtype' );
+        $self->variant_type( 'wild_type' );
+        return;
+    }
+    my @variants = $self->merge_vcf_util->all_variants;
+
+    if ( any{ $_->[7] =~ /DP=1/ } @variants ) {
+        $self->log->debug( 'Have variants supported only by 1 read, can not set variant type' );
+        return;
+    }
+
+    my @indel_variants = grep{ $_->[7] =~ /^INDEL/ } @variants;
+    if ( !@indel_variants ) {
+        $self->log->debug( 'No INDEL variants in target region, not making variant type call' );
+        return;
+    }
+    elsif ( any{ $_->[7] =~ /IDV=1/ } @indel_variants ) {
+        $self->log->debug( 'We have INDEL variant supported by 1 read, not not set variant type' );
+        return;
+    }
+
+    my $indel_bases = 0;
+    for my $var ( @indel_variants ) {
+        my $ref_seq_length = length( $var->[3] );
+        my $alt_seq_length = length( $var->[4] );
+        $indel_bases += $alt_seq_length - $ref_seq_length;
+    }
+
+    $self->variant_size( $indel_bases );
+    if ( $indel_bases == 0 ) {
+        $self->log->info( "Have 0 base overall change, inframe variant" );
+        $self->variant_type( 'in-frame' );
+        return;
+    }
+
+    if ( $indel_bases % 3 ) {
+        $self->log->info( "Have $indel_bases change, frameshift variant" );
+        $self->variant_type( 'frameshift' );
+    }
+    else {
+        $self->log->info( "Have $indel_bases change, inframe variant" );
+        $self->variant_type( 'in-frame' );
     }
 
     return;
