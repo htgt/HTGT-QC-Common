@@ -13,6 +13,7 @@ use Path::Class;
 use Const::Fast;
 use Data::UUID;
 use Try::Tiny;
+use feature qw( say );
 
 const my $EXTRACT_SEQ_CMD => $ENV{EXTRACT_SEQ_CMD}
     // '/opt/t87/global/software/io_lib/bin/extract_seq';
@@ -22,7 +23,7 @@ const my $DEFAULT_QC_DIR => $ENV{ DEFAULT_CRISPR_DAMAGE_QC_DIR }
 
 my $log_level = $INFO;
 
-my ($seq_filename,  $scf_filename, $het_scf_filename,
+my ($seq_filename,  $scf_filename, $het_scf_filename, $sam_filename,
     $target_start,  $target_end,   $target_chr,
     $target_strand, $species, $dir_name,
 );
@@ -33,6 +34,7 @@ GetOptions(
     'sequence-file=s' => \$seq_filename,
     'scf-file=s'      => \$scf_filename,
     'het-scf-file=s'  => \$het_scf_filename,
+    'sam-file=s'      => \$sam_filename,
     'target-start=i'  => \$target_start,
     'target-end=i'    => \$target_end,
     'target-chr=s'    => \$target_chr,
@@ -62,21 +64,33 @@ elsif( $het_scf_filename ) {
 elsif ( $seq_filename ) {
     $seq_file = file( $seq_filename )->absolute;
 }
+elsif ( $sam_filename ) {
+    INFO( "Reads have been pre-aligned and suppled in sam file: $sam_filename" );
+}
 else {
     pod2usage( 'Must provide a sequence file or scf file' );
 }
 
-my $seq_io = Bio::SeqIO->new( -fh => $seq_file->openr, -format => 'Fasta' );
-my $bio_seq = $seq_io->next_seq;
+my $bio_seq;
+if ( $seq_file ) {
+    my $seq_io = Bio::SeqIO->new( -fh => $seq_file->openr, -format => 'Fasta' );
+    $bio_seq = $seq_io->next_seq;
+}
 
 my %params = (
-    species             => $species,
-    dir                 => $work_dir,
-    target_start        => $target_start,
-    target_end          => $target_end,
-    target_chr          => $target_chr,
-    forward_primer_read => $bio_seq,
+    species      => $species,
+    dir          => $work_dir,
+    target_start => $target_start,
+    target_end   => $target_end,
+    target_chr   => $target_chr,
 );
+
+if ( $sam_filename ) {
+    $params{sam_file} = $sam_filename,
+}
+else {
+    $params{forward_primer_read} = $bio_seq;
+}
 
 INFO('Running crispr damage analysis');
 my $qc = HTGT::QC::Util::CrisprDamageVEP->new( %params );
@@ -85,7 +99,7 @@ $qc->analyse;
 
 #TODO
 # Return more information, possibly in JSON string
-print $qc->dir->stringify . "\n";
+say $qc->dir->stringify . "\n";
 
 exit 0;
 
