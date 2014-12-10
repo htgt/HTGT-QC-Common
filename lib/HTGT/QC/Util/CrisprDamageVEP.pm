@@ -1,7 +1,7 @@
 package HTGT::QC::Util::CrisprDamageVEP;
 ## no critic(RequireUseStrict,RequireUseWarnings)
 {
-    $HTGT::QC::Util::CrisprDamageVEP::VERSION = '0.031';
+    $HTGT::QC::Util::CrisprDamageVEP::VERSION = '0.032';
 }
 ## use critic
 
@@ -504,8 +504,10 @@ sub call_variant_type {
     # if this object has not been created do nothing
     return unless $self->merge_vcf_util;
 
-    # If no variants then call it wildtype
+    # If no variants then call it wildtype unless both reads do not completely cover
+    # the target region, in that case we have to make a no-call
     if ( $self->merge_vcf_util->no_variants ) {
+        return if $self->reads_do_not_cover_target_region;
         $self->log->info( 'No variants in target region, setting variant type to: wildtype' );
         $self->variant_type( 'wild_type' );
         return;
@@ -551,6 +553,37 @@ sub call_variant_type {
     }
 
     return;
+}
+
+=head2 reads_do_not_cover_target_region
+
+A hacky way to check if both the forward and reverse read completely cover the target region.
+I only do it this way because I have already drawn up the alignment in the DrawPileupAlignment
+object. ( Really should use the SAM file to check the extent of the read alignment )
+
+=cut
+sub reads_do_not_cover_target_region {
+    my ( $self, $json ) = @_;
+
+    my $fwd_read_seq = $self->pileup_parser->seqs->{forward};
+    my $rev_read_seq = $self->pileup_parser->seqs->{reverse};
+
+    # work out target region start relative to fwd and rev read sequences we have
+    my $relative_target_region_start = $self->target_start - $self->pileup_parser->genome_start;
+    my $target_region_length = ( $self->target_end - $self->target_start ) + 1;
+    my $fwd_read_target_region = substr( $fwd_read_seq, $relative_target_region_start, $target_region_length );
+    my $rev_read_target_region = substr( $rev_read_seq, $relative_target_region_start, $target_region_length );
+
+    if ( $fwd_read_target_region =~ /X+/ ) {
+        $self->log->debug( "Fwd read does not cover target region: $fwd_read_target_region" );
+        return 1;
+    }
+    elsif ( $rev_read_target_region =~ /X+/ ) {
+        $self->log->debug( "Rev read does not cover target region: $rev_read_target_region" );
+        return 1;
+    }
+
+    return 0;
 }
 
 =head2 variant_effect_predictor

@@ -1,7 +1,7 @@
 package HTGT::QC::Constants;
 ## no critic(RequireUseStrict,RequireUseWarnings)
 {
-    $HTGT::QC::Constants::VERSION = '0.031';
+    $HTGT::QC::Constants::VERSION = '0.032';
 }
 ## use critic
 
@@ -32,7 +32,7 @@ const our $SAMTOOLS_CMD => $ENV{SAMTOOLS_CMD}
 const our $BCFTOOLS_CMD => $ENV{BCFTOOLS_CMD}
     // '/software/vertres/bin-external/samtools-0.2.0-rc8/bin/bcftools';
 const our $VEP_CMD => $ENV{VEP_CMD}
-    // '/opt/t87/global/software/ensembl-tools-release-76/scripts/variant_effect_predictor/variant_effect_predictor.pl';
+    // '/opt/t87/global/software/ensembl-tools-release-78/scripts/variant_effect_predictor/variant_effect_predictor.pl';
 const our $VEP_CACHE_DIR => $ENV{VEP_CACHE_DIR}
     // '/lustre/scratch109/blastdb/Ensembl/vep';
 
