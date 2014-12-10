@@ -81,12 +81,12 @@ my $base_data_dir = dir($FindBin::Bin)->absolute->subdir('test_data/crispr_damag
 
         next unless $data_dir->contains( $vep_file );
 
-        #ok compare_text(
-              #$vep_file->openr,                                 # newly generated vep file
-              #$qc->vep_file->openr,                             # expected vep file
-              #sub { return 0 if $_[0] =~ /^#/; $_[0] ne $_[1] } # line comparison function, ignore comments
-           #) == 0
-           #, 'we have expected output from vep program';
+        ok compare_text(
+              $vep_file->openr,                                 # newly generated vep file
+              $qc->vep_file->openr,                             # expected vep file
+              sub { return 0 if $_[0] =~ /^#/; $_[0] ne $_[1] } # line comparison function, ignore comments
+           ) == 0
+           , 'we have expected output from vep program';
 
         is $qc->variant_type, $params->{expected_variant_type}, 'frameshift have expected variant type';
         is $qc->variant_size, $params->{expected_variant_size}, 'we have expected variant size';

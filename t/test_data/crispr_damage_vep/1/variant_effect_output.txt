@@ -1,8 +1,8 @@
-## ENSEMBL VARIANT EFFECT PREDICTOR v76
-## Output produced at 2014-10-07 09:45:14
-## Connected to homo_sapiens_core_76_38 on ensembldb.ensembl.org
-## Using cache in /lustre/scratch109/blastdb/Ensembl/vep/homo_sapiens/76_GRCh38
-## Using API version 76, DB version 76
+## ENSEMBL VARIANT EFFECT PREDICTOR v78
+## Output produced at 2014-12-10 09:36:12
+## Connected to homo_sapiens_core_78_38 on ensembldb.ensembl.org
+## Using cache in /lustre/scratch109/blastdb/Ensembl/vep/homo_sapiens/78_GRCh38
+## Using API version 78, DB version 78
 ## Extra column keys:
 ## DISTANCE : Shortest distance from variant to transcript
 ## STRAND : Strand of the feature (1/-1)
@@ -11,4 +11,4 @@
 ## HGNC_ID : Stable identifer of HGNC gene symbol
 ## CANONICAL : Indicates if transcript is canonical for this gene
 #Uploaded_variation	Location	Allele	Gene	Feature	Feature_type	Consequence	cDNA_position	CDS_position	Protein_position	Amino_acids	Codons	Existing_variation	Extra
-2_48018155_TCACTTTCCATTCCTCCCTCAACTCCCAGCCTCTTAGGCAATGGCTAATCTACTTACATCTCTGTAGATTTGCCTATTCTGGG/GAACATTCATCCGCGAGAAAGGGAAATCAGTCCGTGTTCATGTACAGTTTTTTGATGACAGCCCAACCAACAAGGGGCTGGGTTAGC	2:48018155-48018237	GAACATTCATCCGCGAGAAAGGGAAATCAGTCCGTGTTCATGTACAGTTTTTTGATGACAGCCCAACCAACAAGGGGCTGGGTTAGC	ENSG00000230773	ENST00000447571	Transcript	intron_variant,nc_transcript_variant,feature_elongation	-	-	-	-	-	-	STRAND=-1;SYMBOL=AC079807.4;SYMBOL_SOURCE=Clone_based_vega_gene;CANONICAL=YES
+2_48018155_TCACTTTCCATTCCTCCCTCAACTCCCAGCCTCTTAGGCAATGGCTAATCTACTTACATCTCTGTAGATTTGCCTATTCTGGG/GAACATTCATCCGCGAGAAAGGGAAATCAGTCCGTGTTCATGTACAGTTTTTTGATGACAGCCCAACCAACAAGGGGCTGGGTTAGC	2:48018155-48018237	GAACATTCATCCGCGAGAAAGGGAAATCAGTCCGTGTTCATGTACAGTTTTTTGATGACAGCCCAACCAACAAGGGGCTGGGTTAGC	ENSG00000230773	ENST00000447571	Transcript	intron_variant,non_coding_transcript_variant	-	-	-	-	-	-	STRAND=-1;SYMBOL=AC079807.4;SYMBOL_SOURCE=Clone_based_vega_gene;CANONICAL=YES
