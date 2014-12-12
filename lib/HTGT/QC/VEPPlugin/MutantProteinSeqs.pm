@@ -28,7 +28,7 @@ ignored.
 use strict;
 use warnings;
 
-use lib '/opt/t87/global/software/ensembl-tools-release-75/scripts/variant_effect_predictor';
+use lib '/opt/t87/global/software/ensembl-tools-release-78/scripts/variant_effect_predictor';
 use Bio::EnsEMBL::Variation::Utils::BaseVepPlugin;
 
 use base qw(Bio::EnsEMBL::Variation::Utils::BaseVepPlugin);
