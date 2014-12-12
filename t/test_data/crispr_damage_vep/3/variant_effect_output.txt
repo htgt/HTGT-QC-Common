@@ -1,8 +1,8 @@
-## ENSEMBL VARIANT EFFECT PREDICTOR v76
-## Output produced at 2014-10-07 10:04:32
-## Connected to homo_sapiens_core_76_38 on ensembldb.ensembl.org
-## Using cache in /lustre/scratch109/blastdb/Ensembl/vep/homo_sapiens/76_GRCh38
-## Using API version 76, DB version 76
+## ENSEMBL VARIANT EFFECT PREDICTOR v78
+## Output produced at 2014-12-10 09:36:25
+## Connected to homo_sapiens_core_78_38 on ensembldb.ensembl.org
+## Using cache in /lustre/scratch109/blastdb/Ensembl/vep/homo_sapiens/78_GRCh38
+## Using API version 78, DB version 78
 ## Extra column keys:
 ## DISTANCE : Shortest distance from variant to transcript
 ## STRAND : Strand of the feature (1/-1)
@@ -11,82 +11,82 @@
 ## HGNC_ID : Stable identifer of HGNC gene symbol
 ## CANONICAL : Indicates if transcript is canonical for this gene
 #Uploaded_variation	Location	Allele	Gene	Feature	Feature_type	Consequence	cDNA_position	CDS_position	Protein_position	Amino_acids	Codons	Existing_variation	Extra
-2_48018155_T/G	2:48018155	G	ENSG00000230773	ENST00000447571	Transcript	intron_variant,nc_transcript_variant	-	-	-	-	-	-	STRAND=-1;SYMBOL=AC079807.4;SYMBOL_SOURCE=Clone_based_vega_gene;CANONICAL=YES
-2_48018156_C/A	2:48018156	A	ENSG00000230773	ENST00000447571	Transcript	intron_variant,nc_transcript_variant	-	-	-	-	-	-	STRAND=-1;SYMBOL=AC079807.4;SYMBOL_SOURCE=Clone_based_vega_gene;CANONICAL=YES
-2_48018159_T/A	2:48018159	A	ENSG00000230773	ENST00000447571	Transcript	intron_variant,nc_transcript_variant	-	-	-	-	-	-	STRAND=-1;SYMBOL=AC079807.4;SYMBOL_SOURCE=Clone_based_vega_gene;CANONICAL=YES
-2_48018163_C/A	2:48018163	A	ENSG00000230773	ENST00000447571	Transcript	intron_variant,nc_transcript_variant	-	-	-	-	-	-	STRAND=-1;SYMBOL=AC079807.4;SYMBOL_SOURCE=Clone_based_vega_gene;CANONICAL=YES
-2_48018164_A/T	2:48018164	T	ENSG00000230773	ENST00000447571	Transcript	intron_variant,nc_transcript_variant	-	-	-	-	-	-	STRAND=-1;SYMBOL=AC079807.4;SYMBOL_SOURCE=Clone_based_vega_gene;CANONICAL=YES
-2_48018165_T/C	2:48018165	C	ENSG00000230773	ENST00000447571	Transcript	intron_variant,nc_transcript_variant	-	-	-	-	-	-	STRAND=-1;SYMBOL=AC079807.4;SYMBOL_SOURCE=Clone_based_vega_gene;CANONICAL=YES
-2_48018166_T/C	2:48018166	C	ENSG00000230773	ENST00000447571	Transcript	intron_variant,nc_transcript_variant	-	-	-	-	-	-	STRAND=-1;SYMBOL=AC079807.4;SYMBOL_SOURCE=Clone_based_vega_gene;CANONICAL=YES
-2_48018167_C/G	2:48018167	G	ENSG00000230773	ENST00000447571	Transcript	intron_variant,nc_transcript_variant	-	-	-	-	-	-	STRAND=-1;SYMBOL=AC079807.4;SYMBOL_SOURCE=Clone_based_vega_gene;CANONICAL=YES
-2_48018169_T/G	2:48018169	G	ENSG00000230773	ENST00000447571	Transcript	intron_variant,nc_transcript_variant	-	-	-	-	-	-	STRAND=-1;SYMBOL=AC079807.4;SYMBOL_SOURCE=Clone_based_vega_gene;CANONICAL=YES
-2_48018170_C/A	2:48018170	A	ENSG00000230773	ENST00000447571	Transcript	intron_variant,nc_transcript_variant	-	-	-	-	-	-	STRAND=-1;SYMBOL=AC079807.4;SYMBOL_SOURCE=Clone_based_vega_gene;CANONICAL=YES
-2_48018171_C/G	2:48018171	G	ENSG00000230773	ENST00000447571	Transcript	intron_variant,nc_transcript_variant	-	-	-	-	-	-	STRAND=-1;SYMBOL=AC079807.4;SYMBOL_SOURCE=Clone_based_vega_gene;CANONICAL=YES
-2_48018172_C/A	2:48018172	A	ENSG00000230773	ENST00000447571	Transcript	intron_variant,nc_transcript_variant	-	-	-	-	-	-	STRAND=-1;SYMBOL=AC079807.4;SYMBOL_SOURCE=Clone_based_vega_gene;CANONICAL=YES
-2_48018173_T/A	2:48018173	A	ENSG00000230773	ENST00000447571	Transcript	intron_variant,nc_transcript_variant	-	-	-	-	-	-	STRAND=-1;SYMBOL=AC079807.4;SYMBOL_SOURCE=Clone_based_vega_gene;CANONICAL=YES
-2_48018174_C/A	2:48018174	A	ENSG00000230773	ENST00000447571	Transcript	intron_variant,nc_transcript_variant	-	-	-	-	-	-	STRAND=-1;SYMBOL=AC079807.4;SYMBOL_SOURCE=Clone_based_vega_gene;CANONICAL=YES
-2_48018175_A/G	2:48018175	G	ENSG00000230773	ENST00000447571	Transcript	intron_variant,nc_transcript_variant	-	-	-	-	-	-	STRAND=-1;SYMBOL=AC079807.4;SYMBOL_SOURCE=Clone_based_vega_gene;CANONICAL=YES
-2_48018176_A/G	2:48018176	G	ENSG00000230773	ENST00000447571	Transcript	intron_variant,nc_transcript_variant	-	-	-	-	-	-	STRAND=-1;SYMBOL=AC079807.4;SYMBOL_SOURCE=Clone_based_vega_gene;CANONICAL=YES
-2_48018177_C/G	2:48018177	G	ENSG00000230773	ENST00000447571	Transcript	intron_variant,nc_transcript_variant	-	-	-	-	-	-	STRAND=-1;SYMBOL=AC079807.4;SYMBOL_SOURCE=Clone_based_vega_gene;CANONICAL=YES
-2_48018178_T/A	2:48018178	A	ENSG00000230773	ENST00000447571	Transcript	intron_variant,nc_transcript_variant	-	-	-	-	-	-	STRAND=-1;SYMBOL=AC079807.4;SYMBOL_SOURCE=Clone_based_vega_gene;CANONICAL=YES
-2_48018179_C/A	2:48018179	A	ENSG00000230773	ENST00000447571	Transcript	intron_variant,nc_transcript_variant	-	-	-	-	-	-	STRAND=-1;SYMBOL=AC079807.4;SYMBOL_SOURCE=Clone_based_vega_gene;CANONICAL=YES
-2_48018180_C/A	2:48018180	A	ENSG00000230773	ENST00000447571	Transcript	intron_variant,nc_transcript_variant	-	-	-	-	-	-	STRAND=-1;SYMBOL=AC079807.4;SYMBOL_SOURCE=Clone_based_vega_gene;CANONICAL=YES
-2_48018181_C/T	2:48018181	T	ENSG00000230773	ENST00000447571	Transcript	intron_variant,nc_transcript_variant	-	-	-	-	-	-	STRAND=-1;SYMBOL=AC079807.4;SYMBOL_SOURCE=Clone_based_vega_gene;CANONICAL=YES
-2_48018182_A/C	2:48018182	C	ENSG00000230773	ENST00000447571	Transcript	intron_variant,nc_transcript_variant	-	-	-	-	-	-	STRAND=-1;SYMBOL=AC079807.4;SYMBOL_SOURCE=Clone_based_vega_gene;CANONICAL=YES
-2_48018183_G/A	2:48018183	A	ENSG00000230773	ENST00000447571	Transcript	intron_variant,nc_transcript_variant	-	-	-	-	-	-	STRAND=-1;SYMBOL=AC079807.4;SYMBOL_SOURCE=Clone_based_vega_gene;CANONICAL=YES
-2_48018184_C/G	2:48018184	G	ENSG00000230773	ENST00000447571	Transcript	intron_variant,nc_transcript_variant	-	-	-	-	-	-	STRAND=-1;SYMBOL=AC079807.4;SYMBOL_SOURCE=Clone_based_vega_gene;CANONICAL=YES
-2_48018185_C/T	2:48018185	T	ENSG00000230773	ENST00000447571	Transcript	intron_variant,nc_transcript_variant	-	-	-	-	-	-	STRAND=-1;SYMBOL=AC079807.4;SYMBOL_SOURCE=Clone_based_vega_gene;CANONICAL=YES
-2_48018186_T/C	2:48018186	C	ENSG00000230773	ENST00000447571	Transcript	intron_variant,nc_transcript_variant	-	-	-	-	-	-	STRAND=-1;SYMBOL=AC079807.4;SYMBOL_SOURCE=Clone_based_vega_gene;CANONICAL=YES
-2_48018187_C/T	2:48018187	T	ENSG00000230773	ENST00000447571	Transcript	intron_variant,nc_transcript_variant	-	-	-	-	-	-	STRAND=-1;SYMBOL=AC079807.4;SYMBOL_SOURCE=Clone_based_vega_gene;CANONICAL=YES
-2_48018188_T/G	2:48018188	G	ENSG00000230773	ENST00000447571	Transcript	intron_variant,nc_transcript_variant	-	-	-	-	-	-	STRAND=-1;SYMBOL=AC079807.4;SYMBOL_SOURCE=Clone_based_vega_gene;CANONICAL=YES
-2_48018190_A/G	2:48018190	G	ENSG00000230773	ENST00000447571	Transcript	intron_variant,nc_transcript_variant	-	-	-	-	-	-	STRAND=-1;SYMBOL=AC079807.4;SYMBOL_SOURCE=Clone_based_vega_gene;CANONICAL=YES
-2_48018191_G/T	2:48018191	T	ENSG00000230773	ENST00000447571	Transcript	intron_variant,nc_transcript_variant	-	-	-	-	-	-	STRAND=-1;SYMBOL=AC079807.4;SYMBOL_SOURCE=Clone_based_vega_gene;CANONICAL=YES
-2_48018192_G/T	2:48018192	T	ENSG00000230773	ENST00000447571	Transcript	intron_variant,nc_transcript_variant	-	-	-	-	-	-	STRAND=-1;SYMBOL=AC079807.4;SYMBOL_SOURCE=Clone_based_vega_gene;CANONICAL=YES
-2_48018194_A/G	2:48018194	G	ENSG00000230773	ENST00000447571	Transcript	intron_variant,nc_transcript_variant	-	-	-	-	-	-	STRAND=-1;SYMBOL=AC079807.4;SYMBOL_SOURCE=Clone_based_vega_gene;CANONICAL=YES
-2_48018195_A/T	2:48018195	T	ENSG00000230773	ENST00000447571	Transcript	intron_variant,nc_transcript_variant	-	-	-	-	-	-	STRAND=-1;SYMBOL=AC079807.4;SYMBOL_SOURCE=Clone_based_vega_gene;CANONICAL=YES
-2_48018196_T/G	2:48018196	G	ENSG00000230773	ENST00000447571	Transcript	intron_variant,nc_transcript_variant	-	-	-	-	-	-	STRAND=-1;SYMBOL=AC079807.4;SYMBOL_SOURCE=Clone_based_vega_gene;CANONICAL=YES
-2_48018197_G/T	2:48018197	T	ENSG00000230773	ENST00000447571	Transcript	intron_variant,nc_transcript_variant	-	-	-	-	-	-	STRAND=-1;SYMBOL=AC079807.4;SYMBOL_SOURCE=Clone_based_vega_gene;CANONICAL=YES
-2_48018198_G/A	2:48018198	A	ENSG00000230773	ENST00000447571	Transcript	intron_variant,nc_transcript_variant	-	-	-	-	-	-	STRAND=-1;SYMBOL=AC079807.4;SYMBOL_SOURCE=Clone_based_vega_gene;CANONICAL=YES
-2_48018199_-/GAAAGGGAAAT	2:48018198-48018199	GAAAGGGAAAT	ENSG00000230773	ENST00000447571	Transcript	intron_variant,nc_transcript_variant,feature_elongation	-	-	-	-	-	-	STRAND=-1;SYMBOL=AC079807.4;SYMBOL_SOURCE=Clone_based_vega_gene;CANONICAL=YES
-2_48018200_T/A	2:48018200	A	ENSG00000230773	ENST00000447571	Transcript	intron_variant,nc_transcript_variant	-	-	-	-	-	-	STRAND=-1;SYMBOL=AC079807.4;SYMBOL_SOURCE=Clone_based_vega_gene;CANONICAL=YES
-2_48018201_AA/AAGAA	2:48018201-48018202	AAGAA	ENSG00000230773	ENST00000447571	Transcript	intron_variant,nc_transcript_variant,feature_elongation	-	-	-	-	-	-	STRAND=-1;SYMBOL=AC079807.4;SYMBOL_SOURCE=Clone_based_vega_gene;CANONICAL=YES
-2_48018201_A/G	2:48018201	G	ENSG00000230773	ENST00000447571	Transcript	intron_variant,nc_transcript_variant	-	-	-	-	-	-	STRAND=-1;SYMBOL=AC079807.4;SYMBOL_SOURCE=Clone_based_vega_gene;CANONICAL=YES
-2_48018202_A/T	2:48018202	T	ENSG00000230773	ENST00000447571	Transcript	intron_variant,nc_transcript_variant	-	-	-	-	-	-	STRAND=-1;SYMBOL=AC079807.4;SYMBOL_SOURCE=Clone_based_vega_gene;CANONICAL=YES
-2_48018203_-/AAA	2:48018202-48018203	AAA	ENSG00000230773	ENST00000447571	Transcript	intron_variant,nc_transcript_variant,feature_elongation	-	-	-	-	-	-	STRAND=-1;SYMBOL=AC079807.4;SYMBOL_SOURCE=Clone_based_vega_gene;CANONICAL=YES
-2_48018204_C/CAAC	2:48018204	CAAC	ENSG00000230773	ENST00000447571	Transcript	intron_variant,nc_transcript_variant,feature_elongation	-	-	-	-	-	-	STRAND=-1;SYMBOL=AC079807.4;SYMBOL_SOURCE=Clone_based_vega_gene;CANONICAL=YES
-2_48018204_C/T	2:48018204	T	ENSG00000230773	ENST00000447571	Transcript	intron_variant,nc_transcript_variant	-	-	-	-	-	-	STRAND=-1;SYMBOL=AC079807.4;SYMBOL_SOURCE=Clone_based_vega_gene;CANONICAL=YES
-2_48018205_-/CCG	2:48018204-48018205	CCG	ENSG00000230773	ENST00000447571	Transcript	intron_variant,nc_transcript_variant,feature_elongation	-	-	-	-	-	-	STRAND=-1;SYMBOL=AC079807.4;SYMBOL_SOURCE=Clone_based_vega_gene;CANONICAL=YES
-2_48018206_-/G	2:48018205-48018206	G	ENSG00000230773	ENST00000447571	Transcript	intron_variant,nc_transcript_variant,feature_elongation	-	-	-	-	-	-	STRAND=-1;SYMBOL=AC079807.4;SYMBOL_SOURCE=Clone_based_vega_gene;CANONICAL=YES
-2_48018206_A/T	2:48018206	T	ENSG00000230773	ENST00000447571	Transcript	intron_variant,nc_transcript_variant	-	-	-	-	-	-	STRAND=-1;SYMBOL=AC079807.4;SYMBOL_SOURCE=Clone_based_vega_gene;CANONICAL=YES
-2_48018207_C/T/A	2:48018207	A	ENSG00000230773	ENST00000447571	Transcript	intron_variant,nc_transcript_variant	-	-	-	-	-	-	STRAND=-1;SYMBOL=AC079807.4;SYMBOL_SOURCE=Clone_based_vega_gene;CANONICAL=YES
-2_48018208_T/G/C	2:48018208	C	ENSG00000230773	ENST00000447571	Transcript	intron_variant,nc_transcript_variant	-	-	-	-	-	-	STRAND=-1;SYMBOL=AC079807.4;SYMBOL_SOURCE=Clone_based_vega_gene;CANONICAL=YES
-2_48018209_T/A	2:48018209	A	ENSG00000230773	ENST00000447571	Transcript	intron_variant,nc_transcript_variant	-	-	-	-	-	-	STRAND=-1;SYMBOL=AC079807.4;SYMBOL_SOURCE=Clone_based_vega_gene;CANONICAL=YES
-2_48018210_A/AAGA	2:48018210	AAGA	ENSG00000230773	ENST00000447571	Transcript	intron_variant,nc_transcript_variant,feature_elongation	-	-	-	-	-	-	STRAND=-1;SYMBOL=AC079807.4;SYMBOL_SOURCE=Clone_based_vega_gene;CANONICAL=YES
-2_48018210_A/T/G	2:48018210	T	ENSG00000230773	ENST00000447571	Transcript	intron_variant,nc_transcript_variant	-	-	-	-	-	-	STRAND=-1;SYMBOL=AC079807.4;SYMBOL_SOURCE=Clone_based_vega_gene;CANONICAL=YES
-2_48018211_C/G	2:48018211	G	ENSG00000230773	ENST00000447571	Transcript	intron_variant,nc_transcript_variant	-	-	-	-	-	-	STRAND=-1;SYMBOL=AC079807.4;SYMBOL_SOURCE=Clone_based_vega_gene;CANONICAL=YES
-2_48018212_-/TAGAAGGGGAA	2:48018211-48018212	TAGAAGGGGAA	ENSG00000230773	ENST00000447571	Transcript	intron_variant,nc_transcript_variant,feature_elongation	-	-	-	-	-	-	STRAND=-1;SYMBOL=AC079807.4;SYMBOL_SOURCE=Clone_based_vega_gene;CANONICAL=YES
-2_48018213_T/AATT	2:48018213	AATT	ENSG00000230773	ENST00000447571	Transcript	intron_variant,nc_transcript_variant,feature_elongation	-	-	-	-	-	-	STRAND=-1;SYMBOL=AC079807.4;SYMBOL_SOURCE=Clone_based_vega_gene;CANONICAL=YES
-2_48018213_T/C	2:48018213	C	ENSG00000230773	ENST00000447571	Transcript	intron_variant,nc_transcript_variant	-	-	-	-	-	-	STRAND=-1;SYMBOL=AC079807.4;SYMBOL_SOURCE=Clone_based_vega_gene;CANONICAL=YES
-2_48018214_C/A	2:48018214	A	ENSG00000230773	ENST00000447571	Transcript	intron_variant,nc_transcript_variant	-	-	-	-	-	-	STRAND=-1;SYMBOL=AC079807.4;SYMBOL_SOURCE=Clone_based_vega_gene;CANONICAL=YES
-2_48018215_T/G	2:48018215	G	ENSG00000230773	ENST00000447571	Transcript	intron_variant,nc_transcript_variant	-	-	-	-	-	-	STRAND=-1;SYMBOL=AC079807.4;SYMBOL_SOURCE=Clone_based_vega_gene;CANONICAL=YES
-2_48018216_-/T	2:48018215-48018216	T	ENSG00000230773	ENST00000447571	Transcript	intron_variant,nc_transcript_variant,feature_elongation	-	-	-	-	-	-	STRAND=-1;SYMBOL=AC079807.4;SYMBOL_SOURCE=Clone_based_vega_gene;CANONICAL=YES
-2_48018217_T/C	2:48018217	C	ENSG00000230773	ENST00000447571	Transcript	intron_variant,nc_transcript_variant	-	-	-	-	-	-	STRAND=-1;SYMBOL=AC079807.4;SYMBOL_SOURCE=Clone_based_vega_gene;CANONICAL=YES
-2_48018218_GT/GTGTTGT	2:48018218-48018219	GTGTTGT	ENSG00000230773	ENST00000447571	Transcript	intron_variant,nc_transcript_variant,feature_elongation	-	-	-	-	-	-	STRAND=-1;SYMBOL=AC079807.4;SYMBOL_SOURCE=Clone_based_vega_gene;CANONICAL=YES
-2_48018218_G/C	2:48018218	C	ENSG00000230773	ENST00000447571	Transcript	intron_variant,nc_transcript_variant	-	-	-	-	-	-	STRAND=-1;SYMBOL=AC079807.4;SYMBOL_SOURCE=Clone_based_vega_gene;CANONICAL=YES
-2_48018219_TAGAT/T	2:48018219-48018223	T	ENSG00000230773	ENST00000447571	Transcript	intron_variant,nc_transcript_variant,feature_truncation	-	-	-	-	-	-	STRAND=-1;SYMBOL=AC079807.4;SYMBOL_SOURCE=Clone_based_vega_gene;CANONICAL=YES
-2_48018219_T/A	2:48018219	A	ENSG00000230773	ENST00000447571	Transcript	intron_variant,nc_transcript_variant	-	-	-	-	-	-	STRAND=-1;SYMBOL=AC079807.4;SYMBOL_SOURCE=Clone_based_vega_gene;CANONICAL=YES
-2_48018220_-/TGT	2:48018219-48018220	TGT	ENSG00000230773	ENST00000447571	Transcript	intron_variant,nc_transcript_variant,feature_elongation	-	-	-	-	-	-	STRAND=-1;SYMBOL=AC079807.4;SYMBOL_SOURCE=Clone_based_vega_gene;CANONICAL=YES
-2_48018221_G/C	2:48018221	C	ENSG00000230773	ENST00000447571	Transcript	intron_variant,nc_transcript_variant	-	-	-	-	-	-	STRAND=-1;SYMBOL=AC079807.4;SYMBOL_SOURCE=Clone_based_vega_gene;CANONICAL=YES
-2_48018223_TTTG/-	2:48018223-48018226	-	ENSG00000230773	ENST00000447571	Transcript	intron_variant,nc_transcript_variant,feature_truncation	-	-	-	-	-	-	STRAND=-1;SYMBOL=AC079807.4;SYMBOL_SOURCE=Clone_based_vega_gene;CANONICAL=YES
-2_48018223_T/A	2:48018223	A	ENSG00000230773	ENST00000447571	Transcript	intron_variant,nc_transcript_variant	-	-	-	-	-	-	STRAND=-1;SYMBOL=AC079807.4;SYMBOL_SOURCE=Clone_based_vega_gene;CANONICAL=YES
-2_48018224_T/G	2:48018224	G	ENSG00000230773	ENST00000447571	Transcript	intron_variant,nc_transcript_variant	-	-	-	-	-	-	STRAND=-1;SYMBOL=AC079807.4;SYMBOL_SOURCE=Clone_based_vega_gene;CANONICAL=YES
-2_48018225_T/G	2:48018225	G	ENSG00000230773	ENST00000447571	Transcript	intron_variant,nc_transcript_variant	-	-	-	-	-	-	STRAND=-1;SYMBOL=AC079807.4;SYMBOL_SOURCE=Clone_based_vega_gene;CANONICAL=YES
-2_48018227_C/G	2:48018227	G	ENSG00000230773	ENST00000447571	Transcript	intron_variant,nc_transcript_variant	-	-	-	-	-	-	STRAND=-1;SYMBOL=AC079807.4;SYMBOL_SOURCE=Clone_based_vega_gene;CANONICAL=YES
-2_48018228_C/T	2:48018228	T	ENSG00000230773	ENST00000447571	Transcript	intron_variant,nc_transcript_variant	-	-	-	-	-	-	STRAND=-1;SYMBOL=AC079807.4;SYMBOL_SOURCE=Clone_based_vega_gene;CANONICAL=YES
-2_48018229_T/A	2:48018229	A	ENSG00000230773	ENST00000447571	Transcript	intron_variant,nc_transcript_variant	-	-	-	-	-	-	STRAND=-1;SYMBOL=AC079807.4;SYMBOL_SOURCE=Clone_based_vega_gene;CANONICAL=YES
-2_48018230_ATT/-	2:48018230-48018232	-	ENSG00000230773	ENST00000447571	Transcript	intron_variant,nc_transcript_variant,feature_truncation	-	-	-	-	-	-	STRAND=-1;SYMBOL=AC079807.4;SYMBOL_SOURCE=Clone_based_vega_gene;CANONICAL=YES
-2_48018230_A/G	2:48018230	G	ENSG00000230773	ENST00000447571	Transcript	intron_variant,nc_transcript_variant	-	-	-	-	-	-	STRAND=-1;SYMBOL=AC079807.4;SYMBOL_SOURCE=Clone_based_vega_gene;CANONICAL=YES
-2_48018232_T/G	2:48018232	G	ENSG00000230773	ENST00000447571	Transcript	intron_variant,nc_transcript_variant	-	-	-	-	-	-	STRAND=-1;SYMBOL=AC079807.4;SYMBOL_SOURCE=Clone_based_vega_gene;CANONICAL=YES
-2_48018233_C/T	2:48018233	T	ENSG00000230773	ENST00000447571	Transcript	intron_variant,nc_transcript_variant	-	-	-	-	-	-	STRAND=-1;SYMBOL=AC079807.4;SYMBOL_SOURCE=Clone_based_vega_gene;CANONICAL=YES
-2_48018235_G/A	2:48018235	A	ENSG00000230773	ENST00000447571	Transcript	intron_variant,nc_transcript_variant	-	-	-	-	-	-	STRAND=-1;SYMBOL=AC079807.4;SYMBOL_SOURCE=Clone_based_vega_gene;CANONICAL=YES
-2_48018237_G/C	2:48018237	C	ENSG00000230773	ENST00000447571	Transcript	intron_variant,nc_transcript_variant	-	-	-	-	-	-	STRAND=-1;SYMBOL=AC079807.4;SYMBOL_SOURCE=Clone_based_vega_gene;CANONICAL=YES
+2_48018155_T/G	2:48018155	G	ENSG00000230773	ENST00000447571	Transcript	intron_variant,non_coding_transcript_variant	-	-	-	-	-	-	STRAND=-1;SYMBOL=AC079807.4;SYMBOL_SOURCE=Clone_based_vega_gene;CANONICAL=YES
+2_48018156_C/A	2:48018156	A	ENSG00000230773	ENST00000447571	Transcript	intron_variant,non_coding_transcript_variant	-	-	-	-	-	-	STRAND=-1;SYMBOL=AC079807.4;SYMBOL_SOURCE=Clone_based_vega_gene;CANONICAL=YES
+2_48018159_T/A	2:48018159	A	ENSG00000230773	ENST00000447571	Transcript	intron_variant,non_coding_transcript_variant	-	-	-	-	-	-	STRAND=-1;SYMBOL=AC079807.4;SYMBOL_SOURCE=Clone_based_vega_gene;CANONICAL=YES
+2_48018163_C/A	2:48018163	A	ENSG00000230773	ENST00000447571	Transcript	intron_variant,non_coding_transcript_variant	-	-	-	-	-	-	STRAND=-1;SYMBOL=AC079807.4;SYMBOL_SOURCE=Clone_based_vega_gene;CANONICAL=YES
+2_48018164_A/T	2:48018164	T	ENSG00000230773	ENST00000447571	Transcript	intron_variant,non_coding_transcript_variant	-	-	-	-	-	-	STRAND=-1;SYMBOL=AC079807.4;SYMBOL_SOURCE=Clone_based_vega_gene;CANONICAL=YES
+2_48018165_T/C	2:48018165	C	ENSG00000230773	ENST00000447571	Transcript	intron_variant,non_coding_transcript_variant	-	-	-	-	-	-	STRAND=-1;SYMBOL=AC079807.4;SYMBOL_SOURCE=Clone_based_vega_gene;CANONICAL=YES
+2_48018166_T/C	2:48018166	C	ENSG00000230773	ENST00000447571	Transcript	intron_variant,non_coding_transcript_variant	-	-	-	-	-	-	STRAND=-1;SYMBOL=AC079807.4;SYMBOL_SOURCE=Clone_based_vega_gene;CANONICAL=YES
+2_48018167_C/G	2:48018167	G	ENSG00000230773	ENST00000447571	Transcript	intron_variant,non_coding_transcript_variant	-	-	-	-	-	-	STRAND=-1;SYMBOL=AC079807.4;SYMBOL_SOURCE=Clone_based_vega_gene;CANONICAL=YES
+2_48018169_T/G	2:48018169	G	ENSG00000230773	ENST00000447571	Transcript	intron_variant,non_coding_transcript_variant	-	-	-	-	-	-	STRAND=-1;SYMBOL=AC079807.4;SYMBOL_SOURCE=Clone_based_vega_gene;CANONICAL=YES
+2_48018170_C/A	2:48018170	A	ENSG00000230773	ENST00000447571	Transcript	intron_variant,non_coding_transcript_variant	-	-	-	-	-	-	STRAND=-1;SYMBOL=AC079807.4;SYMBOL_SOURCE=Clone_based_vega_gene;CANONICAL=YES
+2_48018171_C/G	2:48018171	G	ENSG00000230773	ENST00000447571	Transcript	intron_variant,non_coding_transcript_variant	-	-	-	-	-	-	STRAND=-1;SYMBOL=AC079807.4;SYMBOL_SOURCE=Clone_based_vega_gene;CANONICAL=YES
+2_48018172_C/A	2:48018172	A	ENSG00000230773	ENST00000447571	Transcript	intron_variant,non_coding_transcript_variant	-	-	-	-	-	-	STRAND=-1;SYMBOL=AC079807.4;SYMBOL_SOURCE=Clone_based_vega_gene;CANONICAL=YES
+2_48018173_T/A	2:48018173	A	ENSG00000230773	ENST00000447571	Transcript	intron_variant,non_coding_transcript_variant	-	-	-	-	-	-	STRAND=-1;SYMBOL=AC079807.4;SYMBOL_SOURCE=Clone_based_vega_gene;CANONICAL=YES
+2_48018174_C/A	2:48018174	A	ENSG00000230773	ENST00000447571	Transcript	intron_variant,non_coding_transcript_variant	-	-	-	-	-	-	STRAND=-1;SYMBOL=AC079807.4;SYMBOL_SOURCE=Clone_based_vega_gene;CANONICAL=YES
+2_48018175_A/G	2:48018175	G	ENSG00000230773	ENST00000447571	Transcript	intron_variant,non_coding_transcript_variant	-	-	-	-	-	-	STRAND=-1;SYMBOL=AC079807.4;SYMBOL_SOURCE=Clone_based_vega_gene;CANONICAL=YES
+2_48018176_A/G	2:48018176	G	ENSG00000230773	ENST00000447571	Transcript	intron_variant,non_coding_transcript_variant	-	-	-	-	-	-	STRAND=-1;SYMBOL=AC079807.4;SYMBOL_SOURCE=Clone_based_vega_gene;CANONICAL=YES
+2_48018177_C/G	2:48018177	G	ENSG00000230773	ENST00000447571	Transcript	intron_variant,non_coding_transcript_variant	-	-	-	-	-	-	STRAND=-1;SYMBOL=AC079807.4;SYMBOL_SOURCE=Clone_based_vega_gene;CANONICAL=YES
+2_48018178_T/A	2:48018178	A	ENSG00000230773	ENST00000447571	Transcript	intron_variant,non_coding_transcript_variant	-	-	-	-	-	-	STRAND=-1;SYMBOL=AC079807.4;SYMBOL_SOURCE=Clone_based_vega_gene;CANONICAL=YES
+2_48018179_C/A	2:48018179	A	ENSG00000230773	ENST00000447571	Transcript	intron_variant,non_coding_transcript_variant	-	-	-	-	-	-	STRAND=-1;SYMBOL=AC079807.4;SYMBOL_SOURCE=Clone_based_vega_gene;CANONICAL=YES
+2_48018180_C/A	2:48018180	A	ENSG00000230773	ENST00000447571	Transcript	intron_variant,non_coding_transcript_variant	-	-	-	-	-	-	STRAND=-1;SYMBOL=AC079807.4;SYMBOL_SOURCE=Clone_based_vega_gene;CANONICAL=YES
+2_48018181_C/T	2:48018181	T	ENSG00000230773	ENST00000447571	Transcript	intron_variant,non_coding_transcript_variant	-	-	-	-	-	-	STRAND=-1;SYMBOL=AC079807.4;SYMBOL_SOURCE=Clone_based_vega_gene;CANONICAL=YES
+2_48018182_A/C	2:48018182	C	ENSG00000230773	ENST00000447571	Transcript	intron_variant,non_coding_transcript_variant	-	-	-	-	-	-	STRAND=-1;SYMBOL=AC079807.4;SYMBOL_SOURCE=Clone_based_vega_gene;CANONICAL=YES
+2_48018183_G/A	2:48018183	A	ENSG00000230773	ENST00000447571	Transcript	intron_variant,non_coding_transcript_variant	-	-	-	-	-	-	STRAND=-1;SYMBOL=AC079807.4;SYMBOL_SOURCE=Clone_based_vega_gene;CANONICAL=YES
+2_48018184_C/G	2:48018184	G	ENSG00000230773	ENST00000447571	Transcript	intron_variant,non_coding_transcript_variant	-	-	-	-	-	-	STRAND=-1;SYMBOL=AC079807.4;SYMBOL_SOURCE=Clone_based_vega_gene;CANONICAL=YES
+2_48018185_C/T	2:48018185	T	ENSG00000230773	ENST00000447571	Transcript	intron_variant,non_coding_transcript_variant	-	-	-	-	-	-	STRAND=-1;SYMBOL=AC079807.4;SYMBOL_SOURCE=Clone_based_vega_gene;CANONICAL=YES
+2_48018186_T/C	2:48018186	C	ENSG00000230773	ENST00000447571	Transcript	intron_variant,non_coding_transcript_variant	-	-	-	-	-	-	STRAND=-1;SYMBOL=AC079807.4;SYMBOL_SOURCE=Clone_based_vega_gene;CANONICAL=YES
+2_48018187_C/T	2:48018187	T	ENSG00000230773	ENST00000447571	Transcript	intron_variant,non_coding_transcript_variant	-	-	-	-	-	-	STRAND=-1;SYMBOL=AC079807.4;SYMBOL_SOURCE=Clone_based_vega_gene;CANONICAL=YES
+2_48018188_T/G	2:48018188	G	ENSG00000230773	ENST00000447571	Transcript	intron_variant,non_coding_transcript_variant	-	-	-	-	-	-	STRAND=-1;SYMBOL=AC079807.4;SYMBOL_SOURCE=Clone_based_vega_gene;CANONICAL=YES
+2_48018190_A/G	2:48018190	G	ENSG00000230773	ENST00000447571	Transcript	intron_variant,non_coding_transcript_variant	-	-	-	-	-	-	STRAND=-1;SYMBOL=AC079807.4;SYMBOL_SOURCE=Clone_based_vega_gene;CANONICAL=YES
+2_48018191_G/T	2:48018191	T	ENSG00000230773	ENST00000447571	Transcript	intron_variant,non_coding_transcript_variant	-	-	-	-	-	-	STRAND=-1;SYMBOL=AC079807.4;SYMBOL_SOURCE=Clone_based_vega_gene;CANONICAL=YES
+2_48018192_G/T	2:48018192	T	ENSG00000230773	ENST00000447571	Transcript	intron_variant,non_coding_transcript_variant	-	-	-	-	-	-	STRAND=-1;SYMBOL=AC079807.4;SYMBOL_SOURCE=Clone_based_vega_gene;CANONICAL=YES
+2_48018194_A/G	2:48018194	G	ENSG00000230773	ENST00000447571	Transcript	intron_variant,non_coding_transcript_variant	-	-	-	-	-	-	STRAND=-1;SYMBOL=AC079807.4;SYMBOL_SOURCE=Clone_based_vega_gene;CANONICAL=YES
+2_48018195_A/T	2:48018195	T	ENSG00000230773	ENST00000447571	Transcript	intron_variant,non_coding_transcript_variant	-	-	-	-	-	-	STRAND=-1;SYMBOL=AC079807.4;SYMBOL_SOURCE=Clone_based_vega_gene;CANONICAL=YES
+2_48018196_T/G	2:48018196	G	ENSG00000230773	ENST00000447571	Transcript	intron_variant,non_coding_transcript_variant	-	-	-	-	-	-	STRAND=-1;SYMBOL=AC079807.4;SYMBOL_SOURCE=Clone_based_vega_gene;CANONICAL=YES
+2_48018197_G/T	2:48018197	T	ENSG00000230773	ENST00000447571	Transcript	intron_variant,non_coding_transcript_variant	-	-	-	-	-	-	STRAND=-1;SYMBOL=AC079807.4;SYMBOL_SOURCE=Clone_based_vega_gene;CANONICAL=YES
+2_48018198_G/A	2:48018198	A	ENSG00000230773	ENST00000447571	Transcript	intron_variant,non_coding_transcript_variant	-	-	-	-	-	-	STRAND=-1;SYMBOL=AC079807.4;SYMBOL_SOURCE=Clone_based_vega_gene;CANONICAL=YES
+2_48018199_-/GAAAGGGAAAT	2:48018198-48018199	GAAAGGGAAAT	ENSG00000230773	ENST00000447571	Transcript	intron_variant,non_coding_transcript_variant	-	-	-	-	-	-	STRAND=-1;SYMBOL=AC079807.4;SYMBOL_SOURCE=Clone_based_vega_gene;CANONICAL=YES
+2_48018200_T/A	2:48018200	A	ENSG00000230773	ENST00000447571	Transcript	intron_variant,non_coding_transcript_variant	-	-	-	-	-	-	STRAND=-1;SYMBOL=AC079807.4;SYMBOL_SOURCE=Clone_based_vega_gene;CANONICAL=YES
+2_48018201_AA/AAGAA	2:48018201-48018202	AAGAA	ENSG00000230773	ENST00000447571	Transcript	intron_variant,non_coding_transcript_variant	-	-	-	-	-	-	STRAND=-1;SYMBOL=AC079807.4;SYMBOL_SOURCE=Clone_based_vega_gene;CANONICAL=YES
+2_48018201_A/G	2:48018201	G	ENSG00000230773	ENST00000447571	Transcript	intron_variant,non_coding_transcript_variant	-	-	-	-	-	-	STRAND=-1;SYMBOL=AC079807.4;SYMBOL_SOURCE=Clone_based_vega_gene;CANONICAL=YES
+2_48018202_A/T	2:48018202	T	ENSG00000230773	ENST00000447571	Transcript	intron_variant,non_coding_transcript_variant	-	-	-	-	-	-	STRAND=-1;SYMBOL=AC079807.4;SYMBOL_SOURCE=Clone_based_vega_gene;CANONICAL=YES
+2_48018203_-/AAA	2:48018202-48018203	AAA	ENSG00000230773	ENST00000447571	Transcript	intron_variant,non_coding_transcript_variant	-	-	-	-	-	-	STRAND=-1;SYMBOL=AC079807.4;SYMBOL_SOURCE=Clone_based_vega_gene;CANONICAL=YES
+2_48018204_C/CAAC	2:48018204	CAAC	ENSG00000230773	ENST00000447571	Transcript	intron_variant,non_coding_transcript_variant	-	-	-	-	-	-	STRAND=-1;SYMBOL=AC079807.4;SYMBOL_SOURCE=Clone_based_vega_gene;CANONICAL=YES
+2_48018204_C/T	2:48018204	T	ENSG00000230773	ENST00000447571	Transcript	intron_variant,non_coding_transcript_variant	-	-	-	-	-	-	STRAND=-1;SYMBOL=AC079807.4;SYMBOL_SOURCE=Clone_based_vega_gene;CANONICAL=YES
+2_48018205_-/CCG	2:48018204-48018205	CCG	ENSG00000230773	ENST00000447571	Transcript	intron_variant,non_coding_transcript_variant	-	-	-	-	-	-	STRAND=-1;SYMBOL=AC079807.4;SYMBOL_SOURCE=Clone_based_vega_gene;CANONICAL=YES
+2_48018206_-/G	2:48018205-48018206	G	ENSG00000230773	ENST00000447571	Transcript	intron_variant,non_coding_transcript_variant	-	-	-	-	-	-	STRAND=-1;SYMBOL=AC079807.4;SYMBOL_SOURCE=Clone_based_vega_gene;CANONICAL=YES
+2_48018206_A/T	2:48018206	T	ENSG00000230773	ENST00000447571	Transcript	intron_variant,non_coding_transcript_variant	-	-	-	-	-	-	STRAND=-1;SYMBOL=AC079807.4;SYMBOL_SOURCE=Clone_based_vega_gene;CANONICAL=YES
+2_48018207_C/T/A	2:48018207	A	ENSG00000230773	ENST00000447571	Transcript	intron_variant,non_coding_transcript_variant	-	-	-	-	-	-	STRAND=-1;SYMBOL=AC079807.4;SYMBOL_SOURCE=Clone_based_vega_gene;CANONICAL=YES
+2_48018208_T/G/C	2:48018208	C	ENSG00000230773	ENST00000447571	Transcript	intron_variant,non_coding_transcript_variant	-	-	-	-	-	-	STRAND=-1;SYMBOL=AC079807.4;SYMBOL_SOURCE=Clone_based_vega_gene;CANONICAL=YES
+2_48018209_T/A	2:48018209	A	ENSG00000230773	ENST00000447571	Transcript	intron_variant,non_coding_transcript_variant	-	-	-	-	-	-	STRAND=-1;SYMBOL=AC079807.4;SYMBOL_SOURCE=Clone_based_vega_gene;CANONICAL=YES
+2_48018210_A/AAGA	2:48018210	AAGA	ENSG00000230773	ENST00000447571	Transcript	intron_variant,non_coding_transcript_variant	-	-	-	-	-	-	STRAND=-1;SYMBOL=AC079807.4;SYMBOL_SOURCE=Clone_based_vega_gene;CANONICAL=YES
+2_48018210_A/T/G	2:48018210	T	ENSG00000230773	ENST00000447571	Transcript	intron_variant,non_coding_transcript_variant	-	-	-	-	-	-	STRAND=-1;SYMBOL=AC079807.4;SYMBOL_SOURCE=Clone_based_vega_gene;CANONICAL=YES
+2_48018211_C/G	2:48018211	G	ENSG00000230773	ENST00000447571	Transcript	intron_variant,non_coding_transcript_variant	-	-	-	-	-	-	STRAND=-1;SYMBOL=AC079807.4;SYMBOL_SOURCE=Clone_based_vega_gene;CANONICAL=YES
+2_48018212_-/TAGAAGGGGAA	2:48018211-48018212	TAGAAGGGGAA	ENSG00000230773	ENST00000447571	Transcript	intron_variant,non_coding_transcript_variant	-	-	-	-	-	-	STRAND=-1;SYMBOL=AC079807.4;SYMBOL_SOURCE=Clone_based_vega_gene;CANONICAL=YES
+2_48018213_T/AATT	2:48018213	AATT	ENSG00000230773	ENST00000447571	Transcript	intron_variant,non_coding_transcript_variant	-	-	-	-	-	-	STRAND=-1;SYMBOL=AC079807.4;SYMBOL_SOURCE=Clone_based_vega_gene;CANONICAL=YES
+2_48018213_T/C	2:48018213	C	ENSG00000230773	ENST00000447571	Transcript	intron_variant,non_coding_transcript_variant	-	-	-	-	-	-	STRAND=-1;SYMBOL=AC079807.4;SYMBOL_SOURCE=Clone_based_vega_gene;CANONICAL=YES
+2_48018214_C/A	2:48018214	A	ENSG00000230773	ENST00000447571	Transcript	intron_variant,non_coding_transcript_variant	-	-	-	-	-	-	STRAND=-1;SYMBOL=AC079807.4;SYMBOL_SOURCE=Clone_based_vega_gene;CANONICAL=YES
+2_48018215_T/G	2:48018215	G	ENSG00000230773	ENST00000447571	Transcript	intron_variant,non_coding_transcript_variant	-	-	-	-	-	-	STRAND=-1;SYMBOL=AC079807.4;SYMBOL_SOURCE=Clone_based_vega_gene;CANONICAL=YES
+2_48018216_-/T	2:48018215-48018216	T	ENSG00000230773	ENST00000447571	Transcript	intron_variant,non_coding_transcript_variant	-	-	-	-	-	-	STRAND=-1;SYMBOL=AC079807.4;SYMBOL_SOURCE=Clone_based_vega_gene;CANONICAL=YES
+2_48018217_T/C	2:48018217	C	ENSG00000230773	ENST00000447571	Transcript	intron_variant,non_coding_transcript_variant	-	-	-	-	-	-	STRAND=-1;SYMBOL=AC079807.4;SYMBOL_SOURCE=Clone_based_vega_gene;CANONICAL=YES
+2_48018218_GT/GTGTTGT	2:48018218-48018219	GTGTTGT	ENSG00000230773	ENST00000447571	Transcript	intron_variant,non_coding_transcript_variant	-	-	-	-	-	-	STRAND=-1;SYMBOL=AC079807.4;SYMBOL_SOURCE=Clone_based_vega_gene;CANONICAL=YES
+2_48018218_G/C	2:48018218	C	ENSG00000230773	ENST00000447571	Transcript	intron_variant,non_coding_transcript_variant	-	-	-	-	-	-	STRAND=-1;SYMBOL=AC079807.4;SYMBOL_SOURCE=Clone_based_vega_gene;CANONICAL=YES
+2_48018219_TAGAT/T	2:48018219-48018223	T	ENSG00000230773	ENST00000447571	Transcript	intron_variant,non_coding_transcript_variant	-	-	-	-	-	-	STRAND=-1;SYMBOL=AC079807.4;SYMBOL_SOURCE=Clone_based_vega_gene;CANONICAL=YES
+2_48018219_T/A	2:48018219	A	ENSG00000230773	ENST00000447571	Transcript	intron_variant,non_coding_transcript_variant	-	-	-	-	-	-	STRAND=-1;SYMBOL=AC079807.4;SYMBOL_SOURCE=Clone_based_vega_gene;CANONICAL=YES
+2_48018220_-/TGT	2:48018219-48018220	TGT	ENSG00000230773	ENST00000447571	Transcript	intron_variant,non_coding_transcript_variant	-	-	-	-	-	-	STRAND=-1;SYMBOL=AC079807.4;SYMBOL_SOURCE=Clone_based_vega_gene;CANONICAL=YES
+2_48018221_G/C	2:48018221	C	ENSG00000230773	ENST00000447571	Transcript	intron_variant,non_coding_transcript_variant	-	-	-	-	-	-	STRAND=-1;SYMBOL=AC079807.4;SYMBOL_SOURCE=Clone_based_vega_gene;CANONICAL=YES
+2_48018223_TTTG/-	2:48018223-48018226	-	ENSG00000230773	ENST00000447571	Transcript	intron_variant,non_coding_transcript_variant	-	-	-	-	-	-	STRAND=-1;SYMBOL=AC079807.4;SYMBOL_SOURCE=Clone_based_vega_gene;CANONICAL=YES
+2_48018223_T/A	2:48018223	A	ENSG00000230773	ENST00000447571	Transcript	intron_variant,non_coding_transcript_variant	-	-	-	-	-	-	STRAND=-1;SYMBOL=AC079807.4;SYMBOL_SOURCE=Clone_based_vega_gene;CANONICAL=YES
+2_48018224_T/G	2:48018224	G	ENSG00000230773	ENST00000447571	Transcript	intron_variant,non_coding_transcript_variant	-	-	-	-	-	-	STRAND=-1;SYMBOL=AC079807.4;SYMBOL_SOURCE=Clone_based_vega_gene;CANONICAL=YES
+2_48018225_T/G	2:48018225	G	ENSG00000230773	ENST00000447571	Transcript	intron_variant,non_coding_transcript_variant	-	-	-	-	-	-	STRAND=-1;SYMBOL=AC079807.4;SYMBOL_SOURCE=Clone_based_vega_gene;CANONICAL=YES
+2_48018227_C/G	2:48018227	G	ENSG00000230773	ENST00000447571	Transcript	intron_variant,non_coding_transcript_variant	-	-	-	-	-	-	STRAND=-1;SYMBOL=AC079807.4;SYMBOL_SOURCE=Clone_based_vega_gene;CANONICAL=YES
+2_48018228_C/T	2:48018228	T	ENSG00000230773	ENST00000447571	Transcript	intron_variant,non_coding_transcript_variant	-	-	-	-	-	-	STRAND=-1;SYMBOL=AC079807.4;SYMBOL_SOURCE=Clone_based_vega_gene;CANONICAL=YES
+2_48018229_T/A	2:48018229	A	ENSG00000230773	ENST00000447571	Transcript	intron_variant,non_coding_transcript_variant	-	-	-	-	-	-	STRAND=-1;SYMBOL=AC079807.4;SYMBOL_SOURCE=Clone_based_vega_gene;CANONICAL=YES
+2_48018230_ATT/-	2:48018230-48018232	-	ENSG00000230773	ENST00000447571	Transcript	intron_variant,non_coding_transcript_variant	-	-	-	-	-	-	STRAND=-1;SYMBOL=AC079807.4;SYMBOL_SOURCE=Clone_based_vega_gene;CANONICAL=YES
+2_48018230_A/G	2:48018230	G	ENSG00000230773	ENST00000447571	Transcript	intron_variant,non_coding_transcript_variant	-	-	-	-	-	-	STRAND=-1;SYMBOL=AC079807.4;SYMBOL_SOURCE=Clone_based_vega_gene;CANONICAL=YES
+2_48018232_T/G	2:48018232	G	ENSG00000230773	ENST00000447571	Transcript	intron_variant,non_coding_transcript_variant	-	-	-	-	-	-	STRAND=-1;SYMBOL=AC079807.4;SYMBOL_SOURCE=Clone_based_vega_gene;CANONICAL=YES
+2_48018233_C/T	2:48018233	T	ENSG00000230773	ENST00000447571	Transcript	intron_variant,non_coding_transcript_variant	-	-	-	-	-	-	STRAND=-1;SYMBOL=AC079807.4;SYMBOL_SOURCE=Clone_based_vega_gene;CANONICAL=YES
+2_48018235_G/A	2:48018235	A	ENSG00000230773	ENST00000447571	Transcript	intron_variant,non_coding_transcript_variant	-	-	-	-	-	-	STRAND=-1;SYMBOL=AC079807.4;SYMBOL_SOURCE=Clone_based_vega_gene;CANONICAL=YES
+2_48018237_G/C	2:48018237	C	ENSG00000230773	ENST00000447571	Transcript	intron_variant,non_coding_transcript_variant	-	-	-	-	-	-	STRAND=-1;SYMBOL=AC079807.4;SYMBOL_SOURCE=Clone_based_vega_gene;CANONICAL=YES

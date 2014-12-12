@@ -19,7 +19,7 @@ const my $EXTRACT_SEQ_CMD => $ENV{EXTRACT_SEQ_CMD}
     // '/opt/t87/global/software/io_lib/bin/extract_seq';
 
 const my $DEFAULT_QC_DIR => $ENV{ DEFAULT_CRISPR_DAMAGE_QC_DIR }
-    // '/lustre/scratch109/sanger/team87/imits_crispr_damage_qc';
+    // '/lustre/scratch110/sanger/team87/imits_crispr_damage_qc';
 
 my $log_level = $INFO;
 
