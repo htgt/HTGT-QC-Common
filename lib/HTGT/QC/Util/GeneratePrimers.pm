@@ -37,6 +37,7 @@ has dir => (
 # Target Info
 #
 
+# target sequence
 has bio_seq => (
     is       => 'ro',
     isa      => 'Bio::SeqI',
@@ -73,12 +74,32 @@ has primer3_config_file => (
     required => 1,
 );
 
+=head2 primer3_target_string
+
+String which tells Primer3 what region the primers must flank.
+It is in the form: <start>,<length>
+<start> is the index of the first base of the target region.
+<length> is the the length of the target.
+
+=cut
 has primer3_target_string => (
     is       => 'ro',
     isa      => 'Str',
     required => 1,
 );
 
+=head2 primer_product_size_range
+
+String which tells Primer3 what how big the product from the primers should be.
+It is in the form: <x>-<y>
+<x> is the minimum size
+<y> is the maximum size
+
+You can specify a list of ranges ( e.g. 100-200 400-500 ). If this is done Primer3 tries
+to make produces in the first size range, only expanding to other ranges if it can't
+find anything.
+
+=cut
 has primer_product_size_range => (
     is       => 'ro',
     isa      => 'Str',

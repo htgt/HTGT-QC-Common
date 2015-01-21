@@ -330,9 +330,10 @@ It is in the form: <x>-<y>
 <y> is the maximum size
 
 You can specify a list of ranges ( e.g. 100-200 400-500 ). If this is done Primer3 tries
-to make products in the first size range, only expanding the the other ranges if it can't anything.
-We use this property when expaning the search region, favoring products that would be produced by
-primers found in the expanded region.
+to make products in the first size range, only expanding the the other ranges if it can't
+find anything.
+We use this property when expanding the search region, favoring products that would be
+produced by primers found in the expanded region.
 
 If we have a forward primer specified then the product is always anchored to that primer
 so the calculations for the size range is different.
