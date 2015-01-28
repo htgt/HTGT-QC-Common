@@ -178,6 +178,12 @@ has primer_search_region_expand => (
     default => 500,
 );
 
+has check_genomic_specificity => (
+    is      => 'ro',
+    isa     => 'Bool',
+    default => 1,
+);
+
 =head2 find_primers
 
 Attempt to generate primers for target, if this fails initially try again
@@ -240,6 +246,7 @@ sub generate_primer_attempt {
         primer3_target_string     => $target_string,
         primer_product_size_range => join( ' ', @{ $self->product_size_array } ),
         additional_primer3_params => $self->additional_primer3_params,
+        check_genomic_specificity => $self->check_genomic_specificity,
     );
 
     my $primer_data;
