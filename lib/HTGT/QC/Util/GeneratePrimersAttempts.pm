@@ -184,6 +184,12 @@ has check_genomic_specificity => (
     default => 1,
 );
 
+has product_contains_region_offsets => (
+    is      => 'ro',
+    isa     => 'Bool',
+    default => 0,
+);
+
 =head2 find_primers
 
 Attempt to generate primers for target, if this fails initially try again
@@ -377,6 +383,9 @@ sub generate_primer_product_size_range {
         $max_size = $end - $start;
         if ( $self->current_attempt == 1 ) {
             $min_size = $self->target_end - $self->target_start;
+            if($self->product_contains_region_offsets){
+                $min_size += $self->three_prime_region_offset + $self->five_prime_region_offset;
+            }
         }
         else {
             my $last_size_range = $self->product_size_array->[0];
