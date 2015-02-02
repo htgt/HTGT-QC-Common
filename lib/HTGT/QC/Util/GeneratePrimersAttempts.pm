@@ -103,6 +103,13 @@ has repeat_mask_class => (
     },
 );
 
+# Set this flag to true to prevent all repeat masking regardless of repeat_mask_class contents
+has no_repeat_masking => (
+    is      => 'ro',
+    isa     => 'Bool',
+    default => 0,
+);
+
 has [ 'max_five_prime_region_size', 'max_three_prime_region_size' ] => (
     is  => 'ro',
     isa => 'Int',
@@ -410,10 +417,18 @@ Build a Bio::EnsEMBL::Slice for a given target regions
 sub build_region_slice {
     my ( $self, $start, $end ) = @_;
 
-    my $slice = $self->ensembl_util->get_repeat_masked_slice(
-        $start, $end, $self->chromosome,
-        $self->no_repeat_mask_classes ? undef : $self->repeat_mask_class
-    );
+    my $slice;
+    if($self->no_repeat_masking){
+        $slice = $self->ensembl_util->get_slice(
+            $start, $end, $self->chromosome,
+        );
+    }
+    else{
+        $slice = $self->ensembl_util->get_repeat_masked_slice(
+            $start, $end, $self->chromosome,
+            $self->no_repeat_mask_classes ? undef : $self->repeat_mask_class
+        );
+    }
 
     # primer3 expects sequence in a 5' to 3' direction, so reverse compliment if
     # target is on the -ve strand
