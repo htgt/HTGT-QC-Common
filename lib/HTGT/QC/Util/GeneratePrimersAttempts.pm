@@ -191,10 +191,24 @@ has check_genomic_specificity => (
     default => 1,
 );
 
+# Some additional factors to allow us to adjust the product size range
+# to replicate existing primer generation code
+
+# Set this to true if you want the minimun product size to be:
+# length of target region + five prime offset + three prime offset
 has product_contains_region_offsets => (
     is      => 'ro',
     isa     => 'Bool',
     default => 0,
+);
+
+# By default the maximum product length is:
+# length of target + five prime region + three prime region
+# Use this attribute if you want the max product to be <n> bases shorter than this
+has exclude_from_product_length => (
+    is      => 'ro',
+    isa     => 'Num',
+    required => 0,
 );
 
 =head2 find_primers
@@ -388,8 +402,15 @@ sub generate_primer_product_size_range {
     }
     else {
         $max_size = $end - $start;
+        if ( $self->exclude_from_product_length ){
+            $max_size = $max_size - $self->exclude_from_product_length;
+        }
         if ( $self->current_attempt == 1 ) {
             $min_size = $self->target_end - $self->target_start;
+            ## FIXME: added this to get the same params as in existing code
+            # but I think it is not necessary as primer product will always
+            # contain the region offsets because the pair must flank the region
+            # of interest plus the offsets
             if($self->product_contains_region_offsets){
                 $min_size += $self->three_prime_region_offset + $self->five_prime_region_offset;
             }
