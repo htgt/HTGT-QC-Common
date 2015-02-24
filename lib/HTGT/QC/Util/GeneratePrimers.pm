@@ -131,13 +131,6 @@ has num_bwa_threads => (
     default => 1,
 );
 
-# Set to true to run BWA on farm
-has farm_bwa => (
-    is      => 'ro',
-    isa     => 'Bool',
-    default => 0,
-);
-
 # Maximum number of genomic hits a oligos is allowed
 has num_genomic_hits => (
     is      => 'ro',
