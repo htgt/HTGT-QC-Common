@@ -26,10 +26,10 @@ my %WriteMakefileArgs = (
   },
   "DISTNAME" => "HTGT-QC-Common",
   "EXE_FILES" => [
-    "bin/crispr_damage_analysis.pl",
     "bin/fetch-seq-reads.sh",
-    "bin/merge_vcf_variants.pl",
-    "bin/generate_primers_attempts.pl"
+    "bin/crispr_damage_analysis.pl",
+    "bin/generate_primers_attempts.pl",
+    "bin/merge_vcf_variants.pl"
   ],
   "LICENSE" => "perl",
   "NAME" => "HTGT::QC::Common",
@@ -41,6 +41,7 @@ my %WriteMakefileArgs = (
     "Config::Scoped" => 0,
     "Const::Fast" => 0,
     "Data::Dump" => 0,
+    "Data::Dumper" => 0,
     "Data::UUID" => 0,
     "DesignCreate::Util::BWA" => 0,
     "DesignCreate::Util::Primer3" => 0,
@@ -51,6 +52,7 @@ my %WriteMakefileArgs = (
     "IPC::Run" => 0,
     "IPC::System::Simple" => 0,
     "Iterator::Simple" => 0,
+    "JSON" => 0,
     "List::MoreUtils" => 0,
     "List::Util" => 0,
     "Log::Log4perl" => 0,
@@ -75,7 +77,7 @@ my %WriteMakefileArgs = (
     "strict" => 0,
     "warnings" => 0
   },
-  "VERSION" => "0.035",
+  "VERSION" => "0.036",
   "test" => {
     "TESTS" => "t/*.t"
   }

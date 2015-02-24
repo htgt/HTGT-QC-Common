@@ -1,7 +1,7 @@
 package HTGT::QC::Constants;
 ## no critic(RequireUseStrict,RequireUseWarnings)
 {
-    $HTGT::QC::Constants::VERSION = '0.035';
+    $HTGT::QC::Constants::VERSION = '0.036';
 }
 ## use critic
 
