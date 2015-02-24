@@ -24,7 +24,6 @@ use DesignCreate::Util::BWA;
 use Try::Tiny;
 use namespace::autoclean;
 use Data::Dumper;
-use WebAppCommon::Util::FarmJobRunner;
 use JSON;
 
 with qw( MooseX::Log::Log4perl );
@@ -388,10 +387,6 @@ sub run_bwa {
 
     my $bwa_query_file = $self->define_bwa_query_file;
 
-    if($self->farm_bwa){
-        return $self->run_bwa_on_farm($bwa_query_file);
-    }
-
     my $bwa = DesignCreate::Util::BWA->new(
         query_file        => $bwa_query_file,
         work_dir          => $self->dir,
@@ -411,50 +406,6 @@ sub run_bwa {
     return;
 }
 
-sub run_bwa_on_farm{
-    my ($self, $bwa_query_file) = @_;
-
-    $self->log->debug( 'Running BWA aln on farm' );
-    my $match_file = dir( $self->dir )->file('matches.json');
-
-    my $bwa_script = '/nfs/users/nfs_a/af11/git/Design-Creation/bin/run_bwa.pl';
-    my @cmd = ($bwa_script,
-               '--query-file' => "$bwa_query_file",
-               '--dir' => $self->dir,
-               '--num-threads' => $self->num_bwa_threads,
-               '--species' => $self->species,
-               '--out-file' => "$match_file",
-               );
-
-    my $runner = WebAppCommon::Util::FarmJobRunner->new;
-
-    my $done;
-    $self->log->debug('Command to submit to farm: ',(join " ", @cmd));
-    try {
-        $done = $runner->submit_and_wait(
-            out_file => dir( $self->dir )->file( 'run_bwa.out' ),
-            err_file => dir( $self->dir )->file( 'run_bwa.err' ),
-            timeout  => 90,
-            interval => 5,
-            cmd      => \@cmd,
-        );
-
-        $self->log->debug( "Job completion status: $done" );
-    }
-    catch {
-        die("Error running bwa job to farm ".$_);
-    };
-
-    if($done){
-        my $matches = decode_json( $match_file->slurp );
-        $self->bwa_matches( $matches );
-    }
-    else{
-        die("BWA aln on farm did not complete within expected time");
-    }
-
-    return;
-}
 
 =head2 define_bwa_query_file
 
