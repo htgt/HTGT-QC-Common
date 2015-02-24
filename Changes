@@ -1,5 +1,9 @@
 {{$NEXT}}
 
+0.036     2015-02-24 14:40:54 Europe/London
+    Added more options to primer generation
+    Completed script to run primer generation
+
 0.035     2015-01-19 08:34:24 Europe/London
 
 Switch back to scratch109
