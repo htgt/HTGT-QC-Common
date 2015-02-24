@@ -1,7 +1,7 @@
 package HTGT::QC::Util::GeneratePrimersAttempts;
 ## no critic(RequireUseStrict,RequireUseWarnings)
 {
-    $HTGT::QC::Util::GeneratePrimersAttempts::VERSION = '0.036';
+    $HTGT::QC::Util::GeneratePrimersAttempts::VERSION = '0.037';
 }
 ## use critic
 
@@ -197,12 +197,6 @@ has check_genomic_specificity => (
     default => 1,
 );
 
-has farm_bwa => (
-    is      => 'ro',
-    isa     => 'Bool',
-    default => 0,
-);
-
 # By default the maximum product length is:
 # length of target + five prime region + three prime region
 # Use this attribute if you want the max product to be <n> bases shorter than this
@@ -275,7 +269,6 @@ sub generate_primer_attempt {
         primer_product_size_range => join( ' ', @{ $self->product_size_array } ),
         additional_primer3_params => $self->additional_primer3_params,
         check_genomic_specificity => $self->check_genomic_specificity,
-        farm_bwa                  => $self->farm_bwa,
     );
 
     my $primer_data;

@@ -1,7 +1,7 @@
 package HTGT::QC::Util::GeneratePrimers;
 ## no critic(RequireUseStrict,RequireUseWarnings)
 {
-    $HTGT::QC::Util::GeneratePrimers::VERSION = '0.036';
+    $HTGT::QC::Util::GeneratePrimers::VERSION = '0.037';
 }
 ## use critic
 
@@ -135,13 +135,6 @@ has num_bwa_threads => (
     is      => 'ro',
     isa     => 'Int',
     default => 1,
-);
-
-# Set to true to run BWA on farm
-has farm_bwa => (
-    is      => 'ro',
-    isa     => 'Bool',
-    default => 0,
 );
 
 # Maximum number of genomic hits a oligos is allowed
