@@ -103,6 +103,13 @@ has repeat_mask_class => (
     },
 );
 
+# Set this flag to true to prevent all repeat masking regardless of repeat_mask_class contents
+has no_repeat_masking => (
+    is      => 'ro',
+    isa     => 'Bool',
+    default => 0,
+);
+
 has [ 'max_five_prime_region_size', 'max_three_prime_region_size' ] => (
     is  => 'ro',
     isa => 'Int',
@@ -178,6 +185,27 @@ has primer_search_region_expand => (
     default => 500,
 );
 
+has check_genomic_specificity => (
+    is      => 'ro',
+    isa     => 'Bool',
+    default => 1,
+);
+
+has farm_bwa => (
+    is      => 'ro',
+    isa     => 'Bool',
+    default => 0,
+);
+
+# By default the maximum product length is:
+# length of target + five prime region + three prime region
+# Use this attribute if you want the max product to be <n> bases shorter than this
+has exclude_from_product_length => (
+    is      => 'ro',
+    isa     => 'Num',
+    required => 0,
+);
+
 =head2 find_primers
 
 Attempt to generate primers for target, if this fails initially try again
@@ -240,6 +268,8 @@ sub generate_primer_attempt {
         primer3_target_string     => $target_string,
         primer_product_size_range => join( ' ', @{ $self->product_size_array } ),
         additional_primer3_params => $self->additional_primer3_params,
+        check_genomic_specificity => $self->check_genomic_specificity,
+        farm_bwa                  => $self->farm_bwa,
     );
 
     my $primer_data;
@@ -330,9 +360,10 @@ It is in the form: <x>-<y>
 <y> is the maximum size
 
 You can specify a list of ranges ( e.g. 100-200 400-500 ). If this is done Primer3 tries
-to make products in the first size range, only expanding the the other ranges if it can't anything.
-We use this property when expaning the search region, favoring products that would be produced by
-primers found in the expanded region.
+to make products in the first size range, only expanding the the other ranges if it can't
+find anything.
+We use this property when expanding the search region, favoring products that would be
+produced by primers found in the expanded region.
 
 If we have a forward primer specified then the product is always anchored to that primer
 so the calculations for the size range is different.
@@ -367,6 +398,9 @@ sub generate_primer_product_size_range {
     }
     else {
         $max_size = $end - $start;
+        if ( $self->exclude_from_product_length ){
+            $max_size = $max_size - $self->exclude_from_product_length;
+        }
         if ( $self->current_attempt == 1 ) {
             $min_size = $self->target_end - $self->target_start;
         }
@@ -393,10 +427,18 @@ Build a Bio::EnsEMBL::Slice for a given target regions
 sub build_region_slice {
     my ( $self, $start, $end ) = @_;
 
-    my $slice = $self->ensembl_util->get_repeat_masked_slice(
-        $start, $end, $self->chromosome,
-        $self->no_repeat_mask_classes ? undef : $self->repeat_mask_class
-    );
+    my $slice;
+    if($self->no_repeat_masking){
+        $slice = $self->ensembl_util->get_slice(
+            $start, $end, $self->chromosome,
+        );
+    }
+    else{
+        $slice = $self->ensembl_util->get_repeat_masked_slice(
+            $start, $end, $self->chromosome,
+            $self->no_repeat_mask_classes ? undef : $self->repeat_mask_class
+        );
+    }
 
     # primer3 expects sequence in a 5' to 3' direction, so reverse compliment if
     # target is on the -ve strand
