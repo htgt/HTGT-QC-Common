@@ -382,7 +382,8 @@ sub generate_primer_product_size_range {
 
         $max_size = $end - $forward_primer_start;
         if ( $self->current_attempt == 1 ) {
-            $min_size = $self->target_end - $forward_primer_start;
+            $min_size = ( $self->target_end - $forward_primer_start )
+                + ( $self->five_prime_region_offset + $self->three_prime_region_offset );
         }
         else {
             my $last_size_range = $self->product_size_array->[0];
@@ -395,7 +396,8 @@ sub generate_primer_product_size_range {
             $max_size = $max_size - $self->exclude_from_product_length;
         }
         if ( $self->current_attempt == 1 ) {
-            $min_size = $self->target_end - $self->target_start;
+            $min_size = ( $self->target_end - $self->target_start )
+                + ( $self->five_prime_region_offset + $self->three_prime_region_offset );
         }
         else {
             my $last_size_range = $self->product_size_array->[0];
