@@ -12,7 +12,7 @@ three_prime_region_offset: 20
 expected_attempt_number: 1
 num_valid_pairs: 1
 expected_product_size_array:
-    - '1393-1693'
+    - '1433-1693'
 forward_primer:
     gc_content: '40.000'
     id: forward-1

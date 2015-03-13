@@ -15,4 +15,4 @@ product_size_avoid: 2000
 expected_product_size_array:
     - '1102-1970'
     - '2030-2102'
-    - '502-1102'
+    - '542-1102'
