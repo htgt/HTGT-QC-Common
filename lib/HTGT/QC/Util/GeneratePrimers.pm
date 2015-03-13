@@ -69,6 +69,12 @@ has strand => (
 #
 # Primer3 Parameters
 #
+#
+has primer3_task => (
+    is      => 'ro',
+    isa     => 'Str',
+    default => 'pick_pcr_primers',
+);
 
 has primer3_config_file => (
     is       => 'ro',
@@ -226,6 +232,7 @@ sub run_primer3 {
 
     my %primer3_params = ( configfile => $self->primer3_config_file->stringify );
     $primer3_params{primer_product_size_range} = $self->primer_product_size_range;
+    $primer3_params{primer3_task} = $self->primer3_task;
 
     # merge in any extra primer3 params
     my %extra_params = %{ $self->additional_primer3_params };
@@ -246,16 +253,28 @@ sub run_primer3 {
 
     die( "Error running primer3, see logfile: $log_file" ) unless $result;
 
+    # TODO is this all too complicated, could I just return $result?
     if ( $result->num_primer_pairs ) {
         $self->log->debug( "primer pairs found: " . $result->num_primer_pairs );
+        return $result;
+    }
+
+    my $data = $result->persistent_data;
+    # task defaults to pick_pcr_primers , for which we would want pairs
+    if ( $self->primer3_task eq 'pick_left_only' && $data->{LEFT}{num_returned} ) {
+        $self->log->debug( "Found left primers" );
+        return $result;
+    }
+    elsif ( $self->primer3_task eq 'pick_right_only' && $data->{RIGHT}{num_returned} ) {
+        $self->log->debug( "Found right primers" );
+        return $result;
     }
     else {
-        # TODO info from $primer3_explain?
-        $self->log->warn( "Failed to generate primer pairs" );
+        $self->log->warn( "Failed to generate primers" );
         return;
     }
 
-    return $result;
+    return;
 }
 
 =head2 parse_primer3_results
@@ -268,16 +287,27 @@ sub parse_primer3_results {
     my ( $self, $result ) = @_;
     $self->log->debug( 'Parsing Primer3 results' );
 
-    while ( my $pair = $result->next_primer_pair ) {
-        my $forward_primer = $self->parse_primer( $pair->forward_primer, 'forward' );
-        my $reverse_primer = $self->parse_primer( $pair->reverse_primer, 'reverse' );
-
-        # store primer information, grouped in pairs
-        $self->add_oligo_pair(
-            {   forward => $forward_primer,
-                reverse => $reverse_primer,
-            }
-        );
+    if ( $self->primer3_task eq 'pick_left_only' ) {
+        while ( my $primer = $result->next_left_primer) {
+            my $fwd_primer = $self->parse_primer( $primer, 'forward' );
+            # store primer information, grouped in pairs
+            $self->add_oligo_pair( { forward => $fwd_primer } );
+        }
+    }
+    elsif ( $self->primer3_task eq 'pick_right_only' ) {
+        while ( my $primer = $result->next_right_primer ) {
+            my $rev_primer = $self->parse_primer( $primer, 'reverse' );
+            # store primer information, grouped in pairs
+            $self->add_oligo_pair( { reverse => $rev_primer } );
+        }
+    }
+    else {
+        while ( my $pair = $result->next_primer_pair ) {
+            my $fwd_primer = $self->parse_primer( $pair->forward_primer, 'forward' );
+            my $rev_primer = $self->parse_primer( $pair->reverse_primer, 'reverse' );
+            # store primer information, grouped in pairs
+            $self->add_oligo_pair( { forward => $fwd_primer, reverse => $rev_primer } );
+        }
     }
 
     return;
@@ -343,6 +373,8 @@ sub calculate_oligo_coords_and_sequence {
 =head2 filter_primers
 
 Filter out primers that do not meet the genomic specificity criteria.
+We have option of only picking forward / reverse primer so check if primer
+exists first.
 
 =cut
 sub filter_primers {
@@ -351,17 +383,21 @@ sub filter_primers {
 
     for my $oligo_pair ( $self->all_oligo_pairs ) {
 
-        my $fwd_primer_id = $oligo_pair->{forward}{id};
-        $self->check_oligo_specificity(
-            $fwd_primer_id,
-            $self->bwa_matches->{ $fwd_primer_id },
-        ) or next;
+        if ( exists $oligo_pair->{forward} ) {
+            my $fwd_primer_id = $oligo_pair->{forward}{id};
+            $self->check_oligo_specificity(
+                $fwd_primer_id,
+                $self->bwa_matches->{ $fwd_primer_id },
+            ) or next;
+        }
 
-        my $rev_primer_id = $oligo_pair->{reverse}{id};
-        $self->check_oligo_specificity(
-            $rev_primer_id,
-            $self->bwa_matches->{ $rev_primer_id },
-        ) or next;
+        if ( exists $oligo_pair->{reverse} ) {
+            my $rev_primer_id = $oligo_pair->{reverse}{id};
+            $self->check_oligo_specificity(
+                $rev_primer_id,
+                $self->bwa_matches->{ $rev_primer_id },
+            ) or next;
+        }
 
         $self->add_valid_oligo_pair( $oligo_pair );
     }
@@ -399,7 +435,6 @@ sub run_bwa {
     return;
 }
 
-
 =head2 define_bwa_query_file
 
 Generate a fasta file containing all the candidate primers to run against bwa aln.
@@ -413,17 +448,21 @@ sub define_bwa_query_file {
     my $seq_out    = Bio::SeqIO->new( -fh => $fh, -format => 'fasta' );
 
     for my $oligo_pair ( $self->all_oligo_pairs ) {
-        my $fwd_bio_seq = Bio::Seq->new(
-            -seq => $oligo_pair->{forward}{oligo_seq},
-            -id  => $oligo_pair->{forward}{id}
-        );
-        $seq_out->write_seq( $fwd_bio_seq );
+        if ( exists $oligo_pair->{forward} ) {
+            my $fwd_bio_seq = Bio::Seq->new(
+                -seq => $oligo_pair->{forward}{oligo_seq},
+                -id  => $oligo_pair->{forward}{id}
+            );
+            $seq_out->write_seq( $fwd_bio_seq );
+        }
 
-        my $rev_bio_seq = Bio::Seq->new(
-            -seq => $oligo_pair->{reverse}{oligo_seq},
-            -id  => $oligo_pair->{reverse}{id}
-        );
-        $seq_out->write_seq( $rev_bio_seq );
+        if ( exists $oligo_pair->{reverse} ) {
+            my $rev_bio_seq = Bio::Seq->new(
+                -seq => $oligo_pair->{reverse}{oligo_seq},
+                -id  => $oligo_pair->{reverse}{id}
+            );
+            $seq_out->write_seq( $rev_bio_seq );
+        }
     }
 
     $self->log->debug("Created bwa query file $query_file");
