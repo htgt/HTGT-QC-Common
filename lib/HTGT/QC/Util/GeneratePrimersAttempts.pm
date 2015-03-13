@@ -289,18 +289,18 @@ sub generate_primer_attempt {
         primer_product_size_range => join( ' ', @{ $self->product_size_array } ),
         check_genomic_specificity => $self->check_genomic_specificity,
         primer3_task              => $self->primer3_task,
-    )
+    );
 
     if ( @{ $self->excluded_regions } ) {
-        $self->{additional_primer3_params}{sequence_excluded_region}
+        $self->additional_primer3_params->{sequence_excluded_region}
             = $self->generate_sequence_region( $self->excluded_regions );
     }
 
     if ( @{ $self->included_regions } ) {
-        $self->{additional_primer3_params}{sequence_included_region}
+        $self->additional_primer3_params->{sequence_included_region}
             = $self->generate_sequence_region( $self->included_regions );
     }
-    $params{additional_primer3_params} => $self->additional_primer3_params,
+    $params{additional_primer3_params} = $self->additional_primer3_params,
 
     my $util = HTGT::QC::Util::GeneratePrimers->new( %params );
 
