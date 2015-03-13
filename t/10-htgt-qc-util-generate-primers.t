@@ -100,7 +100,7 @@ sub additional_tests {
         for my $oligo_pair ( $o->all_oligo_pairs ) {
             ok $oligo_pair->{forward}{oligo_start} >= $params->{genomic_excluded_start}
                 && $oligo_pair->{forward}{oligo_start} <= $params->{genomic_excluded_end},
-                'forward oligo is within excluded region';
+                'forward oligo is within included region';
         }
     }
 
