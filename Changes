@@ -1,5 +1,17 @@
 {{$NEXT}}
 
+0.037     2015-02-24 15:02:22 Europe/London
+
+    Removed some primer generation flags which are not used
+
+0.036     2015-02-24 14:40:54 Europe/London
+    Added more options to primer generation
+    Completed script to run primer generation
+
+0.035     2015-01-19 08:34:24 Europe/London
+
+Switch back to scratch109
+
 0.034     2014-12-12 10:18:29 Europe/London
 
     Forgot scratch109 vep cache.
