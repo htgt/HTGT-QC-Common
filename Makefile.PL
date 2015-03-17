@@ -26,8 +26,8 @@ my %WriteMakefileArgs = (
   },
   "DISTNAME" => "HTGT-QC-Common",
   "EXE_FILES" => [
-    "bin/fetch-seq-reads.sh",
     "bin/crispr_damage_analysis.pl",
+    "bin/fetch-seq-reads.sh",
     "bin/generate_primers_attempts.pl",
     "bin/merge_vcf_variants.pl"
   ],
@@ -77,7 +77,7 @@ my %WriteMakefileArgs = (
     "strict" => 0,
     "warnings" => 0
   },
-  "VERSION" => "0.037",
+  "VERSION" => "0.038",
   "test" => {
     "TESTS" => "t/*.t"
   }

@@ -1,7 +1,7 @@
 package HTGT::QC::Util::GeneratePrimersAttempts;
 ## no critic(RequireUseStrict,RequireUseWarnings)
 {
-    $HTGT::QC::Util::GeneratePrimersAttempts::VERSION = '0.037';
+    $HTGT::QC::Util::GeneratePrimersAttempts::VERSION = '0.038';
 }
 ## use critic
 
@@ -54,6 +54,7 @@ has chromosome => (
     required => 1,
 );
 
+# genomic coordinates for target
 has [ 'target_start', 'target_end' ] => (
     is       => 'ro',
     isa      => 'Int',
@@ -121,9 +122,35 @@ has [ 'max_five_prime_region_size', 'max_three_prime_region_size' ] => (
     isa => 'Int',
 );
 
+=head2 sequence_regions
+
+optional array of genomic coordinates for regions of interest.
+
+sequence_included_region:
+Tells Primer3 which regions to pick primers in.
+
+sequence_excluded_region:
+Tells Primer3 which regions to avoid picking primers in.
+
+Each element of list is a hashref in the form:
+{ start => 111, end => 222 }
+
+=cut
+has [ 'excluded_regions', 'included_regions' ] => (
+    is      => 'ro',
+    isa     => 'ArrayRef',
+    default => sub{ [] },
+);
+
 #
 # Primer3 Parameters
 #
+
+has primer3_task => (
+    is      => 'ro',
+    isa     => 'Str',
+    default => 'pick_pcr_primers',
+);
 
 has primer3_config_file => (
     is       => 'ro',
@@ -254,10 +281,9 @@ sub generate_primer_attempt {
 
     my $work_dir = $self->base_dir->subdir( $self->current_attempt );
     $work_dir->mkpath;
-    my $target_string = $self->generate_target_string;
     $self->generate_primer_product_size_range( $start, $end );
 
-    my $util = HTGT::QC::Util::GeneratePrimers->new(
+    my %params = (
         dir                       => $work_dir,
         bio_seq                   => $bio_seq,
         region_start              => $start,
@@ -265,11 +291,24 @@ sub generate_primer_attempt {
         species                   => $self->species,
         strand                    => $self->strand,
         primer3_config_file       => $self->primer3_config_file,
-        primer3_target_string     => $target_string,
+        primer3_target_string     => $self->generate_target_string,
         primer_product_size_range => join( ' ', @{ $self->product_size_array } ),
-        additional_primer3_params => $self->additional_primer3_params,
         check_genomic_specificity => $self->check_genomic_specificity,
+        primer3_task              => $self->primer3_task,
     );
+
+    if ( @{ $self->excluded_regions } ) {
+        $self->additional_primer3_params->{sequence_excluded_region}
+            = $self->generate_sequence_region( $self->excluded_regions );
+    }
+
+    if ( @{ $self->included_regions } ) {
+        $self->additional_primer3_params->{sequence_included_region}
+            = $self->generate_sequence_region( $self->included_regions );
+    }
+    $params{additional_primer3_params} = $self->additional_primer3_params,
+
+    my $util = HTGT::QC::Util::GeneratePrimers->new( %params );
 
     my $primer_data;
     try {
@@ -388,7 +427,8 @@ sub generate_primer_product_size_range {
 
         $max_size = $end - $forward_primer_start;
         if ( $self->current_attempt == 1 ) {
-            $min_size = $self->target_end - $forward_primer_start;
+            $min_size = ( $self->target_end - $forward_primer_start )
+                + ( $self->five_prime_region_offset + $self->three_prime_region_offset );
         }
         else {
             my $last_size_range = $self->product_size_array->[0];
@@ -401,7 +441,8 @@ sub generate_primer_product_size_range {
             $max_size = $max_size - $self->exclude_from_product_length;
         }
         if ( $self->current_attempt == 1 ) {
-            $min_size = $self->target_end - $self->target_start;
+            $min_size = ( $self->target_end - $self->target_start )
+                + ( $self->five_prime_region_offset + $self->three_prime_region_offset );
         }
         else {
             my $last_size_range = $self->product_size_array->[0];
@@ -482,6 +523,34 @@ sub process_avoid_product_size {
 
     $self->product_size_array( \@new_product_size_array );
     return;
+}
+
+=head2 generate_sequence_region
+
+Generate a list of regions to pass to Primer3:
+It is in the form of a space seperated list:
+<start>,<length> <start>,<length> ...
+
+Must work out coordiantes relative to the sequence we send to Primer3.
+
+Used for following Primer parameters:
+SEQUENCE_EXCLUDED_REGION: area to avoid searching for primers
+SEQUENCE_INCLUDED_REGION: area to search for primers
+
+=cut
+sub generate_sequence_region {
+    my ( $self, $regions ) = @_;
+    my @region_list;
+
+    for my $region ( @{ $regions } ) {
+        my $length = ( $region->{end} - $region->{start} ) + 1;
+        # work out relative start position of region within sequence sent to Primer3
+        my $start = $self->five_prime_region_size + ( $region->{start} - $self->target_start );
+
+        push @region_list,"$start,$length";
+    }
+
+    return join( ' ', @region_list );
 }
 
 __PACKAGE__->meta->make_immutable;

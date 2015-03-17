@@ -1,0 +1,19 @@
+---
+test_name: 'Pick right primer only' 
+chromosome: 2
+expected_attempt_number: 1
+expected_product_size_array:
+- 1345-1905
+five_prime_region_offset: 20
+five_prime_region_size: 300
+num_valid_pairs: 11
+species: Mouse
+strand: 1
+target_end: 28694023
+target_start: 28692718
+three_prime_region_offset: 20
+three_prime_region_size: 300
+primer3_task: pick_left_only
+excluded_regions: 
+- start: 28692620 
+  end: 28692690 

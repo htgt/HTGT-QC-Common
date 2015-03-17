@@ -13,6 +13,5 @@ expected_attempt_number: 2
 num_valid_pairs: 9
 product_size_avoid: 2000
 expected_product_size_array:
-    - '1102-1970'
-    - '2030-2102'
-    - '502-1102'
+    - '1102-2102'
+    - '542-1102'

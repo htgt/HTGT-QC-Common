@@ -3,7 +3,7 @@ test_name: Primer Pair Finder
 chromosome: 2
 expected_attempt_number: 1
 expected_product_size_array:
-- 1305-1905
+- 1345-1905
 five_prime_region_offset: 20
 five_prime_region_size: 300
 num_valid_pairs: 9

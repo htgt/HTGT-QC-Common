@@ -13,4 +13,4 @@ expected_attempt_number: 2
 num_valid_pairs: 9
 expected_product_size_array:
     - '1102-2102'
-    - '502-1102'
+    - '542-1102'
