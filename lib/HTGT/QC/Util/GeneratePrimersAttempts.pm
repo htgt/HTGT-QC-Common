@@ -1,7 +1,7 @@
 package HTGT::QC::Util::GeneratePrimersAttempts;
 ## no critic(RequireUseStrict,RequireUseWarnings)
 {
-    $HTGT::QC::Util::GeneratePrimersAttempts::VERSION = '0.038';
+    $HTGT::QC::Util::GeneratePrimersAttempts::VERSION = '0.039';
 }
 ## use critic
 
@@ -299,12 +299,12 @@ sub generate_primer_attempt {
 
     if ( @{ $self->excluded_regions } ) {
         $self->additional_primer3_params->{sequence_excluded_region}
-            = $self->generate_sequence_region( $self->excluded_regions );
+            = $self->generate_sequence_region( $self->excluded_regions, $bio_seq );
     }
 
     if ( @{ $self->included_regions } ) {
         $self->additional_primer3_params->{sequence_included_region}
-            = $self->generate_sequence_region( $self->included_regions );
+            = $self->generate_sequence_region( $self->included_regions, $bio_seq );
     }
     $params{additional_primer3_params} = $self->additional_primer3_params,
 
@@ -539,7 +539,7 @@ SEQUENCE_INCLUDED_REGION: area to search for primers
 
 =cut
 sub generate_sequence_region {
-    my ( $self, $regions ) = @_;
+    my ( $self, $regions, $bio_seq ) = @_;
     my @region_list;
 
     for my $region ( @{ $regions } ) {
@@ -547,10 +547,31 @@ sub generate_sequence_region {
         # work out relative start position of region within sequence sent to Primer3
         my $start = $self->five_prime_region_size + ( $region->{start} - $self->target_start );
 
-        push @region_list,"$start,$length";
+        # check if region is outside of the sequence we are sending Primer3
+        if ( ( $start + $length ) > $bio_seq->length ) {
+            if ( $start > $bio_seq->length ) {
+                $self->log->warn( 'Specified region is completely outside sequence' );
+            }
+            # This means the excluded region partially overlaps the sequence
+            else {
+                push @region_list, "$start," . ( $bio_seq->length - $start );
+            }
+        }
+        elsif ( $start < 0 ) {
+            if ( ( $start + $length ) < 0 ) {
+                $self->log->warn( 'Specified region is completely outside sequence' );
+            }
+            # This means the excluded region partially overlaps the sequence
+            else {
+                push @region_list,"0," . ( $length + $start );
+            }
+        }
+        else {
+            push @region_list,"$start,$length";
+        }
     }
 
-    return join( ' ', @region_list );
+    return @region_list ? join( ' ', @region_list ) : undef;
 }
 
 __PACKAGE__->meta->make_immutable;

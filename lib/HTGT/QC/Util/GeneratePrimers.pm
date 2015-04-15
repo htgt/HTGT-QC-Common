@@ -1,7 +1,7 @@
 package HTGT::QC::Util::GeneratePrimers;
 ## no critic(RequireUseStrict,RequireUseWarnings)
 {
-    $HTGT::QC::Util::GeneratePrimers::VERSION = '0.038';
+    $HTGT::QC::Util::GeneratePrimers::VERSION = '0.039';
 }
 ## use critic
 
@@ -242,8 +242,9 @@ sub run_primer3 {
 
     # merge in any extra primer3 params
     my %extra_params = %{ $self->additional_primer3_params };
-    if ( %extra_params ) {
-        @primer3_params{ keys %extra_params } = values %extra_params;
+    for my $param_key ( keys %extra_params ) {
+        $primer3_params{$param_key} = $extra_params{ $param_key }
+            if $extra_params{ $param_key };
     }
 
     my $p3 = DesignCreate::Util::Primer3->new_with_config( %primer3_params );
