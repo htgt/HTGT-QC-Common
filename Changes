@@ -1,5 +1,9 @@
 {{$NEXT}}
 
+0.039     2015-04-15 14:30:54 Europe/London
+
+   Various bugfixes and checks
+
 0.038     2015-03-17 14:02:37 Europe/London
 
     Add ability to pick Primer3 task
