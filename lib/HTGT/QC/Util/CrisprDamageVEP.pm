@@ -6,8 +6,8 @@ HTGT::QC::Util::CrisprDamageVEP
 
 =head1 DESCRIPTION
 
-Identify damage caused by crispr pairs on the second allele.
-Compare wildtype genomic sequence of area around crispr pair target site with the sequence
+Identify damage caused by crispr(s) on the second allele.
+Compare wildtype genomic sequence of area around crispr(s) target site with the sequence
 from primer reads that flank this target site.
 Try to predict the effect of the damage using Ensemble's Varient Effect Predictor (VEP) software.
 
