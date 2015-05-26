@@ -100,7 +100,6 @@ generate_primers.pl - run script for HTGT::QC::Util::GeneratePrimersAttempts
       --debug                     Debug output
       --verbose                   Verbose output
       --output-file               File to write primers and target sequence to (in json)
-
       --params-file               Yaml file containing all params to pass to constructor of
                                   GeneratePrimersAttempts
 
@@ -118,6 +117,7 @@ generate_primers.pl - run script for HTGT::QC::Util::GeneratePrimersAttempts
 =head1 DESCRIPTION
 
 Runner script for GeneratePrimersAttempts module.
+
 Currently work in progress.
 
 =cut
