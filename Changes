@@ -1,5 +1,9 @@
 {{$NEXT}}
 
+0.040     2015-06-15 12:19:19 Europe/London
+
+   Changed VEP command to use latest version
+
 0.039     2015-04-15 14:30:54 Europe/London
 
    Various bugfixes and checks
