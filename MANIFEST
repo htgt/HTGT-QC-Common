@@ -4,6 +4,7 @@ MANIFEST
 META.yml
 Makefile.PL
 README
+README.md
 bin/crispr_damage_analysis.pl
 bin/fetch-seq-reads.sh
 bin/generate_primers_attempts.pl

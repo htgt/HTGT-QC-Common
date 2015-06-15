@@ -1,7 +1,7 @@
 package HTGT::QC::Exception::InvalidConfiguration;
 ## no critic(RequireUseStrict,RequireUseWarnings)
 {
-    $HTGT::QC::Exception::InvalidConfiguration::VERSION = '0.039';
+    $HTGT::QC::Exception::InvalidConfiguration::VERSION = '0.040';
 }
 ## use critic
 
