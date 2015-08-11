@@ -4,6 +4,10 @@ use Moose;
 use YAML::Any;
 use List::Util qw( min );
 use namespace::autoclean;
+use WWW::JSON;
+use LWP::UserAgent;
+use Data::Dumper;
+use Path::Class;
 
 with 'MooseX::Log::Log4perl';
 
@@ -18,6 +22,42 @@ has config => (
     isa => 'HTGT::QC::Config',
     required => 1
 );
+
+has file_api_url => (
+    is       => 'ro',
+    isa      => 'Str',
+    required => 1
+);
+
+has file_api => (
+    is       => 'ro',
+    isa      => 'WWW::JSON',
+    lazy_build => 1,
+    handles => { 'get_json' => 'get' },
+);
+
+sub _build_file_api {
+    my $self = shift;
+    return WWW::JSON->new(
+        base_url => $self->file_api_url,
+    );
+}
+
+has user_agent => (
+    is       => 'ro',
+    isa      => 'LWP::UserAgent',
+    lazy_build => 1,
+);
+
+sub _build_user_agent {
+    return LWP::UserAgent->new();
+}
+
+sub get_file_content{
+    my ($self, $path) = @_;
+    my $full_path = $self->file_api_url()."/".$path;
+    return $self->user_agent->get($full_path)->content;
+}
 
 #this gets all active runs (so no sorting or anything), and will hopefully be fastish
 sub get_active_runs {
@@ -44,13 +84,22 @@ sub get_active_runs {
 sub get_latest_run_data {
     my ( $self ) = shift;
 
-    #get all directories with a params.yaml file.
-    my @child_dirs = grep { $_->is_dir and -e $_->file( "params.yaml" ) } $self->config->basedir->children();
+    my $dir_content = $self->get_json( $self->config->basedir )->res;
 
-    #sort them by time created
-    my @runs = reverse sort { $a->{ ctime } <=> $b->{ ctime } }
-        map { { run_id => $_->dir_list(-1), ctime => $_->file( "params.yaml" )->stat->ctime } }
-            @child_dirs;
+    my @child_dir_content = map { $self->get_json( $_ )->res } @$dir_content;
+
+    my @runs_tmp;
+    foreach my $content (@child_dir_content){
+        my ($param_file) = grep { $_ =~ /params.yaml$/ } @$content;
+        if($param_file){
+            my $ctime = $self->get_json( $param_file, {stat => 'true'} )->res->{ctime};
+            my $path = file($param_file);
+            my $run_id = $path->dir->dir_list(-1);
+            push @runs_tmp, { run_id => $run_id, ctime => $ctime };
+        }
+    }
+
+    my @runs = reverse sort { $a->{ ctime } cmp $b->{ ctime } } @runs_tmp;
 
     my $max_index = min( scalar @runs, $self->limit ) - 1;
 
@@ -69,7 +118,13 @@ sub get_run_data {
     my $run_dir = $self->config->basedir->subdir( $run->{ run_id } );
 
     #we only have dirs with a params file so we know this exists
-    my $params = YAML::Any::LoadFile( $run_dir->file( 'params.yaml' ) );
+    my $param_path = $run_dir->file( 'params.yaml' )->stringify;
+$self->log->debug("param path: $param_path");
+    my $params_file = $self->get_file_content( $param_path );
+$self->log->debug(Dumper $params_file);
+    my $params = YAML::Any::Load( $params_file );
+
+# FIXME: remove direct file system access from this point on....
 
     next unless $params->{ sequencing_projects };
 
