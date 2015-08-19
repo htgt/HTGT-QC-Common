@@ -4,8 +4,7 @@ use Moose;
 use YAML::Any;
 use List::Util qw( min );
 use namespace::autoclean;
-use WWW::JSON;
-use LWP::UserAgent;
+use HTGT::QC::Util::FileAccessServer;
 use Data::Dumper;
 use Path::Class;
 use Date::Parse qw(str2time);
@@ -35,32 +34,16 @@ has file_api_url => (
 
 has file_api => (
     is       => 'ro',
-    isa      => 'WWW::JSON',
+    isa      => 'HTGT::QC::Util::FileAccessServer',
     lazy_build => 1,
-    handles => { 'get_json' => 'get' },
+    handles => [ qw(get_json get_file_content post_file_content) ]
 );
 
 sub _build_file_api {
     my $self = shift;
-    return WWW::JSON->new(
-        base_url => $self->file_api_url,
-    );
-}
-
-has user_agent => (
-    is       => 'ro',
-    isa      => 'LWP::UserAgent',
-    lazy_build => 1,
-);
-
-sub _build_user_agent {
-    return LWP::UserAgent->new();
-}
-
-sub get_file_content{
-    my ($self, $path) = @_;
-    my $full_path = $self->file_api_url()."/".$path;
-    return $self->user_agent->get($full_path)->content;
+    return HTGT::QC::Util::FileAccessServer->new({ 
+        file_api_url => $self->file_api_url,
+    });
 }
 
 sub fetch_error_file{
