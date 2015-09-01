@@ -36,12 +36,12 @@ has file_api => (
     is       => 'ro',
     isa      => 'HTGT::QC::Util::FileAccessServer',
     lazy_build => 1,
-    handles => [ qw(get_json get_file_content post_file_content) ]
+    handles => [ qw(fileserver_get_json get_file_content post_file_content) ]
 );
 
 sub _build_file_api {
     my $self = shift;
-    return HTGT::QC::Util::FileAccessServer->new({ 
+    return HTGT::QC::Util::FileAccessServer->new({
         file_api_url => $self->file_api_url,
     });
 }
@@ -54,7 +54,7 @@ sub fetch_error_file{
 
     my @lines = split "\n", $content;
 
-    return @lines;    
+    return @lines;
 }
 
 #this gets all active runs (so no sorting or anything), and will hopefully be fastish
@@ -63,9 +63,9 @@ sub fetch_error_file{
 sub get_active_runs {
     my ( $self ) = shift;
 
-    my $dir_content = $self->get_json( $self->config->basedir )->res;
+    my $dir_content = $self->fileserver_get_json( $self->config->basedir );
 
-    my @child_dir_content = map { $self->get_json( $_ )->res } @$dir_content;
+    my @child_dir_content = map { $self->fileserver_get_json( $_ ) } @$dir_content;
 
     my @run_data;
     foreach my $content (@child_dir_content){
@@ -79,7 +79,7 @@ sub get_active_runs {
         #if it is failed then it will be ending very soon, so dont count it.
         next if (grep { $_ =~ /failed\.out$/ } @$content);
 
-        my $ctime = $self->get_json( $param_file, { stat => 'true'} )->res->{ctime};
+        my $ctime = $self->fileserver_get_json( $param_file, { stat => 'true'} )->{ctime};
         my $path = file($param_file);
         my $run_id = $path->dir->dir_list(-1);
 
@@ -97,21 +97,21 @@ sub get_active_runs {
 sub get_latest_run_data {
     my ( $self ) = shift;
 
-    my $dir_content = $self->get_json( $self->config->basedir )->res;
+    my $dir_content = $self->fileserver_get_json( $self->config->basedir );
 
-    my @child_dir_content = map { $self->get_json( $_ )->res } @$dir_content;
+    my @child_dir_content = map { $self->fileserver_get_json( $_ ) } @$dir_content;
 
     my @runs_tmp;
     foreach my $content (@child_dir_content){
         my ($param_file) = grep { $_ =~ /params\.yaml$/ } @$content;
         if($param_file){
-            my $ctime = $self->get_json( $param_file, {stat => 'true'} )->res->{ctime};
+            my $ctime = $self->fileserver_get_json( $param_file, {stat => 'true'} )->{ctime};
             my $path = file($param_file);
             my $run_id = $path->dir->dir_list(-1);
             my $failed = grep { $_ =~ /failed\.out$/ } @$content;
             my $ended  = grep { $_ =~ /ended\.out$/ } @$content;
-            push @runs_tmp, { 
-                run_id => $run_id, 
+            push @runs_tmp, {
+                run_id => $run_id,
                 ctime  => $ctime,
                 failed => $failed,
                 ended  => $ended,
@@ -149,7 +149,7 @@ sub get_run_data {
     my ( $newest_time, @stages ) = $self->get_time_sorted_filenames( $run->{ run_id } );
 
     #a note about the failed/ended ended status:
-    #the existence of these files determines the status of the run. 
+    #the existence of these files determines the status of the run.
     #if failed.out exists there was an exception or the run was killed,
     #if ended.out exists there are no processes left running, either because it was killed or finished.
     #ended does NOT imply success. if something is failed it will also probably be ended
@@ -177,13 +177,13 @@ sub get_time_sorted_filenames {
     my ( $self, $qc_run_id ) = @_;
 
     my $output_path = $self->config->basedir->subdir($qc_run_id, 'output');
-    my $outfiles = $self->get_json( $output_path->stringify )->res;
+    my $outfiles = $self->fileserver_get_json( $output_path->stringify );
 
     return ("-", undef) unless @$outfiles;
 
     # partial Schwartzian transform thing so we only have to fetch the stats for each file once
     my @time_sorted_outfiles = reverse sort { $a->[1]->{'ctime'} cmp $b->[1]->{'ctime'} }
-                               map { [ $_, $self->get_json( $_, { stat => 'true' } )->res ]}
+                               map { [ $_, $self->fileserver_get_json( $_, { stat => 'true' } ) ]}
                                @$outfiles;
 
     my $newest_ctime = $time_sorted_outfiles[0]->[1]->{ctime};

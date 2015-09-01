@@ -8,11 +8,8 @@ with 'MooseX::Log::Log4perl';
 
 # This is a helper module for accessing files in directories
 # which are not available to the machine that the webapp is
-# running on via a rest-fs server. 
-# Mainly for LIMS2 QC and primer generation
-
-# FIXME: need to add some error handling in case server is down
-# or requested dir/file path is not found
+# running on via a rest-fs server.
+# Mainly for LIMS2 QC
 
 
 has file_api_url => (
@@ -45,15 +42,36 @@ sub _build_user_agent {
     return LWP::UserAgent->new();
 }
 
+sub fileserver_get_json{
+    my ($self, $path, $params) = @_;
+
+    my $get = $self->get_json($path, $params);
+
+    if($get->success){
+        return $get->res;
+    }
+    else{
+        die $get->error;
+    }
+
+    return;
+};
+
 sub get_file_content{
     my ($self, $path) = @_;
     my $full_path = $self->file_api_url()."/".$path;
-    return $self->user_agent->get($full_path)->content;
+    my $response = $self->user_agent->get($full_path);
+
+    unless($response->is_success){
+        die "Could not get file $path: ".$response->status_line;
+    }
+
+    return $response->content;
 }
 
 sub post_file_content{
 	my ($self, $path, $content) = @_;
-    
+
     my $post_url = $self->file_api_url.$path;
     $self->log->debug("posting file content to $post_url");
 
