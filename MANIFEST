@@ -19,6 +19,7 @@ lib/HTGT/QC/Util/CigarParser.pm
 lib/HTGT/QC/Util/CreateSuggestedQcPlateMap.pm
 lib/HTGT/QC/Util/CrisprDamageVEP.pm
 lib/HTGT/QC/Util/DrawPileupAlignment.pm
+lib/HTGT/QC/Util/FileAccessServer.pm
 lib/HTGT/QC/Util/GeneratePrimers.pm
 lib/HTGT/QC/Util/GeneratePrimersAttempts.pm
 lib/HTGT/QC/Util/KillQCFarmJobs.pm

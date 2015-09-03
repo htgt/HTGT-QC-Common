@@ -1,7 +1,7 @@
 package HTGT::QC::Exception;
 ## no critic(RequireUseStrict,RequireUseWarnings)
 {
-    $HTGT::QC::Exception::VERSION = '0.040';
+    $HTGT::QC::Exception::VERSION = '0.041';
 }
 ## use critic
 

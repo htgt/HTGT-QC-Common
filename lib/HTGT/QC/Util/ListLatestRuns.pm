@@ -1,7 +1,7 @@
 package HTGT::QC::Util::ListLatestRuns;
 ## no critic(RequireUseStrict,RequireUseWarnings)
 {
-    $HTGT::QC::Util::ListLatestRuns::VERSION = '0.040';
+    $HTGT::QC::Util::ListLatestRuns::VERSION = '0.041';
 }
 ## use critic
 
@@ -10,6 +10,10 @@ use Moose;
 use YAML::Any;
 use List::Util qw( min );
 use namespace::autoclean;
+use HTGT::QC::Util::FileAccessServer;
+use Data::Dumper;
+use Path::Class;
+use Date::Parse qw(str2time);
 
 with 'MooseX::Log::Log4perl';
 
@@ -25,38 +29,101 @@ has config => (
     required => 1
 );
 
+has file_api_url => (
+    is       => 'ro',
+    isa      => 'Str',
+    default  => sub { $ENV{ FILE_API_URL } }
+);
+
+has file_api => (
+    is       => 'ro',
+    isa      => 'HTGT::QC::Util::FileAccessServer',
+    lazy_build => 1,
+    handles => [ qw(fileserver_get_json get_file_content post_file_content) ]
+);
+
+sub _build_file_api {
+    my $self = shift;
+    $self->log->debug("Building file api with URL ".$self->file_api_url);
+    return HTGT::QC::Util::FileAccessServer->new({
+        file_api_url => $self->file_api_url,
+    });
+}
+
+sub fetch_error_file{
+    my ( $self, $run_id, $stage ) = @_;
+
+    my $file_path = $self->config->basedir->subdir( $run_id )->subdir( 'error' )->file( $stage . '.err' );
+    my $content = $self->get_file_content( $file_path );
+
+    my @lines = split "\n", $content;
+
+    return @lines;
+}
+
 #this gets all active runs (so no sorting or anything), and will hopefully be fastish
+# NB: rewritten to get file info via web api but I can't find any calls to this method
+# so have not tested it. af11 2015-08-12
 sub get_active_runs {
     my ( $self ) = shift;
 
-    #get all directories with a params file that haven't ended yet
-    my @active_runs = grep { $_->is_dir and -e $_->file( "params.yaml" ) and not -e $_->file( "ended.out" ) }
-                        $self->config->basedir->children();
+    my $dir_content = $self->fileserver_get_json( $self->config->basedir );
+
+    my @child_dir_content = map { $self->fileserver_get_json( $_ ) } @$dir_content;
 
     my @run_data;
-    for my $run_dir ( @active_runs ) {
+    foreach my $content (@child_dir_content){
+        # Must have a param file
+        my ($param_file) = grep { $_ =~ /params\.yaml$/ } @$content;
+        next unless $param_file;
+
+        # But no ended file
+        next if (grep { $_ =~ /ended\.out$/ } @$content);
+
         #if it is failed then it will be ending very soon, so dont count it.
-        next if -e $run_dir->file( "failed.out" );
+        next if (grep { $_ =~ /failed\.out$/ } @$content);
 
-        push @run_data, $self->get_run_data( {
-            run_id => $run_dir->basename,
-            ctime  => $run_dir->file( "params.yaml" )->stat->ctime,
-        } );
+        my $ctime = $self->fileserver_get_json( $param_file, { stat => 'true'} )->{ctime};
+        my $path = file($param_file);
+        my $run_id = $path->dir->dir_list(-1);
+
+        push @run_data, $self->get_run_data({
+            run_id => $run_id,
+            ctime  => $ctime,
+            failed => 0,
+            ended  => 0,
+        });
+
     }
-
     return \@run_data;
 }
 
 sub get_latest_run_data {
     my ( $self ) = shift;
 
-    #get all directories with a params.yaml file.
-    my @child_dirs = grep { $_->is_dir and -e $_->file( "params.yaml" ) } $self->config->basedir->children();
+    my $dir_content = $self->fileserver_get_json( $self->config->basedir );
 
-    #sort them by time created
-    my @runs = reverse sort { $a->{ ctime } <=> $b->{ ctime } }
-        map { { run_id => $_->dir_list(-1), ctime => $_->file( "params.yaml" )->stat->ctime } }
-            @child_dirs;
+    my @child_dir_content = map { $self->fileserver_get_json( $_ ) } @$dir_content;
+
+    my @runs_tmp;
+    foreach my $content (@child_dir_content){
+        my ($param_file) = grep { $_ =~ /params\.yaml$/ } @$content;
+        if($param_file){
+            my $ctime = $self->fileserver_get_json( $param_file, {stat => 'true'} )->{ctime};
+            my $path = file($param_file);
+            my $run_id = $path->dir->dir_list(-1);
+            my $failed = grep { $_ =~ /failed\.out$/ } @$content;
+            my $ended  = grep { $_ =~ /ended\.out$/ } @$content;
+            push @runs_tmp, {
+                run_id => $run_id,
+                ctime  => $ctime,
+                failed => $failed,
+                ended  => $ended,
+            };
+        }
+    }
+
+    my @runs = reverse sort { $a->{ ctime } cmp $b->{ ctime } } @runs_tmp;
 
     my $max_index = min( scalar @runs, $self->limit ) - 1;
 
@@ -75,7 +142,10 @@ sub get_run_data {
     my $run_dir = $self->config->basedir->subdir( $run->{ run_id } );
 
     #we only have dirs with a params file so we know this exists
-    my $params = YAML::Any::LoadFile( $run_dir->file( 'params.yaml' ) );
+    my $param_path = $run_dir->file( 'params.yaml' )->stringify;
+    my $params_file = $self->get_file_content( $param_path );
+
+    my $params = YAML::Any::Load( $params_file );
 
     next unless $params->{ sequencing_projects };
 
@@ -83,22 +153,25 @@ sub get_run_data {
     my ( $newest_time, @stages ) = $self->get_time_sorted_filenames( $run->{ run_id } );
 
     #a note about the failed/ended ended status:
-    #the existence of these files determines the status of the run. 
+    #the existence of these files determines the status of the run.
     #if failed.out exists there was an exception or the run was killed,
     #if ended.out exists there are no processes left running, either because it was killed or finished.
     #ended does NOT imply success. if something is failed it will also probably be ended
 
+    my $created = scalar localtime (str2time( $run->{ ctime } ));
+    my $last_stage_time = scalar localtime (str2time( $newest_time));
+
     return {
             qc_run_id       => $run->{ run_id },
-            created         => scalar localtime $run->{ ctime },
+            created         => $created,
             profile         => $params->{ profile },
             seq_projects    => join( '; ', @{ $params->{ sequencing_projects } } ),
             template_plate  => $params->{ template_plate },
             last_stage      => shift @stages, #top file is the newest
-            last_stage_time => $newest_time,
+            last_stage_time => $last_stage_time,
             previous_stages => \@stages,
-            failed          => -e $run_dir->file( 'failed.out' ),
-            ended           => -e $run_dir->file( 'ended.out' ),
+            failed          => $run->{failed},
+            ended           => $run->{ended},
             is_escell       => $self->config->profile( $params->{ profile } )->is_es_cell(),
     };
 }
@@ -107,16 +180,20 @@ sub get_run_data {
 sub get_time_sorted_filenames {
     my ( $self, $qc_run_id ) = @_;
 
-    my @outfiles = $self->config->basedir->subdir( $qc_run_id, 'output' )->children;
+    my $output_path = $self->config->basedir->subdir($qc_run_id, 'output');
+    my $outfiles = $self->fileserver_get_json( $output_path->stringify );
 
-    #allow a run without any ouput to be displayed. it is likely just pending
-    return ( "-", undef ) unless @outfiles;
+    return ("-", undef) unless @$outfiles;
 
-    my @time_sorted_outfiles = reverse sort { $a->stat->ctime <=> $b->stat->ctime } @outfiles;
+    # partial Schwartzian transform thing so we only have to fetch the stats for each file once
+    my @time_sorted_outfiles = reverse sort { $a->[1]->{'ctime'} cmp $b->[1]->{'ctime'} }
+                               map { [ $_, $self->fileserver_get_json( $_, { stat => 'true' } ) ]}
+                               @$outfiles;
 
-    #return newest ctime & extract a list of just the filenames, we dont care about the directories.
-    return ( scalar localtime $time_sorted_outfiles[0]->stat->ctime,
-             map { $_->basename =~ /^(.*)\.out$/ } @time_sorted_outfiles );
+    my $newest_ctime = $time_sorted_outfiles[0]->[1]->{ctime};
+    my @filenames = map { file($_->[0])->basename =~ /^(.*)\.out$/ } @time_sorted_outfiles;
+
+    return ($newest_ctime, @filenames);
 }
 
 __PACKAGE__->meta->make_immutable;

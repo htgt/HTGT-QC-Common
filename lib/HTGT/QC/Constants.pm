@@ -1,7 +1,7 @@
 package HTGT::QC::Constants;
 ## no critic(RequireUseStrict,RequireUseWarnings)
 {
-    $HTGT::QC::Constants::VERSION = '0.040';
+    $HTGT::QC::Constants::VERSION = '0.041';
 }
 ## use critic
 
@@ -37,8 +37,10 @@ const our $VEP_CACHE_DIR => $ENV{VEP_CACHE_DIR}
     // '/lustre/scratch109/blastdb/Ensembl/vep';
 
 const our %BWA_REF_GENOMES => (
-    human => '/lustre/scratch109/blastdb/Users/team87/Human/bwa/Homo_sapiens.GRCh38.dna.primary_assembly.clean_chr_names.fa',
-    mouse => '/lustre/scratch109/blastdb/Users/team87/Mouse/bwa/Mus_musculus.GRCm38.toplevel.clean_chr_names.fa',
+    human => ( $ENV{BWA_REF_GENOME_HUMAN_FA}
+             // '/lustre/scratch109/blastdb/Users/team87/Human/bwa/Homo_sapiens.GRCh38.dna.primary_assembly.clean_chr_names.fa'),
+    mouse => ( $ENV{BWA_REF_GENOME_MOUSE_FA}
+             // '/lustre/scratch109/blastdb/Users/team87/Mouse/bwa/Mus_musculus.GRCm38.toplevel.clean_chr_names.fa'),
 );
 
 const our %CURRENT_ASSEMBLY => (

@@ -3,6 +3,7 @@ abstract: 'Common QC Code'
 author:
   - 'Wellcome Trust Sanger Institute'
 build_requires:
+  Config::Tiny: 0
   English: 0
   File::Compare: 0
   File::Find: 0
@@ -30,6 +31,7 @@ requires:
   Data::Dump: 0
   Data::Dumper: 0
   Data::UUID: 0
+  Date::Parse: 0
   DesignCreate::Util::BWA: 0
   DesignCreate::Util::Primer3: 0
   Exporter: 0
@@ -40,6 +42,7 @@ requires:
   IPC::System::Simple: 0
   Iterator::Simple: 0
   JSON: 0
+  LWP::UserAgent: 0
   List::MoreUtils: 0
   List::Util: 0
   Log::Log4perl: 0
@@ -56,6 +59,7 @@ requires:
   Sub::Exporter: 0
   Throwable::Error: 0
   Try::Tiny: 0
+  WWW::JSON: 0
   WebAppCommon::Util::EnsEMBL: 0
   YAML::Any: 0
   base: 0
@@ -63,4 +67,4 @@ requires:
   namespace::autoclean: 0
   strict: 0
   warnings: 0
-version: 0.040
+version: 0.041
