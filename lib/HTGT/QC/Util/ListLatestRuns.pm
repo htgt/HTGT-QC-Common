@@ -23,13 +23,10 @@ has config => (
     required => 1
 );
 
-# FIXME: need to add some error handling in case server is down
-# or requested dir/file path is not found
-
 has file_api_url => (
     is       => 'ro',
     isa      => 'Str',
-    required => 1
+    default  => sub { $ENV{ FILE_API_URL } }
 );
 
 has file_api => (
@@ -41,6 +38,7 @@ has file_api => (
 
 sub _build_file_api {
     my $self = shift;
+    $self->log->debug("Building file api with URL ".$self->file_api_url);
     return HTGT::QC::Util::FileAccessServer->new({
         file_api_url => $self->file_api_url,
     });
