@@ -51,7 +51,7 @@ sub fileserver_get_json{
         return $get->res;
     }
     else{
-        die $get->error;
+        die "Could not get JSON from $path: ".$get->error;
     }
 
     return;
