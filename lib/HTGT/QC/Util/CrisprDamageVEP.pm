@@ -596,6 +596,7 @@ sub variant_effect_predictor {
 
     my $vep_output = $self->dir->file('variant_effect_output.txt')->absolute;
     my $log_file = $self->dir->file( 'vep.log' )->absolute;
+
     my @vep_command = (
         'perl',
         $VEP_CMD,                                        # vep cmd
