@@ -3,6 +3,7 @@ use strict;
 use warnings FATAL => 'all';
 
 use Path::Class;
+use Bio::SeqIO;
 use HTGT::QC::Util::FileAccessServer;
 use Try::Tiny;
 
@@ -18,7 +19,7 @@ my ($project_name, $list_flag) = @ARGV;
 $project_name or die "No sequencing project name provided";
 
 if($list_flag){
-	($list_flag eq "--list_only") or die "Script argument $list_flag not supported";
+	($list_flag eq "--list-only") or die "Script argument $list_flag not supported";
 }
 
 my $base_dir = dir( $ENV{'LIMS2_SEQ_FILE_DIR'} ) or die "Could not set sequencing data directory";
@@ -36,19 +37,25 @@ try{
 if(@$reads){
 	foreach my $read_path (@$reads){
 		# only use read paths ending .seq
+		# or should we look for .seq.clipped?
 		my ($path) = ( $read_path =~ /^(.*)\.seq/g );
 		next unless $path;
 
-		my $read_file = file($path);
-		my $read_name = $read_file->basename;
-		if($list_flag){
-            print "$read_name\n";
-        }
-        else{
-        	# Fetch seq file and print content
-        	my $sequence = $file_server->get_file_content($read_path);
-        	print ">$read_name\n";
-        	print "$sequence\n";
+        my $content = $file_server->get_file_content($read_path);
+        if($content){
+        	if($list_flag){
+        		# Parse file in order to get read names
+        		# should be the same as the file name but can we rely on this?
+        	    my $seq_in = Bio::SeqIO->new( -string => $content, -format => 'fasta' );
+                while ( my $bio_seq = $seq_in->next_seq ) {
+                    print $bio_seq->id;
+                    print "\n";
+                }
+            }
+            else{
+            	print $content;
+            	print "\n";
+            }
         }
     }
 }
