@@ -1,9 +1,13 @@
 #!/bin/bash
 
 if test -z "$DONE_RESET_ENV"; then
+    # First try to find data in the lims2 seq project structure
+    OUTPUT=`/nfs/users/nfs_a/af11/git/HTGT-QC-Common/bin/fetch_lims2_seq_projects.pl "$@"`
+    echo "${OUTPUT}"
+
     exec env -i DONE_RESET_ENV=yes $0 "$@"
 fi
- 
+
 function die () {
     echo "$1" >&2
     exit 2
@@ -25,4 +29,6 @@ test -n "$1" || die "Project search string must be specified"
 SEARCH_STRING="$1"; shift
 
 /software/bin/perl /opt/t87/global/software/perl/bin/htgt-pfind "${SEARCH_STRING}"
+
+exit 0
 
