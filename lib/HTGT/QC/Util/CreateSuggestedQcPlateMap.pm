@@ -40,6 +40,7 @@ sub create_suggested_plate_map {
     my $plate_map;
 
     my $plate_names = get_sequencing_project_plate_names( $seq_projects );
+
     die "Unable to find sequencing project plate names for: " , join( ',', @{ $seq_projects } )
         if @{ $plate_names } == 0;
 

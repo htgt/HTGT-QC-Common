@@ -41,18 +41,16 @@ if(@$reads){
 		my ($path) = ( $read_path =~ /^(.*)\.seq/g );
 		next unless $path;
 
-        my $content = $file_server->get_file_content($read_path);
-        if($content){
-        	if($list_flag){
-        		# Parse file in order to get read names
-        		# should be the same as the file name but can we rely on this?
-        	    my $seq_in = Bio::SeqIO->new( -string => $content, -format => 'fasta' );
-                while ( my $bio_seq = $seq_in->next_seq ) {
-                    print $bio_seq->id;
-                    print "\n";
-                }
-            }
-            else{
+        if($list_flag){
+            # We are assuming file basename is the same as read name
+            # Parsing actual read names out of the file took too long
+            my $file = file($path);
+            my $read_name = $file->basename;
+            print "$read_name\n";
+        }
+        else{
+            my $content = $file_server->get_file_content($read_path);
+            if($content){
             	print $content;
             	print "\n";
             }
