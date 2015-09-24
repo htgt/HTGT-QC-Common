@@ -30,7 +30,10 @@ my %WriteMakefileArgs = (
     "bin/fetch-seq-reads.sh",
     "bin/crispr_damage_analysis.pl",
     "bin/generate_primers_attempts.pl",
-    "bin/merge_vcf_variants.pl"
+    "bin/merge_vcf_variants.pl",
+    "bin/fetch-seq-projects.sh",
+    "bin/fetch_lims2_seq_projects.pl",
+    "bin/fetch_lims2_seq_reads.pl"
   ],
   "LICENSE" => "perl",
   "NAME" => "HTGT::QC::Common",
@@ -81,7 +84,7 @@ my %WriteMakefileArgs = (
     "strict" => 0,
     "warnings" => 0
   },
-  "VERSION" => "0.041",
+  "VERSION" => "0.042",
   "test" => {
     "TESTS" => "t/*.t"
   }

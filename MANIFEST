@@ -6,7 +6,10 @@ Makefile.PL
 README
 README.md
 bin/crispr_damage_analysis.pl
+bin/fetch-seq-projects.sh
 bin/fetch-seq-reads.sh
+bin/fetch_lims2_seq_projects.pl
+bin/fetch_lims2_seq_reads.pl
 bin/generate_primers_attempts.pl
 bin/merge_vcf_variants.pl
 lib/HTGT/QC/Config.pm

@@ -1,7 +1,7 @@
 package HTGT::QC::Util::CreateSuggestedQcPlateMap;
 ## no critic(RequireUseStrict,RequireUseWarnings)
 {
-    $HTGT::QC::Util::CreateSuggestedQcPlateMap::VERSION = '0.041';
+    $HTGT::QC::Util::CreateSuggestedQcPlateMap::VERSION = '0.042';
 }
 ## use critic
 
@@ -11,11 +11,11 @@ use warnings FATAL => 'all';
 
 use Sub::Exporter -setup => {
     exports => [
-        qw( 
-            create_suggested_plate_map 
-            get_sequencing_project_plate_names 
-            search_seq_project_names 
-            get_parsed_reads 
+        qw(
+            create_suggested_plate_map
+            get_sequencing_project_plate_names
+            search_seq_project_names
+            get_parsed_reads
         )
     ]
 };
@@ -46,6 +46,7 @@ sub create_suggested_plate_map {
     my $plate_map;
 
     my $plate_names = get_sequencing_project_plate_names( $seq_projects );
+
     die "Unable to find sequencing project plate names for: " , join( ',', @{ $seq_projects } )
         if @{ $plate_names } == 0;
 
@@ -118,10 +119,20 @@ sub search_seq_project_names {
     my $script_name = 'fetch-seq-projects.sh';
     my $fetch_cmd = File::Which::which( $script_name ) or die "Could not find $script_name";
 
-    ## no critic (ProhibitComplexMappings, ProhibitCaptureWithoutTest)    
+    ## no critic (ProhibitComplexMappings, ProhibitCaptureWithoutTest)
     my @results = map { chomp; $_ } capturex( $fetch_cmd, $search_term );
     ## use critic
-    return \@results;
+
+    # A bit of tidy up as results are now coming from both TraceServer and
+    # our own collection of sequencing project data
+    my @filtered;
+    foreach my $name (@results){
+        next if $name eq "";
+        next if $name =~ /Project .* doesn't exist/;
+        push @filtered, $name;
+    }
+
+    return \@filtered;
 }
 
 sub plate_map_for_same_length_names {
