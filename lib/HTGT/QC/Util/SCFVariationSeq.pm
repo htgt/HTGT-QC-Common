@@ -1,7 +1,7 @@
 package HTGT::QC::Util::SCFVariationSeq;
 ## no critic(RequireUseStrict,RequireUseWarnings)
 {
-    $HTGT::QC::Util::SCFVariationSeq::VERSION = '0.042';
+    $HTGT::QC::Util::SCFVariationSeq::VERSION = '0.043';
 }
 ## use critic
 

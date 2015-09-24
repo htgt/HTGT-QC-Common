@@ -9,7 +9,7 @@ if test -z "$DONE_RESET_ENV"; then
     # First try to find data in the lims2 seq project structure
     test -n "$1" || die "Sequencing project must be specified"
 
-    OUTPUT=`/nfs/users/nfs_a/af11/git/HTGT-QC-Common/bin/fetch_lims2_seq_reads.pl "$@"`
+    OUTPUT=`fetch_lims2_seq_reads.pl "$@"`
 
     if [[ $OUTPUT ]] ; then
         echo "${OUTPUT}"

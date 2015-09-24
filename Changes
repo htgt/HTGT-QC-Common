@@ -1,4 +1,10 @@
+0.043     2015-09-24 11:11:46 Europe/London
+
+  Fix - removed hardcoded script paths
+
 0.042     2015-09-24 10:26:34 Europe/London
+
+  Attempt to fetch reads and trace files from LIMS2 mamaged store before trying traceserver  
 
 0.041     2015-09-03 12:41:49 Europe/London
 
