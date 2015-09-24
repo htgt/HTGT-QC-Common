@@ -2,7 +2,7 @@
 
 if test -z "$DONE_RESET_ENV"; then
     # First try to find data in the lims2 seq project structure
-    OUTPUT=`/nfs/users/nfs_a/af11/git/HTGT-QC-Common/bin/fetch_lims2_seq_projects.pl "$@"`
+    OUTPUT=`fetch_lims2_seq_projects.pl "$@"`
     echo "${OUTPUT}"
 
     exec env -i DONE_RESET_ENV=yes $0 "$@"
