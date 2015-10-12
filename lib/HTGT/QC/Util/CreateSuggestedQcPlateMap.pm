@@ -101,7 +101,12 @@ sub get_parsed_reads {
     for my $read ( capturex($fetch_cmd, $seq_project, '--list-only') ) {
         chomp $read;
 
-        push @parsed, $parser->parse_query_id( $read );
+        my $parsed = $parser->parse_query_id( $read );
+
+        # Include the full read name (used for fetching trace files)
+        $parsed->{orig_read_name} = $read;
+
+        push @parsed, $parsed;
     }
 
     return @parsed;
