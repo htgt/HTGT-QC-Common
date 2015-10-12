@@ -1,7 +1,7 @@
 package HTGT::QC::Util::DrawPileupAlignment;
 ## no critic(RequireUseStrict,RequireUseWarnings)
 {
-    $HTGT::QC::Util::DrawPileupAlignment::VERSION = '0.043';
+    $HTGT::QC::Util::DrawPileupAlignment::VERSION = '0.044';
 }
 ## use critic
 

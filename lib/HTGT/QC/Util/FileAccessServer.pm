@@ -1,7 +1,7 @@
 package HTGT::QC::Util::FileAccessServer;
 ## no critic(RequireUseStrict,RequireUseWarnings)
 {
-    $HTGT::QC::Util::FileAccessServer::VERSION = '0.043';
+    $HTGT::QC::Util::FileAccessServer::VERSION = '0.044';
 }
 ## use critic
 
