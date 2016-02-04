@@ -1,0 +1,7 @@
+---
+  chr: '16'
+  end: 17018404
+  start: 17018382
+  species: 'Mouse'
+  expected_variant_type: 'frameshift'
+  expected_variant_size: -4

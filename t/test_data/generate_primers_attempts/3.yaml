@@ -1,0 +1,17 @@
+---
+test_name: 'Primer Pair Finder - Multiple Attempts, and product size avoid'
+target_start: 53624206
+target_end: 53624708
+strand: 1
+species: 'Mouse'
+chromosome: 17
+five_prime_region_size: 300
+five_prime_region_offset: 20
+three_prime_region_size: 300
+three_prime_region_offset: 20
+expected_attempt_number: 2
+num_valid_pairs: 9
+product_size_avoid: 2000
+expected_product_size_array:
+    - '1102-2102'
+    - '542-1102'

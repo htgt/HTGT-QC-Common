@@ -1,0 +1,6 @@
+---
+  name: 'spaced indel'
+  start: 48018186
+  ref_seq: 'TCTTAGGCAATGGCTAATCTACTTACA'
+  alt_seq: 'CCGTGTTCGTGTTCAATGGCTAATCTTTGA'
+  can_merge: 1

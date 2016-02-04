@@ -1,0 +1,7 @@
+---
+  chr: '5'
+  end: 76199412
+  start: 76199390
+  species: 'Mouse'
+  expected_variant_type: 'wildtype'
+  expected_variant_size:

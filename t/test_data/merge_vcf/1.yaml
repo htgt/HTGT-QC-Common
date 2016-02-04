@@ -1,0 +1,6 @@
+---
+  name: 'multiple concordant variations'
+  start: 47637430
+  ref_seq: 'TGGCTCTT'
+  alt_seq: 'GAAAAGACTTGGATCAAA'
+  can_merge: 1

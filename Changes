@@ -1,5 +1,123 @@
 {{$NEXT}}
 
+0.044     2015-10-12 15:51:35 Europe/London
+
+0.043     2015-09-24 11:11:46 Europe/London
+
+  Fix - removed hardcoded script paths
+
+0.042     2015-09-24 10:26:34 Europe/London
+
+  Attempt to fetch reads and trace files from LIMS2 mamaged store before trying traceserver  
+
+0.041     2015-09-03 12:41:49 Europe/London
+
+  Changed ListLatestRuns to get file info via http api (no lustre access)
+
+0.040     2015-06-15 12:19:19 Europe/London
+
+   Changed VEP command to use latest version
+
+0.039     2015-04-15 14:30:54 Europe/London
+
+   Various bugfixes and checks
+
+0.038     2015-03-17 14:02:37 Europe/London
+
+    Add ability to pick Primer3 task
+    Can specify sequence include and exclude regions when looking for primers
+    Bugfix: Minimum primer product size range should the target size plus offsets, not just target size
+
+0.037     2015-02-24 15:02:22 Europe/London
+
+    Removed some primer generation flags which are not used
+
+0.036     2015-02-24 14:40:54 Europe/London
+    Added more options to primer generation
+    Completed script to run primer generation
+
+0.035     2015-01-19 08:34:24 Europe/London
+
+Switch back to scratch109
+
+0.034     2014-12-12 10:18:29 Europe/London
+
+    Forgot scratch109 vep cache.
+
+0.033     2014-12-12 09:22:11 Europe/London
+
+    User alternate to scratch109.
+
+0.032     2014-12-10 09:28:09 Europe/London
+
+    Bugfix, mis-calling wildtype damage.
+    Update to ensembl vep version 78
+
+0.031     2014-12-03 11:50:03 Europe/London
+
+    Add automatic crispr damage calling to crispr es qc
+
+0.030     2014-11-04 09:04:30 Europe/London
+
+    Bugfix: primer sequence was being incorrectly reverse complimented
+
+0.029     2014-10-07 10:12:05 Europe/London
+
+    New human assembly: GRCh38
+
+0.028     2014-09-12 16:15:03 Europe/London
+
+    Fix releases branch
+
+0.027     2014-09-12 16:08:30 Europe/London
+
+    Added merge_wells option to a QC profile
+
+0.026     2014-09-11 13:29:18 Europe/London
+
+    Add GeneratePrimers and GeneratePrimersAttempts module, base objects used to generate primers
+    for a given target.
+
+0.025     2014-08-11 08:53:36 Europe/London
+
+    Dump of yaml file from Pileup Parser module with data on insertions / deletions and coordinates.
+
+0.024     2014-08-05 14:36:30 Europe/London
+
+    Update crispr_damage_analysis.pl script to take optional dir argument plus
+        point to version of staden installed in the vms.
+
+0.023     2014-08-01 08:55:18 Europe/London
+
+    Add module that takes the variant sequence from a SCF trace file.
+    Add module that attempts to merge multiple variants in a VCF file into one, for a given small region.
+    Integrated the merge VCF module into the crispr es qc workflow.
+
+0.022     2014-07-08 09:38:20 Europe/London
+
+    Change bcftools call to call all variants.
+
+0.021     2014-07-02 08:19:34 Europe/London
+
+    Update VEP protein sequence plugin to produce sequence files for non frameshift variants.
+
+0.020     2014-06-26 07:58:57 Europe/London
+
+    Created VEP plugin that generates reference and mutant protein sequence files
+    for frameshift variants, using this in the crispr es qc.
+
+0.019     2014-06-20 13:44:58 Europe/London
+
+    Bugfix: missed base in hash map.
+
+0.018     2014-06-20 08:22:23 Europe/London
+
+    Added modules for new Crispr es cell damange qc, these generate vcf and vep files.
+
+0.017     2014-04-24 11:53:03 Europe/London
+
+    Added CrisprAlleleDamage module and util method to get cigar parsed read names
+
 0.016     2013-12-05 16:15:55 Europe/London
 
 0.015     2013-04-23 16:22:13 Europe/London
@@ -23,7 +141,7 @@
     Added flag to identify if a run is ESCell
 
 0.008     2013-01-10 10:56:44 Europe/London
-Fixed bug in KillQCFarmJobs causing kill_and_notify logs to appear in htgt
+    Fixed bug in KillQCFarmJobs causing kill_and_notify logs to appear in htgt
 
 0.007     2013-01-04 15:19:47 Europe/London
 

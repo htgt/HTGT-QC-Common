@@ -1,0 +1,6 @@
+---
+  name: 'multiple concordant deletions'
+  start: 30321931
+  ref_seq: 'CAACATTATCAATAATGTAAAATATACACTTTT'
+  alt_seq: 'CA'
+  can_merge: 1

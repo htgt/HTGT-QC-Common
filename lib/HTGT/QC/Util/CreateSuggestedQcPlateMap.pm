@@ -4,7 +4,14 @@ use strict;
 use warnings FATAL => 'all';
 
 use Sub::Exporter -setup => {
-    exports => [ qw( create_suggested_plate_map get_sequencing_project_plate_names search_seq_project_names ) ]
+    exports => [
+        qw(
+            create_suggested_plate_map
+            get_sequencing_project_plate_names
+            search_seq_project_names
+            get_parsed_reads
+        )
+    ]
 };
 
 use Log::Log4perl qw( :easy );
@@ -33,6 +40,7 @@ sub create_suggested_plate_map {
     my $plate_map;
 
     my $plate_names = get_sequencing_project_plate_names( $seq_projects );
+
     die "Unable to find sequencing project plate names for: " , join( ',', @{ $seq_projects } )
         if @{ $plate_names } == 0;
 
@@ -53,6 +61,8 @@ sub create_suggested_plate_map {
     return $plate_map ? $plate_map : { map{ $_ => '' } @{ $plate_names } };
 }
 
+#this method should be changed to use get_parsed_reads
+#but im afraid if I change it i'll break htgt somewhere
 sub get_sequencing_project_plate_names {
     my $seq_projects = shift;
     my @reads;
@@ -78,16 +88,50 @@ sub get_sequencing_project_plate_names {
     return \@uniq_plate_names;
 }
 
+#general method to get back all reads in a project
+sub get_parsed_reads {
+    my ( $seq_project ) = @_;
+
+    my $script_name = 'fetch-seq-reads.sh';
+    my $fetch_cmd = File::Which::which( $script_name ) or die "Could not find $script_name";
+
+    my $parser = HTGT::QC::Util::CigarParser->new( strict_mode => 0 );
+
+    my @parsed;
+    for my $read ( capturex($fetch_cmd, $seq_project, '--list-only') ) {
+        chomp $read;
+
+        my $parsed = $parser->parse_query_id( $read );
+
+        # Include the full read name (used for fetching trace files)
+        $parsed->{orig_read_name} = $read;
+
+        push @parsed, $parsed;
+    }
+
+    return @parsed;
+}
+
 sub search_seq_project_names {
     my $search_term = shift;
 
     my $script_name = 'fetch-seq-projects.sh';
     my $fetch_cmd = File::Which::which( $script_name ) or die "Could not find $script_name";
 
-    ## no critic (ProhibitComplexMappings, ProhibitCaptureWithoutTest)    
+    ## no critic (ProhibitComplexMappings, ProhibitCaptureWithoutTest)
     my @results = map { chomp; $_ } capturex( $fetch_cmd, $search_term );
     ## use critic
-    return \@results;
+
+    # A bit of tidy up as results are now coming from both TraceServer and
+    # our own collection of sequencing project data
+    my @filtered;
+    foreach my $name (@results){
+        next if $name eq "";
+        next if $name =~ /Project .* doesn't exist/;
+        push @filtered, $name;
+    }
+
+    return \@filtered;
 }
 
 sub plate_map_for_same_length_names {

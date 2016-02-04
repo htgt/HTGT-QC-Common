@@ -1,0 +1,7 @@
+---
+  chr: '2'
+  end: 48018227
+  start: 48018165
+  species: 'Human'
+  expected_variant_type: 'no-call'
+  expected_variant_size:
