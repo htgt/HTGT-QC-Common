@@ -1,5 +1,9 @@
 {{$NEXT}}
 
+0.045     2016-06-07 15:17:53 Europe/London
+
+  Crispr QC now uses blat instead of BWA so some processing steps have changed
+
 0.044     2015-10-12 15:51:35 Europe/London
 
 0.043     2015-09-24 11:11:46 Europe/London
