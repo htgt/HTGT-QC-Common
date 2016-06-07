@@ -42,7 +42,6 @@ const our %CURRENT_ASSEMBLY => (
     Human => 'GRCh38',
 );
 
-
 1;
 
 __END__
