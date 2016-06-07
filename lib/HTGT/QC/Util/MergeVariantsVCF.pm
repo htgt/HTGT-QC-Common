@@ -1,7 +1,7 @@
 package HTGT::QC::Util::MergeVariantsVCF;
 ## no critic(RequireUseStrict,RequireUseWarnings)
 {
-    $HTGT::QC::Util::MergeVariantsVCF::VERSION = '0.044';
+    $HTGT::QC::Util::MergeVariantsVCF::VERSION = '0.045';
 }
 ## use critic
 

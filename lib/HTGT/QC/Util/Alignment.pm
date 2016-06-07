@@ -1,7 +1,7 @@
 package HTGT::QC::Util::Alignment;
 ## no critic(RequireUseStrict,RequireUseWarnings)
 {
-    $HTGT::QC::Util::Alignment::VERSION = '0.044';
+    $HTGT::QC::Util::Alignment::VERSION = '0.045';
 }
 ## use critic
 

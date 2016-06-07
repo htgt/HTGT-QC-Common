@@ -1,7 +1,7 @@
 package HTGT::QC::Util::CrisprDamageVEP;
 ## no critic(RequireUseStrict,RequireUseWarnings)
 {
-    $HTGT::QC::Util::CrisprDamageVEP::VERSION = '0.044';
+    $HTGT::QC::Util::CrisprDamageVEP::VERSION = '0.045';
 }
 ## use critic
 
@@ -163,7 +163,7 @@ sub analyse {
     my ( $self ) = @_;
 
     $self->sam_to_bam;
-    $self->remove_reads_not_overlapping_target;
+    #$self->remove_reads_not_overlapping_target;
     $self->run_mpileup;
     $self->parse_pileup_file;
     $self->variant_calling;
@@ -186,36 +186,25 @@ this is a known bug and the warning can be ignored.
 =cut
 sub sam_to_bam {
     my ( $self ) = @_;
-    $self->log->info('Converting SAM file to sorted BAM file');
-
-    my @samtools_sort_command = (
-        $SAMTOOLS_CMD,
-        'sort',                     # sort command
-        '-o',                       # output to STDOUT
-        $self->sam_file->stringify, # alignment file
-        'deleteme',                 # samtools sort always needs a output prefix
-    );
+    $self->log->info('Converting SAM file to BAM file');
 
     my @samtools_view_command = (
         $SAMTOOLS_CMD,
-        'view',                     # align command
+        'view',                     # view command
         '-b',                       # output is compressed BAM file
-        '-',                        # input from pipe
         '-F', 2048,                 # filter alignments with bit present in secondary alignment
+        $self->sam_file->stringify,
     );
 
-    $self->log->debug( "samtools sort command: " . join( ' ', @samtools_sort_command ) );
     $self->log->debug( "samtools view command: " . join( ' ', @samtools_view_command ) );
 
     my $bam_file = $self->dir->file('alignment.bam')->absolute;
     my $log_file = $self->dir->file( 'sam_to_bam.log' )->absolute;
-    run( \@samtools_sort_command,
-        '|',
-        \@samtools_view_command,
+    run( \@samtools_view_command,
         '>',  $bam_file->stringify,
         '2>', $log_file->stringify
     ) or die (
-            "Failed to run bwa sam to bam commands, see log file: $log_file" );
+            "Failed to run bwa sam to bam command, see log file: $log_file" );
 
     $self->bam_file( $bam_file );
     return;
@@ -308,7 +297,7 @@ sub run_mpileup {
         'mpileup',                                      # mpileup command
         '-Q', 0,                                        # minimum base quality
         '-f', $BWA_REF_GENOMES{ lc( $self->species ) }, # reference genome file, faidx-indexed
-        $self->filtered_bam_file->stringify,
+        $self->bam_file->stringify,
     );
 
     $self->log->debug( "mpileup command: " . join( ' ', @mpileup_command ) );
@@ -325,7 +314,7 @@ sub run_mpileup {
         '-g',                                           # output is compressed BCF file
         '-Q', 0,                                        # minimum base quality
         '-f', $BWA_REF_GENOMES{ lc( $self->species ) }, # reference genome file, faidx-indexed
-        $self->filtered_bam_file->stringify,
+        $self->bam_file->stringify,
     );
 
     $self->log->debug( "mpileup bcf command: " . join( ' ', @mpileup_bcf_command ) );
@@ -361,6 +350,13 @@ sub parse_pileup_file {
 
     $pileup_parser->calculate_pileup_alignment;
     $self->pileup_parser( $pileup_parser );
+
+    my $alignment_count = 0;
+    foreach my $seq_type ( qw(forward reverse) ){
+        $alignment_count++ if exists $pileup_parser->seqs->{$seq_type};
+    }
+    $self->num_target_region_alignments( $alignment_count );
+
     return;
 }
 

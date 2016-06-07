@@ -1,7 +1,7 @@
 package HTGT::QC::Constants;
 ## no critic(RequireUseStrict,RequireUseWarnings)
 {
-    $HTGT::QC::Constants::VERSION = '0.044';
+    $HTGT::QC::Constants::VERSION = '0.045';
 }
 ## use critic
 
@@ -47,7 +47,6 @@ const our %CURRENT_ASSEMBLY => (
     Mouse => 'GRCm38',
     Human => 'GRCh38',
 );
-
 
 1;
 
