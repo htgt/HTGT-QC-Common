@@ -1,0 +1,150 @@
+#!/usr/bin/env perl
+
+use HTGT::QC::CLI;
+use HTGT::QC::Config;
+use HTGT::QC::Util::KillQCFarmJobs;
+
+use Try::Tiny;
+
+use strict;
+use warnings;
+
+#ended.out will be created upon completion of any steps in this hash.
+#could eventually be used to link a final step to different cleanup functions
+my %final_steps = (
+    'persist-htgtdb'             => 1,
+    'persist-lims2-test-results' => 1, 
+    'persist-prescreen-htgtdb'   => 1,
+);
+
+#finally blocks are run in eval so we can't die inside there, but we need to
+#die to stop the rest of the qc jobs from continuing.
+my $error_msg;
+
+#if there's an error running the qc application we want to kill any remaining
+#farm jobs, otherwise they will pend forever
+try {
+    HTGT::QC::CLI->run;
+}
+catch {
+    #if there's no qc command then don't run kill and notify
+    return if $#ARGV < 0;
+
+    print STDERR "Caught exception in '" . $ARGV[0] . "'.\n";
+
+    try{
+        #dont run kill and notify on kill and notify, OBVIOUSLY
+        kill_and_notify() unless $ARGV[0] eq "kill-and-notify";
+    }
+    catch {
+        #need to keep errors in this separate from original error.
+        print STDERR "Kill and notify failed: $_\n";
+    };
+}
+finally {
+    #errors are passed to finally in @_
+    if ( @_ ) {
+        $error_msg = join "\n", @_;
+    }
+    else {
+        #no exception was caught, so see if we're in a final step,
+        #and if so create ended.out
+
+        #$#ARGV returns highest valid index, so we are saying we need at least
+        #2 args, as if someone just provides 1 they probably want the help
+        if( $#ARGV > 0 and exists $final_steps{ $ARGV[0] } ) {
+            #get a config instance to identify the base directory, and then the run id
+            my $conf = get_config();
+            my $run_id = get_run_id( $conf );
+
+            unless ( $conf and $run_id ) {
+                $error_msg = "There was an error marking the run as finished.\n";
+                return;
+            }
+
+            #we have all the folder information so create the file 
+            my $out_fh = $conf->basedir->subdir( $run_id )->file( 'ended.out' )->openw();
+            $out_fh->print( "The run finished successfully.\n" );
+        }
+    }
+};
+
+#we caught an exception, so return as unsuccessful or other jobs will continue
+die "QC failed:\n$error_msg\n" if defined $error_msg;
+
+sub kill_and_notify {
+    #get a config instance to identify the base directory, and then a run id
+    my $conf = get_config();
+    return unless $conf; #no point continuing if we cant find a config.
+
+    my $run_id = get_run_id( $conf );
+    return unless $run_id;
+    
+    print STDERR "Running KillQCFarmJobs.\n";
+
+    #now actually kill everything
+    my $kill_jobs = HTGT::QC::Util::KillQCFarmJobs->new( {
+        qc_run_id => $run_id,
+        config    => $conf
+    } );
+
+    #should we write these to the file ? they are in lsf.jobs so not much point
+    my $jobs_killed = $kill_jobs->kill_unfinished_farm_jobs();
+}
+
+#this should be re-written.
+sub get_config {
+    my $conffile;
+
+    #dirty code to find the --config flag and get its value
+    for my $i ( 0 .. $#ARGV ) {
+
+        if ( $ARGV[$i] eq "--config" ) {
+          print STDERR "Found config: ", $ARGV[$i+1], "\n";
+          $conffile = $ARGV[$i+1]; #this is the qc.conf file location
+          return HTGT::QC::Config->new( { conffile => $conffile } )->validate;
+        }
+    }
+
+    #if we didn't return already we didn't find it.
+    print STDERR "ERROR: Couldn't find config file.\n";
+}
+
+sub get_run_id {
+    my ( $conf ) = @_;
+
+    #hackily search all the args and attempt to find the run-id using the basedir
+    #we have to do it this way as we don't always know which parameter it will be in
+    for ( @ARGV ) {
+        #quotemeta escapes all the slashes so we can use a regex 
+        my $escaped = quotemeta( $conf->basedir ); #escape all the /
+        my $lims2_escaped = quotemeta( $conf->_config->{GLOBAL}->{lims2_basedir} );
+        my $prescreen_escaped = quotemeta( $conf->_config->{GLOBAL}->{prescreen_basedir} );
+
+        #
+        #if we add any more directories we should come up with a better solution.
+        #probably storing the conf function to call in conf and looping all GLOBAL vars
+        #
+
+        #see if any of our command line params match either directory.
+        #we have to try both as we have no way of knowing if we are lims2 or not
+        if($_ =~ m/($escaped|$lims2_escaped|$prescreen_escaped)\/([A-Z0-9\-]+)\//) {
+            #we need to know if it is lims2 so killqcfarmjobs goes to the right folder
+            #so check if the dir we matched is the lims2 directory.
+            if ( $1 eq $conf->_config->{GLOBAL}->{lims2_basedir} ) {
+                print STDERR "Detected LIMS2 run.\n";
+                $conf->is_lims2(1);
+            }
+            elsif ( $1 eq $conf->_config->{GLOBAL}->{prescreen_basedir} ) {
+                print STDERR "Detected prescreen run.\n";
+                $conf->is_prescreen(1);
+            }
+
+            print STDERR "Found run id: ", $2, "\n";
+            return $2;
+        }
+    }
+
+    print STDERR "ERROR: Couldn't find run id.\n";
+    return;
+}

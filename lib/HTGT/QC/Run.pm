@@ -8,8 +8,9 @@ use Moose::Util::TypeConstraints;
 use MooseX::Params::Validate;
 use MooseX::Types::Path::Class;
 use Data::UUID;
-use YAML::Any;
+use YAML;
 use namespace::autoclean;
+use HTGT::QC::Util::FileAccessServer;
 
 with qw( MooseX::Log::Log4perl );
 
@@ -74,11 +75,23 @@ has species => (
     required => 0,
 );
 
+
+has file_api => (
+    is    => 'ro',
+    isa   => 'HTGT::QC::Util::FileAccessServer',
+    lazy_build => 1,
+);
+
+sub _build_file_api{
+    my $lustre_server = $ENV{ FILE_API_URL }
+        or die "FILE_API_URL environment variable not set";
+    return HTGT::QC::Util::FileAccessServer->new({ file_api_url => $lustre_server });
+}
 sub init {
     my $class = shift;
 
     #plate_map is required for vector, should perhaps enforce that?
-    
+
     my %params = validated_hash(
         \@_,
         config              => { isa => 'HTGT::QC::Config' },
@@ -94,7 +107,7 @@ sub init {
 
     $params{id}       = Data::UUID->new->create_str;
     $params{workdir}  = $params{config}->basedir->subdir( $params{id} );
-    
+
     my $self = $class->new( \%params );
 
     $self->init_workdir();
@@ -108,14 +121,11 @@ sub init_workdir {
     my ( $self, $params ) = @_;
 
     my $dir = $self->workdir;
-    
-    -d $dir
-        or $dir->mkpath
-            or HTGT::QC::Exception->throw( message => "Failed to create directory $dir: $!" );
+
+    $self->file_api->make_dir("$dir");
 
     # Persist parameters required for restore
-    YAML::Any::DumpFile(
-        $self->workdir->file( 'params.yaml' ),
+    my $yaml = Dump(
         {
             profile             => $self->profile,
             template_plate      => $self->template_plate,
@@ -125,6 +135,8 @@ sub init_workdir {
             species             => $self->species,
         }
     );
+
+    $self->file_api->post_file_content($self->workdir->file( 'params.yaml' ),$yaml);
 
     return;
 }

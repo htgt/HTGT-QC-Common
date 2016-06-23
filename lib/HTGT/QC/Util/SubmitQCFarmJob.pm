@@ -6,6 +6,9 @@ use IPC::Run ();
 use HTGT::QC::Exception;
 use namespace::autoclean;
 use Path::Class qw( dir file );
+use WebAppCommon::Util::FarmJobRunner;
+use HTGT::QC::Util::FileAccessServer;
+use Data::Dumper;
 
 with 'MooseX::Log::Log4perl';
 
@@ -21,6 +24,32 @@ has memory_required => (
     isa      => subtype( 'Int' => where { $_ > 100 && $_ < 16000 } ),
     default  => 2000,
 );
+
+has farm_job_runner => (
+    is       => 'ro',
+    isa      => 'WebAppCommon::Util::FarmJobRunner',
+    lazy_build => 1,
+);
+
+sub _build_farm_job_runner{
+    my $wrapper_script = file(  );
+    return WebAppCommon::Util::FarmJobRunner->new({
+        dry_run => 0,
+        bsub_wrapper => '/nfs/team87/farm3_lims2_vms/conf/run_in_farm3_af11'
+    });
+}
+
+has file_api => (
+    is    => 'ro',
+    isa   => 'HTGT::QC::Util::FileAccessServer',
+    lazy_build => 1,
+);
+
+sub _build_file_api{
+    my $lustre_server = $ENV{ FILE_API_URL }
+        or die "FILE_API_URL environment variable not set";
+    return HTGT::QC::Util::FileAccessServer->new({ file_api_url => $lustre_server });
+}
 
 my $QC_CONFIG = $ENV{HTGT_QC_CONF};
 
@@ -39,7 +68,7 @@ sub run_qc_on_farm {
 
     #this function is implemented by the subclass so they have flexibility over this section
     my $additional_job_ids = $self->_run_qc_on_farm( $write_eng_seqs_job_id );
-    
+
     #last item in additional job ids is the post filter job id, which is waiting
     #for ALL the other additional job ids to finish. they are in \n separated list
     my $post_filter_job_id = ( split /\n/, $additional_job_ids )[ -1 ];
@@ -50,11 +79,11 @@ sub run_qc_on_farm {
     my $final_job_ids = $self->_final_steps( $persist_job_id );
 
     $self->write_job_ids(
-        $fetch_template_job_id, 
-        $write_eng_seqs_job_id, 
-        $additional_job_ids, 
-        $post_filter_job_id, 
-        $generate_report_job_id, 
+        $fetch_template_job_id,
+        $write_eng_seqs_job_id,
+        $additional_job_ids,
+        $post_filter_job_id,
+        $generate_report_job_id,
         $persist_job_id,
         $final_job_ids,
     );
@@ -64,18 +93,18 @@ sub write_job_ids {
     my ( $self, @job_ids ) = @_;
 
     my $job_id_log = $self->qc_run->workdir->file( "lsf.job_id" );
-    my $job_id_log_fh = $job_id_log->openw();
-    
-    $job_id_log_fh->print( join( "\n", @job_ids ) );
+    my $ids_string = join( "\n", @job_ids );
+
+    $self->file_api->post_file_content("$job_id_log", $ids_string);
+    return;
 }
 
 sub create_dirs {
     my ( $self, @dirs ) = @_;
 
     for my $dir( @dirs ){
-        -d $dir
-            or $dir->mkpath
-                or HTGT::QC::Exception->throw( message => "Failed to create directory $dir: $!" );
+        $self->log->debug("Creating dir through file API: $dir");
+        $self->file_api->make_dir("$dir");
     }
 
     return;
@@ -98,7 +127,7 @@ sub fetch_template_data {
 
     my @cmd = $self->get_qc_cmd( $qc_cmd, @args );
 
-    #there is no previous_job_id so send undef to specify no dependency 
+    #there is no previous_job_id so send undef to specify no dependency
     return $self->run_bsub_cmd( undef, $out_file, $err_file, @cmd );
 }
 
@@ -146,7 +175,7 @@ sub persist {
     }
 }
 
-#the only thing that changes in the persist steps between es cell and vector is that 
+#the only thing that changes in the persist steps between es cell and vector is that
 #there are multiple seq_reads for es cell. The get_seq_read_files method handles this.
 sub persist_htgt {
     my ( $self, $previous_job_id, $stage ) = @_;
@@ -177,7 +206,7 @@ sub persist_lims2 {
     my $persist_seq_reads_id = $self->persist_lims2_seq_reads( $persist_qc_run_id );
     my $persist_test_results_id = $self->persist_lims2_test_results( $persist_seq_reads_id);
 
-    return join "\n", $persist_qc_run_id, $persist_seq_reads_id, $persist_test_results_id; 
+    return join "\n", $persist_qc_run_id, $persist_seq_reads_id, $persist_test_results_id;
 }
 
 sub persist_lims2_qc_run {
@@ -275,7 +304,7 @@ sub get_seq_read_files {
 }
 
 #
-#helper functions 
+#helper functions
 #
 
 sub get_sequencing_projects {
@@ -309,7 +338,7 @@ sub get_qc_cmd {
     HTGT::QC::Exception->throw( message => "No QC command specified" ) unless $qc_cmd;
 
     #add in the qc args requried by every command, then add the cmd specific args
-    my @cmd = (        
+    my @cmd = (
         'qc', $qc_cmd,
         '--debug',
         '--config', $ENV{NFS_HTGT_QC_CONF},
@@ -322,15 +351,37 @@ sub get_qc_cmd {
     return @cmd;
 }
 
-#set all common options for bsub and run the user specified command. 
-sub run_bsub_cmd {
+sub run_bsub_cmd{
+    my ( $self, $previous_job_id, $out_file, $err_file, @cmd ) = @_;
+
+    #raise exception if we dont have the required items, otherwise everything would break
+    HTGT::QC::Exception->throw( message => "Not enough parameters passed to run_bsub_cmd" )
+        unless ( $out_file and $err_file and @cmd );
+
+    my $job_params = {
+        out_file     => $out_file,
+        err_file     => $err_file,
+        #memory_required => $self->memory_required,
+        cmd => \@cmd,
+    };
+
+    if($previous_job_id){
+        $job_params->{dependencies} = $previous_job_id;
+    }
+
+    my $job_id = $self->farm_job_runner->submit($job_params);
+    return $job_id;
+}
+
+#set all common options for bsub and run the user specified command.
+sub run_bsub_cmd_old {
     my ( $self, $previous_job_id, $out_file, $err_file, @cmd ) = @_;
 
     #if you make a change to this command you'll need to find all places bsub is used,
     #as not everyone uses this.
 
     #raise exception if we dont have the required items, otherwise everything would break
-    HTGT::QC::Exception->throw( message => "Not enough parameters passed to run_bsub_cmd" ) 
+    HTGT::QC::Exception->throw( message => "Not enough parameters passed to run_bsub_cmd" )
         unless ( $out_file and $err_file and @cmd );
 
     my $memory_limit = $self->memory_required; # no factors required for farm3
@@ -362,12 +413,12 @@ sub run_bsub_cmd {
     return $job_id;
 }
 
-#this should be removed and Util::RunCmd used for consistency 
+#this should be removed and Util::RunCmd used for consistency
 sub run_cmd {
     my ( $self, @cmd ) = @_;
 
     my $output;
-    
+
     eval {
         IPC::Run::run( \@cmd, '<', \undef, '>&', \$output )
                 or die "$output\n";
