@@ -14,7 +14,7 @@ use Pod::Usage;
 
 my @EXONERATE = qw( exonerate --bestn 1 --showcigar yes --showalignment yes );
 
-my @BSUB = qw( bsub -R'select[mem>1000] rusage[mem=1000]' -M1000 -P team87 -q normal -o %J.%I.out );
+my @BSUB = qw( bsub -R'select[mem>1000] rusage[mem=1000]' -M1000 -P team87 -G team87-grp -q normal -o %J.%I.out );
 
 GetOptions(
     'help'       => sub { pod2usage( -verbose => 1 ) },
@@ -32,7 +32,7 @@ if ( $ENV{LSB_JOBINDEX} ) {
     exec @cmd
         or die "failed to exec exonerate: $!";
 }else{
-    die 'you cannot invoke this script outside a job-array: must have ENV{LSB_JOBINDEX} set';; 
+    die 'you cannot invoke this script outside a job-array: must have ENV{LSB_JOBINDEX} set';;
 }
 
 #for ( $reads, @targets ) {
@@ -57,7 +57,7 @@ run-exonerate-jobarray.pl [options] args
 
 =head1 DESCRIPTION
 
-Stub documentation for run-exonerate-jobarray.pl, 
+Stub documentation for run-exonerate-jobarray.pl,
 
 =head1 AUTHOR
 

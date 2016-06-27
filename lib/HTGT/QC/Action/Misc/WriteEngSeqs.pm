@@ -67,7 +67,6 @@ sub _init_output_dir {
 }
 
 sub _build_eng_seq_builder {
-
     if ( $ENV{ENG_SEQ_BUILDER_CONFIG} ) {
         EngSeqBuilder->new( configfile => $ENV{ENG_SEQ_BUILDER_CONFIG} );
     }
@@ -105,7 +104,7 @@ sub write_seq {
         my $fh = $file->open( O_WRONLY|O_CREAT|O_EXCL )
             or HTGT::QC::Exception->throw( "Open $file: $!" );
         my $seq_out = Bio::SeqIO->new( -fh => $fh, -format => $format );
-        $seq_out->write_seq( $bio_seq );        
+        $seq_out->write_seq( $bio_seq );
     }
 
     return;

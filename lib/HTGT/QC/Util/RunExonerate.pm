@@ -27,25 +27,26 @@ sub run_exonerate {
     my ( $seq_reads, $syn_vecs, $outdir, $model ) = @_;
 
     $model = 'ungapped' unless defined $model;
-    
+
     $outdir = dir( $outdir );
 
     my $job_id = run_bsub_and_wait( $seq_reads, $syn_vecs, $outdir, $model );
 
     ensure_successfully_completed( $job_id, scalar( @{$syn_vecs} ), $outdir );
-    
+
     return $job_id;
 }
 
 sub run_bsub_and_wait {
     my ( $query, $targets, $outdir, $model ) = @_;
-    
+
     my $jobspec = sprintf 'qc[1-%d]', scalar @{$targets};
 
     my @bsub_job_array = ( @BSUB,
                            "-R'select[mem>2000] rusage[mem=2000]'", '-M2000',
                            '-o', $outdir->file( '%J.%I.out' ),
                            '-J', $jobspec,
+                           '-G', 'team87-grp',
                            $RUN_EXONERATE, $model, $query, @{$targets} );
 
     WARN( "Submitting job array @bsub_job_array" );
@@ -53,12 +54,13 @@ sub run_bsub_and_wait {
     INFO( $_ ) for split /\n/, $res;
     my ( $job_id ) = $res =~ m/$JOB_SUBMITTED_RX/
         or HTGT::QC::Exception->throw( message => "unexpected return from bsub: $res" );
-    
+
     my @bsub_wait = ( @BSUB,
                       '-i', '/dev/null',
                       '-o', '/dev/null',
                       "-R 'select[mem>100] rusage[mem=100]'", '-M 100',
                       '-w', sprintf( 'ended(%d)', $job_id ),
+                      '-G', 'team87-grp',
                       '-K',
                       '/bin/true' );
     WARN( "Running bsub command:\n" . join(" ", @bsub_wait) );
@@ -88,7 +90,7 @@ sub ensure_successfully_completed {
     my ( $job_id, $num_jobs, $outdir ) = @_;
 
     my $num_failed = 0;
-    
+
     for my $job_num ( 1..$num_jobs) {
         my $out_file = $outdir->file( "$job_id.$job_num.out" );
         DEBUG( "Reading $out_file" );

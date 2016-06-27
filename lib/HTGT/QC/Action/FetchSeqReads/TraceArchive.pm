@@ -52,7 +52,8 @@ sub fetch_reads_for_project {
     my ( $self, $project_name ) = @_;
 
     $self->log->debug( "Fetching sequence reads for $project_name" );
-
+    $self->log->debug("LIMS2_SEQ_FILE_DIR: ".$ENV{LIMS2_SEQ_FILE_DIR});
+    $self->log->debug("fetch_seq_reads_cmd: ".$self->fetch_seq_reads_cmd);
     open( my $seq_reads_fh, '-|', $self->fetch_seq_reads_cmd, $project_name )
         or HTGT::QC::Exception->throw( 'failed to run ' . $self->fetch_seq_reads_cmd );
 
