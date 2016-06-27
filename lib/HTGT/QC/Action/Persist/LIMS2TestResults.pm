@@ -36,7 +36,6 @@ sub execute {
 
 sub _process_qc_test_results {
     my $self = shift;
-    my @test_result_params;
 
     for my $subdir ( $self->analysis_dir->children ) {
         for my $yaml_file ( $subdir->children ) {

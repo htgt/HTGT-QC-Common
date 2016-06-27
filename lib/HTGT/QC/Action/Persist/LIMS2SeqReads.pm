@@ -75,7 +75,9 @@ sub _build_seq_read_sequencing_project {
     my %data;
 
     for my $seq_proj ( $self->sequencing_projects ) {
+        ## no critic (ProhibitComplexMappings, ProhibitVoidMap)
         map { chomp; $data{$_} = $seq_proj } $self->seq_read_ids;
+        ## use critic
     }
 
     return \%data;

@@ -37,7 +37,7 @@ sub execute {
 
     for my $well_name ( keys %{$analysis} ) {
         for my $target_id ( keys %{ $analysis->{$well_name} } ){
-            my @results = map values %$_, values %{ $analysis->{$well_name}{$target_id} };
+            my @results = map { values %$_ } values %{ $analysis->{$well_name}{$target_id} };
             unless ( any { $self->profile->is_genomic_pass($_) } @results ) {
                 delete $analysis->{$well_name}{$target_id};
             }
@@ -92,7 +92,7 @@ sub parse_analysis {
 
     my %analysis;
 
-    for my $analysis_dir ( map dir($_), @{$analysis_dirs} ) {
+    for my $analysis_dir ( map { dir($_) } @{$analysis_dirs} ) {
         for my $query_dir ( $analysis_dir->children ) {
             for my $target_yaml ( $query_dir->children ) {
                 my $target_analysis = YAML::Any::LoadFile( $target_yaml );
