@@ -78,4 +78,18 @@ sub post_file_content{
     return $self->user_agent->post($post_url, Content_Type => 'text/plain', Content => $content );
 }
 
+sub make_dir{
+    my ($self, $path) = @_;
+
+    my $post_url = $self->file_api_url.$path."/";
+    $self->log->debug("posting directory to $post_url");
+
+    my $response = $self->user_agent->post($post_url);
+    unless($response->is_success){
+        die "Could not create directory $path: ".$response->status_line;
+    }
+
+    return $response->content;
+}
+
 1;

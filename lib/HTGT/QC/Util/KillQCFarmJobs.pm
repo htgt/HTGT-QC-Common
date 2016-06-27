@@ -36,7 +36,7 @@ sub kill_unfinished_farm_jobs {
         'bsub',
         '-G', 'team87-grp',
         '-o', $out_file,
-        '-M', '500000', #we were running out of memory for some reason
+        '-M', '500', #we were running out of memory for some reason
         '-R', '"select[mem>500] rusage[mem=500]"',
         'qc kill-and-notify',
         '--config', $self->config->conffile,
