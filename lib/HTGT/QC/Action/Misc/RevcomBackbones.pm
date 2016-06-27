@@ -28,13 +28,14 @@ sub execute {
     for my $file ( map { file( $_ ) } @{ $args } ) {
         $self->revcom_backbone( $file );
     }
+    return;
 }
 
 sub revcom_backbone {
     my ( $self, $file ) = @_;
 
     $self->log->info( "Processing $file" );
-    
+
     ( my $basename = $file->basename ) =~ s/\.[^.]+//;
 
     my $seq = Bio::SeqIO->new( -file => "$file", -format => 'genbank' )->next_seq;
@@ -47,7 +48,7 @@ sub revcom_backbone {
         -seq         => '',
         -display_id  => $seq->display_id . '#r',
         -is_circular => $seq->is_circular
-    );    
+    );
 
     # Sequence before backbone (if any)
     if ( $bb_feature->start > 1 ) {
@@ -63,7 +64,7 @@ sub revcom_backbone {
         Bio::SeqUtils->revcom_with_features(
             Bio::SeqUtils->trunc_with_features( $seq, $bb_feature->start, $bb_feature->end )
         )
-    );                        
+    );
 
     # Sequence after the backbone (if any)
     if ( $bb_feature->end < $seq->length ) {
@@ -78,6 +79,7 @@ sub revcom_backbone {
         my $seq_io   = Bio::SeqIO->new( -fh => $new_file->openw, -format => $format );
         $seq_io->write_seq( $new_seq );
     }
+    return;
 }
 
 sub is_synthetic_backbone {

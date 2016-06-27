@@ -7,7 +7,7 @@ use IPC::System::Simple qw( capturex );
 use namespace::autoclean;
 
 #this is a re-written version of HTGT::QC::Action::ListTraceProjects::Badger
-#so it can be easily imported (for HTGT/LIMS2 es cell qc runs) 
+#so it can be easily imported (for HTGT/LIMS2 es cell qc runs)
 
 has show_all => (
     is         => 'ro',
@@ -22,7 +22,7 @@ has badger => (
 );
 
 sub _build_badger {
-    HTGT::Utils::BadgerRepository->new;
+    return HTGT::Utils::BadgerRepository->new;
 }
 
 sub get_trace_projects {
@@ -38,7 +38,7 @@ sub get_trace_projects {
             else {
                 #print "WARNING: Project $p has no sequencing reads\n";
             }
-        }   
+        }
     }
 
     return [ sort keys %projects ];
@@ -46,13 +46,13 @@ sub get_trace_projects {
 
 sub project_has_reads {
     my ( $self, $project_name ) = @_;
-                   
+
     # This is a bit of a hack, but we need to know whether or not this project has any reads attached
     my @reads = capturex( HTGT::QC::Action::FetchSeqReads::TraceArchive->fetch_seq_reads_cmd, $project_name, '--list-only' );
 
     return @reads > 0;
 }
-        
+
 sub expand_leading_zeroes {
     my ( $self, $name ) = @_;
 
@@ -64,7 +64,7 @@ sub expand_leading_zeroes {
     else {
         return $name;
     }
-}        
+}
 
 __PACKAGE__->meta->make_immutable;
 

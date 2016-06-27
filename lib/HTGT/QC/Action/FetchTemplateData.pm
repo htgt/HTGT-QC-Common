@@ -22,6 +22,7 @@ sub execute {
     my $params = $self->get_eng_seq_params( $args->[0] );
 
     YAML::Any::DumpFile( $self->output_file, $params );
+    return;
 }
 
 sub get_eng_seq_params {

@@ -30,13 +30,13 @@ sub run_job_array {
     my $job_id = run_bsub_and_wait( $work_dir, $commands );
 
     ensure_successfully_completed( $job_id, scalar( @{$commands} ), $work_dir );
-    
+
     return $job_id;
 }
 
 sub run_bsub_and_wait {
     my ( $work_dir, $commands ) = @_;
-    
+
     my $cmd_file = write_commands( $work_dir, $commands );
 
     my $jobspec = sprintf 'qc[1-%d]', scalar @{$commands};
@@ -52,7 +52,7 @@ sub run_bsub_and_wait {
     INFO( $_ ) for split /\n/, $res;
     my ( $job_id ) = $res =~ m/$JOB_SUBMITTED_RX/
         or HTGT::QC::Exception->throw( message => "unexpected return from bsub: $res" );
-    
+
     my @bsub_wait = ( @BSUB,
                       '-i', '/dev/null',
                       '-o', '/dev/null',
@@ -66,8 +66,8 @@ sub run_bsub_and_wait {
     DEBUG( 'Waiting for job array to complete' );
     while ( $n_attempts-- and not $done ) {
         try {
-            my $res = capturex( @bsub_wait );
-            INFO( $_ ) for split /\n/, $res;
+            my $result = capturex( @bsub_wait );
+            INFO( $_ ) for split /\n/, $result;
             $done = 1;
         } catch {
             ERROR( $_ );
@@ -85,7 +85,7 @@ sub ensure_successfully_completed {
     my ( $job_id, $num_jobs, $outdir ) = @_;
 
     my $num_failed = 0;
-    
+
     for my $job_num ( 1..$num_jobs) {
         my $out_file = $outdir->file( "$job_id.$job_num.out" );
         DEBUG( "Reading $out_file" );
@@ -107,6 +107,7 @@ sub ensure_successfully_completed {
             "$num_failed of $num_jobs exonerate jobs failed to complete successfully"
         );
     }
+    return;
 }
 
 

@@ -15,7 +15,7 @@ has min_score => (
 );
 
 sub _build_min_score {
-    shift->profile->pre_filter_min_score;
+    return shift->profile->pre_filter_min_score;
 }
 
 override command_names => sub {
@@ -30,8 +30,8 @@ override is_wanted => sub {
     my ( $self, $cigar_for ) = @_;
 
     my $score = sum( 0, map { $_->{score} } values %{ $cigar_for } );
-    $self->log->debug( "Score: $score" );    
-    
+    $self->log->debug( "Score: $score" );
+
     return $score >= $self->min_score;
 };
 

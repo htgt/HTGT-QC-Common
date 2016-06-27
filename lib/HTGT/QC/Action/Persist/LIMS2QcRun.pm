@@ -41,7 +41,7 @@ has sequencing_projects => (
     handles  => {
         sequencing_projects => 'elements'
     }
-);        
+);
 
 has qc_template_id => (
     is         => 'ro',
@@ -79,7 +79,7 @@ sub execute {
     $self->log->debug( "Create QCRun: " . $self->qc_run_id );
 
     try{
-        $self->lims2_client->POST( 'qc_run', 
+        $self->lims2_client->POST( 'qc_run',
             {
                 id                     => $self->qc_run_id,
                 created_by             => $self->created_by,
@@ -95,6 +95,7 @@ sub execute {
         HTGT::QC::Exception->throw( 'Error persisting qc_run data to LIMS2 for qc_run '
             . $self->qc_run_id . ' : ' . $_ );
     };
+    return;
 }
 
 1;

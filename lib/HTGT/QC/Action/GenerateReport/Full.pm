@@ -31,6 +31,7 @@ sub execute {
     my ( $self, $opts, $args ) = @_;
 
     $self->generate_report( $self->analysis_dir, $self->output_file );
+    return;
 }
 
 sub generate_report {
@@ -70,6 +71,7 @@ sub generate_report {
             map( { join q{,}, @{ $analysis->{primers}{$_}{features} || [] } } @PRIMERS )
         );
     }
+    return;
 }
 
 sub critical_region_score {
@@ -77,7 +79,7 @@ sub critical_region_score {
 
     return '' unless $alignments and scalar keys %{$alignments};
 
-    join( q{,}, map { $_->{match_count} . '\\' . $_->{length} } values %{$alignments} );
+    return join( q{,}, map { $_->{match_count} . '\\' . $_->{length} } values %{$alignments} );
 }
 
 sub target_align_length {

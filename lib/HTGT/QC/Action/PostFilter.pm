@@ -52,6 +52,7 @@ sub execute {
 
         }
     }
+    return;
 }
 
 sub _link_to_out_dir{
@@ -61,6 +62,7 @@ sub _link_to_out_dir{
     my $out_file = $this_out_dir->file( $target_yaml->basename );
     link $target_yaml, $out_file
         or HTGT::QC::Exception->throw( "link $target_yaml, $out_file: $!" );
+    return;
 }
 
 sub _alignment_score_sum{

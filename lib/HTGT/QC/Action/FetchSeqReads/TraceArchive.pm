@@ -37,7 +37,7 @@ has primer_filters => (
 );
 
 sub _build_fetch_seq_reads_cmd {
-    which( 'fetch-seq-reads.sh' );
+    return which( 'fetch-seq-reads.sh' );
 }
 
 sub execute {
@@ -46,6 +46,7 @@ sub execute {
     for my $project_name ( @{$args} ) {
         $self->fetch_reads_for_project( $project_name );
     }
+    return;
 }
 
 sub fetch_reads_for_project {

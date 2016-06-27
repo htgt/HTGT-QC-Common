@@ -110,6 +110,7 @@ sub check_alignment_pass {
     else {
         die "Failed to parse alignment match length: '$condition'";
     }
+    return;
 }
 
 sub overlapping_features {
@@ -177,7 +178,7 @@ sub find_seq_feature_loc {
         }
     }
 
-    HTGT::QC::Util::FindSeqFeature::find_seq_feature_loc( $target, %locus );
+    return HTGT::QC::Util::FindSeqFeature::find_seq_feature_loc( $target, %locus );
 }
 
 

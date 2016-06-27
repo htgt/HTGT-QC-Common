@@ -31,9 +31,7 @@ sub zip_sequences {
     my $tmp_dir = File::Temp->newdir( DIR => $params{synvec_dir}->parent );
     my $out_dir = dir( $tmp_dir )->subdir( $params{run_id} );
     $out_dir->mkpath;
-    
-    my @query_wells;
-    
+
     for my $query_dir ( $params{post_filter_dir}->children ) {
         for my $target_yaml ( $query_dir->children ) {
             my ( $query_well, $target_id, $primers ) = parse_analysis( $target_yaml );
@@ -55,6 +53,7 @@ sub zip_sequences {
     chdir( $tmp_dir ) or die "chdir $tmp_dir: $!";
     system( 'zip', '-r', $params{output_file}, $params{run_id} );
     chdir( ".." );
+    return;
 }
 
 sub _reads_for_primers {
@@ -73,7 +72,7 @@ sub _reads_for_primers {
 
     return \%reads_for_primers;
 }
-    
+
 sub _target_gbk {
     my ( $synvec_dir, $target_id ) = @_;
 

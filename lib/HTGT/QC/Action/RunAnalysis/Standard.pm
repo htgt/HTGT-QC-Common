@@ -57,6 +57,7 @@ sub execute {
     my $analyzer = HTGT::QC::Util::Analysis->new(\%analyzer_args);
 
     $analyzer->analyze_all();
+    return;
 }
 
 __PACKAGE__->meta->make_immutable;

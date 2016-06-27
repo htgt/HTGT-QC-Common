@@ -34,7 +34,7 @@ has sequencing_projects => (
     handles  => {
         sequencing_projects => 'elements'
     }
-);        
+);
 
 has cigar_parser => (
     is         => 'ro',
@@ -86,7 +86,7 @@ sub _build_cigar_parser {
 
     #we don't want to use strict_mode as we still want to fail if we dont get a well or plate,
     #but we want to match all primers or the whole run fails.
-    HTGT::QC::Util::CigarParser->new(
+    return HTGT::QC::Util::CigarParser->new(
         primers   => [ ".*" ], #match all primers
         plate_map => $self->plate_name_map,
     );
@@ -103,7 +103,7 @@ sub execute {
         }
         catch {
             #put some useful output in the web viewable log file, too.
-            $self->log->debug( "Error processing seq_read: $seq_read_id" ); 
+            $self->log->debug( "Error processing seq_read: $seq_read_id" );
             HTGT::QC::Exception->throw( "Error creating seq_read: $seq_read_id : $_" );
         };
     }
@@ -119,7 +119,7 @@ sub _find_or_create_seq_read {
 
     $self->log->debug( "Create QCSeqRead: " . $seq_read_id );
 
-    my $parsed = $self->parse_query_id( $seq_read_id );    
+    my $parsed = $self->parse_query_id( $seq_read_id );
 
     return $self->lims2_client->POST( 'qc_seq_read',
         {

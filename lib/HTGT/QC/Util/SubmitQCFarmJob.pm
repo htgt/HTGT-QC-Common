@@ -87,6 +87,7 @@ sub run_qc_on_farm {
         $persist_job_id,
         $final_job_ids,
     );
+    return;
 }
 
 sub write_job_ids {

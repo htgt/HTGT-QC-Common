@@ -5,6 +5,8 @@ use namespace::autoclean;
 
 extends 'MooseX::App::Cmd';
 
+## no critic (ProhibitConstantPragma)
+
 use constant plugin_search_path => [
     map { 'HTGT::QC::Action::' . $_ } qw(
                                             AlignReads

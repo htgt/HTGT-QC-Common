@@ -30,7 +30,7 @@ sub _build_lims2_client {
     	$args{configfile} = $ENV{LIMS2_REST_CLIENT_CONF};
     }
 
-    LIMS2::REST::Client->new_with_config( %args );
+    return LIMS2::REST::Client->new_with_config( %args );
 }
 
 1;

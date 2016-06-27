@@ -55,13 +55,14 @@ sub execute {
         '--bestn', '2',
         '--score', '145', #minimum score to stop really low quality alignments
         '--showcigar', 'yes', #we're only interested in the cigar lines
-        '--showvulgar', 'no', 
-        '--showalignment', bool_to_str( $self->show_alignments ), 
-        $self->reads_file, 
+        '--showvulgar', 'no',
+        '--showalignment', bool_to_str( $self->show_alignments ),
+        $self->reads_file,
         $self->genome
     );
 
     print run_cmd( @cmd ), "\n";
+    return;
 }
 
 

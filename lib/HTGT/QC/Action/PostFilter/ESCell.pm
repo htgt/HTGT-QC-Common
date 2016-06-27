@@ -43,7 +43,7 @@ sub execute {
             }
         }
         if ( keys %{ $analysis->{$well_name} } > 0 ) {
-            $self->write_analysis( $well_name, $analysis->{$well_name} );            
+            $self->write_analysis( $well_name, $analysis->{$well_name} );
         }
     }
 
@@ -69,6 +69,7 @@ sub write_analysis {
         );
         YAML::Any::DumpFile( $this_out_file, \%this_analysis );
     }
+    return;
 }
 
 sub collapse_primers {
@@ -77,7 +78,7 @@ sub collapse_primers {
     my %collapsed;
     for my $plate_type ( keys %{$analysis} ) {
         while ( my ( $primer, $primer_result ) = each %{ $analysis->{$plate_type} } ) {
-            $primer = $plate_type ? $plate_type . '_' . $primer : $primer;            
+            $primer = $plate_type ? $plate_type . '_' . $primer : $primer;
             $primer_result->{primer} = $primer;
             $collapsed{$primer} = $primer_result;
         }
@@ -90,7 +91,7 @@ sub parse_analysis {
     my ( $self, $analysis_dirs ) = @_;
 
     my %analysis;
-    
+
     for my $analysis_dir ( map dir($_), @{$analysis_dirs} ) {
         for my $query_dir ( $analysis_dir->children ) {
             for my $target_yaml ( $query_dir->children ) {
@@ -115,7 +116,7 @@ sub parse_analysis {
     }
 
     return \%analysis;
-}    
+}
 
 __PACKAGE__->meta->make_immutable;
 

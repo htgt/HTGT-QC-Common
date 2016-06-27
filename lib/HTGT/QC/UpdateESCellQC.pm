@@ -18,13 +18,11 @@ sub update_ES_plate{
 
     my $results = fetch_test_results_for_run( $schema, $qc_run->qc_run_id );
 
-    my @updated;
-
     my %results_by_well;
     for my $r( @{$results} ) {
         next unless $r->{plate_name} eq $orig_plate_name;
-        next unless $r->{design_id}; 
-        next unless $r->{expected_design_id} eq $r->{design_id}; 
+        next unless $r->{design_id};
+        next unless $r->{expected_design_id} eq $r->{design_id};
 
         push @{ $results_by_well{ uc ( substr( $r->{well_name}, -3 ) ) } }, $r;
     }

@@ -23,8 +23,8 @@ sub design_loc_for_plate {
     my %design_loc_for;
 
     for my $well ( $plate->wells ) {
-        my $well_name = uc substr( $well->well_name, -3 );        
-        if ( my $di = $well->design_instance ) {            
+        my $well_name = uc substr( $well->well_name, -3 );
+        if ( my $di = $well->design_instance ) {
             $design_loc_for{ $well_name } = $di->design_id;
         }
     }
@@ -47,7 +47,7 @@ sub design_loc_for_epd_plate {
     #The expected design-loc depends on epd-plate name and well-loc
     foreach my $well ( $plate->wells ) {
         my $ep_well = $well->parent_well;
-        if ( my $di = $well->design_instance ) {            
+        if ( my $di = $well->design_instance ) {
           foreach my $child_well ($ep_well->child_wells){
             # Well name 'EPD0921_1_A05' has to be replaced by 'A05'
             if($child_well->well_name =~ /\S+_\S+_(\S+)/){

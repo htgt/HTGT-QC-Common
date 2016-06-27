@@ -17,6 +17,7 @@ use HTGT::QC::Util::FindSeq ();
 
     sub clear_cache {
         %cached = ();
+        return;
     }
 
     sub find_seq {
@@ -24,7 +25,7 @@ use HTGT::QC::Util::FindSeq ();
         unless ( $cached{$format}{$seq_id} ) {
             $cached{$format}{$seq_id} = HTGT::QC::Util::FindSeq::find_seq( $dir, $seq_id, $format );
         }
-        return $cached{$format}{$seq_id};        
+        return $cached{$format}{$seq_id};
     }
 }
 

@@ -21,7 +21,7 @@ has seq_reads => (
     handles    => {
         seq_read_ids => 'keys',
         seq_read     => 'get'
-    }    
+    }
 );
 
 sub _build_seq_reads {
@@ -30,11 +30,11 @@ sub _build_seq_reads {
     my %seq_read_for;
 
     for my $filename ( $self->seq_reads_files ) {
-        my $seq_in = Bio::SeqIO->new( -file => $filename, -format => 'fasta' );    
+        my $seq_in = Bio::SeqIO->new( -file => $filename, -format => 'fasta' );
         while ( my $seq = $seq_in->next_seq ) {
             $seq_read_for{ $seq->display_id } = $seq;
         }
-    }    
+    }
 
     return \%seq_read_for;
 }

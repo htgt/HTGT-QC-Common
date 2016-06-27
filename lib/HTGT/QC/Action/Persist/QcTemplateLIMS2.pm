@@ -39,6 +39,7 @@ sub execute {
     };
 
     YAML::Any::DumpFile( $self->output_file, $lims2_qc_template );
+    return;
 }
 
 1;

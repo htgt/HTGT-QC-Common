@@ -16,7 +16,7 @@ override 'run_qc_on_farm' => sub {
 
     #this is duplicated from the main function but it's only a tiny bit
     my $output_dir = $self->qc_run->workdir->subdir( 'output' );
-    my $error_dir = $self->qc_run->workdir->subdir( 'error' ); 
+    my $error_dir = $self->qc_run->workdir->subdir( 'error' );
     $self->create_dirs( $output_dir, $error_dir );
 
     my $stage = $self->qc_run->config->profile( $self->qc_run->profile )->vector_stage;
@@ -49,7 +49,7 @@ override 'run_qc_on_farm' => sub {
 };
 
 #this is almost the same as in ESCell and Vector,
-#here specify a primer filter and dont depend on any other job. 
+#here specify a primer filter and dont depend on any other job.
 override 'fetch_seq_reads' => sub {
     my ( $self, $seq_proj ) = @_;
 
@@ -72,7 +72,7 @@ override 'align_reads' => sub {
     my ( $self, $previous_job_id, $seq_proj ) = @_;
 
     my $exonerate_dir = $self->qc_run->workdir->subdir( 'exonerate' );
-    $exonerate_dir->mkpath unless -e $exonerate_dir; 
+    $exonerate_dir->mkpath unless -e $exonerate_dir;
 
     my ( $out_file, $err_file ) = $self->get_log_filenames( "align_reads", $seq_proj );
 
@@ -96,7 +96,7 @@ override 'align_reads' => sub {
 
 #this step creates the final yaml that we will display to the user
 override 'run_analysis' => sub {
-    my ( $self, $previous_job_id, $seq_proj ) = @_; 
+    my ( $self, $previous_job_id, $seq_proj ) = @_;
 
     my ( $out_file, $err_file ) = $self->get_log_filenames( "run_analysis", $seq_proj );
 

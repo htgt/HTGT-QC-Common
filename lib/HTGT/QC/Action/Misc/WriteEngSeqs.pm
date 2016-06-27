@@ -64,14 +64,15 @@ sub _init_output_dir {
     my ( $self, $dir ) = @_;
 
     $dir->mkpath();
+    return;
 }
 
 sub _build_eng_seq_builder {
     if ( $ENV{ENG_SEQ_BUILDER_CONFIG} ) {
-        EngSeqBuilder->new( configfile => $ENV{ENG_SEQ_BUILDER_CONFIG} );
+        return EngSeqBuilder->new( configfile => $ENV{ENG_SEQ_BUILDER_CONFIG} );
     }
     else {
-        EngSeqBuilder->new();
+        return EngSeqBuilder->new();
     }
 }
 
@@ -93,6 +94,7 @@ sub execute {
         $bio_seq->display_id( $eng_seq_id );
         $self->write_seq( $bio_seq, $eng_seq_id );
     }
+    return;
 }
 
 sub write_seq {

@@ -55,7 +55,7 @@ sub _build_alignments {
         strict_mode => 0
     )->file_iterator( $self->alignments_file );
 
-    my %alignments; 
+    my %alignments;
 
     while ( my $cigar = $it->next ) {
         my $query_id = delete $cigar->{ query_id };
@@ -73,15 +73,15 @@ sub _build_alignments {
 
         #delete the fields we don't want with a hash slice as they add clutter to the output
         delete @{ $cigar }{ qw(op_str operations raw) };
-        
-        #extract the plate & well 
+
+        #extract the plate & well
         ( $cigar->{ plate }, $cigar->{ well } ) = $cigar->{ query_well } =~ /^(.+)_\d{1,2}(\w{3})/;
         $cigar->{ length } = $cigar->{ query_end } - $cigar->{ query_start };
 
-        my $slice = $slice_adaptor->fetch_by_region( 
-                                        'chromosome', 
-                                        $cigar->{ chromosome }, 
-                                        $cigar->{ target_start }, 
+        my $slice = $slice_adaptor->fetch_by_region(
+                                        'chromosome',
+                                        $cigar->{ chromosome },
+                                        $cigar->{ target_start },
                                         $cigar->{ target_end }
                                     );
 
@@ -95,7 +95,7 @@ sub _build_alignments {
         #we might get more than one alignment, so store them all
 
         #use the query_id as the id for this whole cigar
-        
+
         push @{ $alignments{$query_id} }, $cigar;
     }
 
@@ -114,9 +114,10 @@ sub execute {
     my ( $self, $opts, $args ) = @_;
 
     my $output_dir = $self->output_file->parent;
-    $output_dir->mkpath unless -e $output_dir; 
+    $output_dir->mkpath unless -e $output_dir;
 
     YAML::Any::DumpFile( $self->output_file, $self->alignments );
+    return;
 }
 
 #
@@ -136,7 +137,7 @@ sub get_genes {
     }
 
     #return all genes we get, but generally we only expect 1
-    return [ map { $_->external_name() } @{ $genes } ]; 
+    return [ map { $_->external_name() } @{ $genes } ];
 }
 
 __PACKAGE__->meta->make_immutable;
