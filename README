@@ -1,9 +1,9 @@
 
 
 This archive contains the distribution HTGT-QC-Common,
-version 0.045:
+version 0.046:
 
-  Common QC Code
+  Command line interface to run QC steps
 
 This software is copyright (c) 2012 by Genome Research Ltd.
 

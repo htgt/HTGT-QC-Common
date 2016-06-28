@@ -1,7 +1,7 @@
 package HTGT::QC::Util::FileAccessServer;
 ## no critic(RequireUseStrict,RequireUseWarnings)
 {
-    $HTGT::QC::Util::FileAccessServer::VERSION = '0.045';
+    $HTGT::QC::Util::FileAccessServer::VERSION = '0.046';
 }
 ## use critic
 
@@ -82,6 +82,20 @@ sub post_file_content{
     $self->log->debug("posting file content to $post_url");
 
     return $self->user_agent->post($post_url, Content_Type => 'text/plain', Content => $content );
+}
+
+sub make_dir{
+    my ($self, $path) = @_;
+
+    my $post_url = $self->file_api_url.$path."/";
+    $self->log->debug("posting directory to $post_url");
+
+    my $response = $self->user_agent->post($post_url);
+    unless($response->is_success){
+        die "Could not create directory $path: ".$response->status_line;
+    }
+
+    return $response->content;
 }
 
 1;

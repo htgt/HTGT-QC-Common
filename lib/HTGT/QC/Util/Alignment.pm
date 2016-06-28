@@ -1,7 +1,7 @@
 package HTGT::QC::Util::Alignment;
 ## no critic(RequireUseStrict,RequireUseWarnings)
 {
-    $HTGT::QC::Util::Alignment::VERSION = '0.045';
+    $HTGT::QC::Util::Alignment::VERSION = '0.046';
 }
 ## use critic
 
@@ -28,6 +28,7 @@ use List::Util qw( min sum );
 use Log::Log4perl ':easy';
 use Data::Dump 'pp';
 use HTGT::QC::Exception;
+use Bio::Perl qw( revcom );
 
 const my $DISPLAY_HEADER_LEN => 12;
 const my $DISPLAY_LINE_LEN   => 72;
@@ -382,6 +383,11 @@ sub alignment_match {
     $start ||= 1;
     $end   ||= $target_bio_seq->length;
 
+    my $orig_target_str = substr($target_bio_seq->seq, $start, ($end-$start)+1);
+    if($cigar->{target_strand} eq '-'){
+        $orig_target_str = revcom($orig_target_str)->seq;
+    }
+
     my $target_align_str = target_alignment_string( $target_bio_seq, $cigar );
     my $query_align_str = query_alignment_string( $query_bio_seq, $cigar );
 
@@ -448,7 +454,14 @@ sub alignment_match {
     my $length      = length($match_str);
     my $match_pct   = int( $match_count * 100 / $length );
 
-    return +{
+    unless($match_str =~ /\|/){
+        # There is no match to the target region so we report
+        # the target region sequence taken directly from the eng_seq
+        WARN "No match to target region";
+        $target_str = $orig_target_str;
+    }
+
+    return {
         query_str   => $query_str,
         match_str   => $match_str,
         target_str  => $target_str,

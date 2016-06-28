@@ -1,7 +1,7 @@
 package HTGT::QC::Util::CigarParser;
 ## no critic(RequireUseStrict,RequireUseWarnings)
 {
-    $HTGT::QC::Util::CigarParser::VERSION = '0.045';
+    $HTGT::QC::Util::CigarParser::VERSION = '0.046';
 }
 ## use critic
 
