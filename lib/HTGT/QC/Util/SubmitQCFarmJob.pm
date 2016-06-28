@@ -87,6 +87,7 @@ sub run_qc_on_farm {
         $persist_job_id,
         $final_job_ids,
     );
+    return;
 }
 
 sub write_job_ids {
@@ -419,6 +420,7 @@ sub run_cmd {
 
     my $output;
 
+    ## no critic(RequireCheckingReturnValueOfEval)
     eval {
         IPC::Run::run( \@cmd, '<', \undef, '>&', \$output )
                 or die "$output\n";
@@ -427,6 +429,7 @@ sub run_cmd {
         chomp $err;
         die "Command failed: $err";
     }
+    ## use critic
 
     chomp $output;
     return  $output;

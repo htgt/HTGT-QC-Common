@@ -36,7 +36,7 @@ sub execute {
     my ( $self, $opts, $args ) = @_;
 
     my @eng_seqs;
-    
+
     for my $a ( @{$args} ) {
         if ( -d $a ) {
             push @eng_seqs, File::Find::Rule->file()->name( '*.fasta' )->in( $a );
@@ -49,13 +49,14 @@ sub execute {
             HTGT::QC::Exception->throw( "Not a file or directory: $a" );
         }
     }
-    
+
     HTGT::QC::Exception->throw( "At least one engineered sequence must be given" )
             unless @eng_seqs > 0;
-    
+
     $self->output_dir->mkpath;
-    
+
     run_exonerate( $self->reads_file, \@eng_seqs, $self->output_dir, $self->model );
+    return;
 }
 
 1;

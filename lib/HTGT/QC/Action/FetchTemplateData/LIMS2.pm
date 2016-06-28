@@ -18,7 +18,7 @@ sub get_eng_seq_params {
     my ( $self, $plate_name ) = @_;
 
     my $params = $self->lims2_client->GET( 'qc_template', { name => $plate_name } );
-    
+
     # GET method returns a single HashRef within an ArrayRef
     # we only want the HashRef
     return $params->[0];

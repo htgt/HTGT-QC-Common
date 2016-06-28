@@ -37,7 +37,7 @@ has primer_filters => (
 );
 
 sub _build_fetch_seq_reads_cmd {
-    which( 'fetch-seq-reads.sh' );
+    return which( 'fetch-seq-reads.sh' );
 }
 
 sub execute {
@@ -46,6 +46,7 @@ sub execute {
     for my $project_name ( @{$args} ) {
         $self->fetch_reads_for_project( $project_name );
     }
+    return;
 }
 
 sub fetch_reads_for_project {
@@ -54,9 +55,10 @@ sub fetch_reads_for_project {
     $self->log->debug( "Fetching sequence reads for $project_name" );
     $self->log->debug("LIMS2_SEQ_FILE_DIR: ".$ENV{LIMS2_SEQ_FILE_DIR});
     $self->log->debug("fetch_seq_reads_cmd: ".$self->fetch_seq_reads_cmd);
+    ## no critic (RequireBriefOpen)
     open( my $seq_reads_fh, '-|', $self->fetch_seq_reads_cmd, $project_name )
         or HTGT::QC::Exception->throw( 'failed to run ' . $self->fetch_seq_reads_cmd );
-
+    ## use critic
     my $seq_in = Bio::SeqIO->new( -fh => $seq_reads_fh, -format => 'fasta' );
 
     my $num_reads = 0;
@@ -113,7 +115,7 @@ sub fetch_reads_for_project {
             #choose correct primer name based on well
             my $primer_name = $primer_map{ substr($well, 0, 1) };
             #alter well name - all get merged into A
-            substr($well, 0, 1) = "a";
+            substr($well, 0, 1, "a");
 
             $rest =~ s/$to_replace/$primer_name/;
 

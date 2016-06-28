@@ -13,7 +13,7 @@ override '_run_qc_on_farm' => sub {
 
     #we have a try catch in case a bsub fails, as otherwise no job ids are returned
     #and the jobs that did succeed cant be killed.
-    
+
     my ( @job_ids, @run_analysis_job_ids );
     try {
         for my $seq_proj ( @{ $self->qc_run->sequencing_projects } ) {
@@ -26,7 +26,7 @@ override '_run_qc_on_farm' => sub {
             push @job_ids, ( $fetch_seq_reads_job_id, $align_reads_job_id, $pre_filter_job_id, $run_analysis_job_id );
 
             #we use this for dependencies as it signifies when each individual sequencing project has finished.
-            push @run_analysis_job_ids, $run_analysis_job_id;  
+            push @run_analysis_job_ids, $run_analysis_job_id;
         }
 
         #post filter must wait for ALL the sets of jobs to finish, so needs all the different job ids
@@ -149,7 +149,7 @@ override '_final_steps' => sub {
             'update-escell-plate-qc.pl',
             '--orig-plate-name', $plate, #currently no way for a user to choose this.
             '--plate-name', $plate,
-            '--qc-run-id', $self->qc_run->id, 
+            '--qc-run-id', $self->qc_run->id,
             '--user-id', 'qc'
         );
 

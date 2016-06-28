@@ -19,7 +19,7 @@ sub run_cmd {
     my ( @cmd ) = @_;
 
     my $output;
-    
+    ## no critic (RequireCheckingReturnValueOfEval)
     eval {
         IPC::Run::run( \@cmd, '<', \undef, '>&', \$output )
                 or die "$output\n";
@@ -28,7 +28,7 @@ sub run_cmd {
         chomp $err; #WE put in the \n why are we chomping??
         die "Command failed: $err";
     }
-
+    ## use critic
     chomp $output;
     return $output;
 }
@@ -41,13 +41,13 @@ sub run_bsub_cmd {
     #post-filter in ESCell has its own bsub function, which you may also want to change.
 
     #raise exception if we dont have the required items, otherwise everything would break
-    HTGT::QC::Exception->throw( message => "Not enough parameters passed to run_bsub_cmd" ) 
+    HTGT::QC::Exception->throw( message => "Not enough parameters passed to run_bsub_cmd" )
         unless ( $out_file and $err_file and @cmd );
 
     #default memory required to 2000
     $memory_required = 2000 unless $memory_required;
 #    my $memory_limit = $memory_required * 1000; #farm -M is weird and not in MB or GB.
-    my $memory_limit = $memory_required; 
+    my $memory_limit = $memory_required;
 
     my @bsub = (
         'bsub',

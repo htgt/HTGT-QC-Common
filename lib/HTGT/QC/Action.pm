@@ -87,6 +87,7 @@ sub BUILD {
     my $self = shift;
 
     $self->init_log4perl();
+    return;
 }
 
 sub init_log4perl {
@@ -103,8 +104,9 @@ sub init_log4perl {
     );
 
     $args{file} = '>>'.$logfile if defined $logfile;
-    
+
     Log::Log4perl->easy_init( \%args );
+    return;
 }
 
 sub _build_config {
@@ -117,17 +119,17 @@ sub _build_config {
         $args{is_prescreen} = $self->is_prescreen;
     }
 
-    HTGT::QC::Config->new( \%args )->validate;
+    return HTGT::QC::Config->new( \%args )->validate;
 }
 
 sub _build_profile {
     my $self = shift;
 
-    unless ( defined $self->profile_name ) {        
+    unless ( defined $self->profile_name ) {
         HTGT::QC::Exception->throw( "No profile name specified" );
     }
 
-    $self->config->profile( $self->profile_name );
+    return $self->config->profile( $self->profile_name );
 }
 
 __PACKAGE__->meta->make_immutable;

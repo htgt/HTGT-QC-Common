@@ -71,8 +71,8 @@ sub run_bsub_and_wait {
     DEBUG( 'Waiting for job array to complete' );
     while ( $n_attempts-- and not $done ) {
         try {
-            my $res = capturex( @bsub_wait );
-            INFO( $_ ) for split /\n/, $res;
+            my $result = capturex( @bsub_wait );
+            INFO( $_ ) for split /\n/, $result;
             $done = 1;
         } catch {
             ERROR( $_ );
@@ -112,6 +112,7 @@ sub ensure_successfully_completed {
             "$num_failed of $num_jobs exonerate jobs failed to complete successfully"
         );
     }
+    return;
 }
 
 

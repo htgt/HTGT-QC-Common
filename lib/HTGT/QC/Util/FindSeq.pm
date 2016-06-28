@@ -18,17 +18,17 @@ use Carp 'confess';
 sub find_seq {
     my ( $dir, $seq_id, $format ) = @_;
 
-    DEBUG( "Searching $dir for $format sequence $seq_id" );    
-    
+    DEBUG( "Searching $dir for $format sequence $seq_id" );
+
     $dir = dir( $dir );
-    
+
     my @candidate_files;
     if ( $format eq 'genbank' ) {
         if ( $dir->file( "$seq_id.gbk" )->stat ) {
-            push @candidate_files, $dir->file( "$seq_id.gbk" );                                      
+            push @candidate_files, $dir->file( "$seq_id.gbk" );
         }
         else {
-            @candidate_files = grep /\.gbk$/, $dir->children;            
+            @candidate_files = grep { /\.gbk$/ } $dir->children;
         }
     }
     elsif ( $format eq 'fasta' ) {
@@ -36,7 +36,7 @@ sub find_seq {
             push @candidate_files, $dir->file( "$seq_id.fasta" );
         }
         else {
-            @candidate_files = grep /\.fasta$/, $dir->children;            
+            @candidate_files = grep { /\.fasta$/ } $dir->children;
         }
     }
     else {
@@ -58,6 +58,7 @@ sub find_seq {
     }
 
     LOGDIE "Failed to locate sequence with id $seq_id";
+    return;
 }
 
 1;

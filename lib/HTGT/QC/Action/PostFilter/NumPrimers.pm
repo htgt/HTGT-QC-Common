@@ -22,12 +22,12 @@ has min_primers => (
 );
 
 sub _build_min_primers {
-    shift->profile->post_filter_min_primers;
+    return shift->profile->post_filter_min_primers;
 }
 
 override is_wanted => sub {
     my ( $self, $analysis ) = @_;
-    
+
     # Checks that the number of primer passes *for primers that hit genomic* is >= min_primers
     my $num_valid_primers = grep { $self->profile->is_genomic_pass($_) } values %{ $analysis->{primers} };
     $self->log->debug( "$num_valid_primers valid primers for $analysis->{query_well} $analysis->{target_id}" );

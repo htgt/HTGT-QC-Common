@@ -71,7 +71,7 @@ around get_sequence_read => sub {
     $self->log->debug( "get_sequence_read: " . $read_id );
     my $read = $self->$orig( $read_id );
     if ( ! $read ) {
-        HTGT::QC::Exception->throw( "Failed to retrieve sequenec read $read_id" );        
+        HTGT::QC::Exception->throw( "Failed to retrieve sequenec read $read_id" );
     }
 
     return $read;
@@ -111,7 +111,8 @@ sub BUILD {
     my $self = shift;
 
     HTGT::QC::Exception->throw( 'template plate params must be specified when check_design_loc is requested' )
-            if $self->check_design_loc and not defined $self->template_params;    
+            if $self->check_design_loc and not defined $self->template_params;
+    return;
 }
 
 sub analyze_all {
@@ -121,10 +122,10 @@ sub analyze_all {
 
     my $cigar = $alignments->next;
 
-    while ( $cigar ) {        
+    while ( $cigar ) {
         my $query_well  = $cigar->{query_well};
         my $target_id   = $cigar->{target_id};
-        my @cigars      = ();        
+        my @cigars      = ();
         while ( $cigar and $cigar->{query_well} eq $query_well
                     and $cigar->{target_id} eq $target_id ) {
             push @cigars, $cigar;
@@ -132,11 +133,12 @@ sub analyze_all {
         }
         $self->analyze_pair( $query_well, $target_id, \@cigars );
     }
+    return;
 }
 
 sub analyze_pair {
     my ( $self, $query_well, $target_id, $cigars ) = @_;
-    
+
     $self->log->info( "Running analysis for $query_well/$target_id" );
 
     my $target = $self->get_synvec( $target_id );
@@ -147,7 +149,7 @@ sub analyze_pair {
         try {
             my $query = $self->get_sequence_read( $cigar->{query_id} );
             my $primer = $cigar->{query_primer}
-                or die "failed to parse primer name from cigar: '$cigar->{raw}'";            
+                or die "failed to parse primer name from cigar: '$cigar->{raw}'";
             my $this_alignment = analyze_alignment( $target, $query, $cigar, $self->profile );
             $analysis{primers}{ $this_alignment->{primer} } = $this_alignment;
         }
@@ -156,7 +158,7 @@ sub analyze_pair {
         };
     }
 
-    if ( $self->check_design_loc ) {        
+    if ( $self->check_design_loc ) {
         my $well_name = uc substr( $query_well, -3 );
         $analysis{expected_design} = $self->expected_design_for( $well_name );
         $analysis{observed_design} = $self->design_id_for_eng_seq( $target_id );
@@ -164,27 +166,28 @@ sub analyze_pair {
             && defined $analysis{expected_design}
                 && defined $analysis{observed_design}
                     && $analysis{expected_design} == $analysis{observed_design};
-    }    
+    }
     else {
         $analysis{pass} = $self->profile->is_pass( $analysis{primers} )
     }
-    
+
     $self->log->info( "$query_well/$target_id: " . ( $analysis{pass} ? 'pass' : 'fail' ) );
-    
+
     $self->write_analysis( $query_well, $target_id, \%analysis );
+    return;
 }
 
 sub get_synvec {
     my ( $self, $synvec_id ) = @_;
 
-    find_seq( $self->synvec_dir, $synvec_id, 'genbank' );
+    return find_seq( $self->synvec_dir, $synvec_id, 'genbank' );
 }
 
 sub alignments_iterator {
     my $self = shift;
 
     my $alignments = YAML::Any::LoadFile( $self->alignments_file );
-    
+
     return Iterator::Simple::iter( $alignments );
 }
 
@@ -196,6 +199,7 @@ sub write_analysis {
     $output_file->dir->mkpath;
 
     YAML::Any::DumpFile( $output_file, $analysis );
+    return;
 }
 
 sub _build_expected_design_loc {

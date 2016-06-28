@@ -33,12 +33,12 @@ sub execute {
     $self->log->info( "Running pre_filter" );
 
     $self->log->debug( "Primers: " . join q{,}, $self->profile->primers );
-    
+
     my $it = HTGT::QC::Util::CigarParser->new(
         primers   => $self->config->all_primers,
         plate_map => $self->plate_name_map
     )->file_iterator( @{$args} );
-    
+
     my %alignments_for;
 
     while ( my $cigar = $it->next ) {
@@ -59,13 +59,15 @@ sub execute {
             Log::Log4perl::NDC->pop;
         }
         Log::Log4perl::NDC->pop;
-    }   
+    }
 
     YAML::Any::DumpFile( $self->output_file, \@filtered );
+    return;
 }
 
 sub is_wanted {
     HTGT::QC::Exception->throw( "is_wanted() must be implemented by a subclass" );
+    return;
 }
 
 sub best_reads_per_primer {
@@ -88,10 +90,10 @@ sub best_reads_per_primer {
         }
         my $expected_strand = $self->profile->expected_strand_for_primer( $primer )
             or HTGT::QC::Exception->throw( "Cannot determine expected strand for $primer" );
-        my @cigars = grep { $_->{target_strand} eq $expected_strand } @{ $cigars_for_primer{$primer} };        
+        my @cigars = grep { $_->{target_strand} eq $expected_strand } @{ $cigars_for_primer{$primer} };
         unless ( @cigars ) {
             $self->log->warn( "No alignments for $primer on expected strand" );
-            @cigars = @{ $cigars_for_primer{$primer} };            
+            @cigars = @{ $cigars_for_primer{$primer} };
         }
         $best_read_for_primer{$primer} = reduce { $a->{score} > $b->{score} ? $a : $b } @cigars;
     }

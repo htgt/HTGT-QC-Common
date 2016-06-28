@@ -24,7 +24,8 @@ sub execute {
     }
     else {
         return $uuid;
-    }    
+    }
+    return;
 }
 
 __PACKAGE__->meta->make_immutable;

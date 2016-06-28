@@ -31,11 +31,11 @@ sub execute {
         HTGT::QC::Exception->throw( 'Error persisting qc_run data to LIMS2 for qc_run '
             . $self->qc_run_id . ' : ' . $_ );
     };
+    return;
 }
 
 sub _process_qc_test_results {
     my $self = shift;
-    my @test_result_params;
 
     for my $subdir ( $self->analysis_dir->children ) {
         for my $yaml_file ( $subdir->children ) {
@@ -54,6 +54,7 @@ sub _process_qc_test_results {
             $self->_create_qc_test_result( $analysis );
         }
     }
+    return;
 }
 
 sub _create_qc_test_result {
@@ -81,6 +82,7 @@ sub _create_qc_test_result {
             . $analysis->{query_well} . ' to LIMS2 for qc_run '
             . $self->qc_run_id . ' : ' . $_ );
     };
+    return;
 }
 
 sub _process_qc_test_result_alignments {

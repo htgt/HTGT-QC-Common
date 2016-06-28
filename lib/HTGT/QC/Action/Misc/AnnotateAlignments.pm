@@ -50,7 +50,7 @@ has query_match => (
     traits   => [ 'Getopt' ],
     cmd_flag => 'match',
     required => 1
-);        
+);
 
 sub execute {
     my ( $self, $args, $opts ) = @_;
@@ -61,7 +61,7 @@ sub execute {
 
     my $target_id = $seq->display_id;
     my $match_str = $self->query_match;
-    my $rx = qr/$match_str/;    
+    my $rx = qr/$match_str/;
 
     for my $a ( @{ $alignments } ) {
         next unless $a->{target_id} eq $target_id
@@ -77,7 +77,8 @@ sub execute {
         $seq->add_SeqFeature( $feature );
     }
 
-    Bio::SeqIO->new( -fh => $self->output_file->openw, -format => 'genbank' )->write_seq( $seq );    
+    Bio::SeqIO->new( -fh => $self->output_file->openw, -format => 'genbank' )->write_seq( $seq );
+    return;
 }
 
 __PACKAGE__->meta->make_immutable;

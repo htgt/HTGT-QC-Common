@@ -16,7 +16,7 @@ use HTGT::QC::Exception;
 sub which {
     my $exe = shift;
 
-    File::Which::which( $exe )
+    return File::Which::which( $exe )
             || HTGT::QC::Exception->throw( "Failed to find executable $exe" );
 }
 

@@ -52,6 +52,7 @@ sub execute {
         $s->display_id( $display_id );
         $out->write_seq( $s );
     }
+    return;
 }
 
 __PACKAGE__->meta->make_immutable;

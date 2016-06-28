@@ -17,6 +17,7 @@ sub execute {
     my ( $self, $opt, $args ) = @_;
 
     $self->config and print "Configuration OK\n";
+    return;
 }
 
 __PACKAGE__->meta->make_immutable;

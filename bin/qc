@@ -13,7 +13,7 @@ use warnings;
 #could eventually be used to link a final step to different cleanup functions
 my %final_steps = (
     'persist-htgtdb'             => 1,
-    'persist-lims2-test-results' => 1, 
+    'persist-lims2-test-results' => 1,
     'persist-prescreen-htgtdb'   => 1,
 );
 
@@ -62,7 +62,7 @@ finally {
                 return;
             }
 
-            #we have all the folder information so create the file 
+            #we have all the folder information so create the file
             my $out_fh = $conf->basedir->subdir( $run_id )->file( 'ended.out' )->openw();
             $out_fh->print( "The run finished successfully.\n" );
         }
@@ -79,7 +79,7 @@ sub kill_and_notify {
 
     my $run_id = get_run_id( $conf );
     return unless $run_id;
-    
+
     print STDERR "Running KillQCFarmJobs.\n";
 
     #now actually kill everything
@@ -90,6 +90,7 @@ sub kill_and_notify {
 
     #should we write these to the file ? they are in lsf.jobs so not much point
     my $jobs_killed = $kill_jobs->kill_unfinished_farm_jobs();
+    return;
 }
 
 #this should be re-written.
@@ -108,6 +109,7 @@ sub get_config {
 
     #if we didn't return already we didn't find it.
     print STDERR "ERROR: Couldn't find config file.\n";
+    return;
 }
 
 sub get_run_id {
@@ -116,7 +118,7 @@ sub get_run_id {
     #hackily search all the args and attempt to find the run-id using the basedir
     #we have to do it this way as we don't always know which parameter it will be in
     for ( @ARGV ) {
-        #quotemeta escapes all the slashes so we can use a regex 
+        #quotemeta escapes all the slashes so we can use a regex
         my $escaped = quotemeta( $conf->basedir ); #escape all the /
         my $lims2_escaped = quotemeta( $conf->_config->{GLOBAL}->{lims2_basedir} );
         my $prescreen_escaped = quotemeta( $conf->_config->{GLOBAL}->{prescreen_basedir} );

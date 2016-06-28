@@ -18,13 +18,13 @@ sub _is_match {
     my ( $str, $match ) = @_;
 
     return unless defined $str;
-    
+
     if ( ref( $match ) eq 'Regexp' ) {
         return $str =~ $match;
     }
     else {
         return $str eq $match;
-    }    
+    }
 }
 
 sub find_seq_feature {
@@ -32,10 +32,10 @@ sub find_seq_feature {
 
     my @features;
     if ( my $primary_tag = delete $wanted{primary_tag} ) {
-        @features = grep _is_match( $_->primary_tag, $primary_tag ), $bio_seq->get_SeqFeatures;
+        @features = grep { _is_match( $_->primary_tag, $primary_tag ) } $bio_seq->get_SeqFeatures;
     }
     else {
-        @features = $bio_seq->get_SeqFeatures;        
+        @features = $bio_seq->get_SeqFeatures;
     }
 
     my @wanted;
@@ -56,8 +56,9 @@ sub find_seq_feature {
         return shift @wanted;
     }
     else {
-        LOGDIE "find_seq_feature found " . @wanted . " features matching " . pp( \%wanted );        
+        LOGDIE "find_seq_feature found " . @wanted . " features matching " . pp( \%wanted );
     }
+    return;
 }
 
 sub find_seq_feature_loc {
@@ -66,7 +67,7 @@ sub find_seq_feature_loc {
         or LOGDIE 'find_seq_feature_loc found no features in ' . $bio_seq->display_id . ' matching ' . pp( \@wanted );
     return $feature->location;
 }
-    
+
 1;
 
 __END__

@@ -50,9 +50,9 @@ sub _build_template_params {
 
 sub _build_seq_reads {
     my $self = shift;
-    
+
     my $seq_in = Bio::SeqIO->new( -fh => $self->seq_reads_file->openr, -format => 'fasta' );
-    
+
     my %seq_read_for;
 
     while ( my $seq = $seq_in->next_seq ) {

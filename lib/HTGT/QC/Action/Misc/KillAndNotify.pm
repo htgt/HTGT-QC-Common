@@ -30,7 +30,7 @@ sub execute {
 
     #the run is being killed, so firstly mark it as failed.
     my $work_dir = $self->config->basedir->subdir( $self->qc_run_id );
-    
+
     my $out_fh = $work_dir->file( 'failed.out' )->openw();
     $out_fh->print( "Running kill and notify, see log file for details.\n" );
 
@@ -47,6 +47,7 @@ sub execute {
         #this is going into the failed.out file
         $self->log->error( "There was an error killing all the jobs.\n" );
     }
+    return;
 }
 
 sub kill_everything {
@@ -67,15 +68,15 @@ sub kill_everything {
 
     for ( 0 .. 10 ) {
         #sleep first as it takes a bit of time for them to be killed
-        sleep 20; 
+        sleep 20;
 
         $self->check_if_done( \%waiting );
-        
+
         #see if there's any jobs left in the hash
         if ( keys %waiting ) {
             $self->log->warn( "Still some jobs left alive:\n", join("\n", keys %waiting), "\n" );
         }
-        else { 
+        else {
             $self->log->warn( "All jobs have been killed.\n" );
             return 1;
         }
@@ -110,17 +111,17 @@ sub check_if_done {
         my @values = split /\s+/, $line;
         my ( $job_id, $status ) = ( $values[0], $values[2] );
 
-        #farm 3 seems to get rid of jobs immediately from bjobs command, 
+        #farm 3 seems to get rid of jobs immediately from bjobs command,
         #so if the job isn't found it means it is no longer alive.
         if ( $line =~ /Job <(\d+)> is not found$/ ) {
             $self->log->info( "Job $1 already done."  );
-            ( $job_id, $status ) = ( $1, "DONE" ); 
+            ( $job_id, $status ) = ( $1, "DONE" );
         }
 
         #check the values are what we expect
-        $self->log->warn( "Invalid job id: $job_id (Line: $line)" ) if $job_id !~ /^([0-9]+)$/;
-        $self->log->warn( "Invalid status: $status (Line: $line)" ) if $status !~ /^([A-Z]+)$/;
-        
+        $self->log->warn( "Invalid job id: $job_id (Line: $line)" ) if $job_id !~ /^(?:[0-9]+)$/;
+        $self->log->warn( "Invalid status: $status (Line: $line)" ) if $status !~ /^(?:[A-Z]+)$/;
+
         next unless defined $waiting->{ $job_id }; #skip if it has already been deleted
 
         #if the job has finished remove it from the hash
@@ -129,6 +130,7 @@ sub check_if_done {
             delete $waiting->{ $job_id };
         }
     }
+    return;
 }
 
 #this should be added to Util::RunCmd

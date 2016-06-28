@@ -14,10 +14,10 @@ override '_run_qc_on_farm' => sub {
     my $run_analysis_job_id = $self->run_analysis( $pre_filter_job_id );
     my $post_filter_job_id = $self->post_filter( $run_analysis_job_id );
 
-    return join "\n", $fetch_seq_reads_job_id, 
-                      $align_reads_job_id, 
-                      $pre_filter_job_id, 
-                      $run_analysis_job_id, 
+    return join "\n", $fetch_seq_reads_job_id,
+                      $align_reads_job_id,
+                      $pre_filter_job_id,
+                      $run_analysis_job_id,
                       $post_filter_job_id;
 };
 
