@@ -1,7 +1,7 @@
 package HTGT::QC::Action::Misc::KillAndNotify;
 ## no critic(RequireUseStrict,RequireUseWarnings)
 {
-    $HTGT::QC::Action::Misc::KillAndNotify::VERSION = '0.046';
+    $HTGT::QC::Action::Misc::KillAndNotify::VERSION = '0.047';
 }
 ## use critic
 

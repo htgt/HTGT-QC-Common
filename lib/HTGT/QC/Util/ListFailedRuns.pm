@@ -1,7 +1,7 @@
 package HTGT::QC::Util::ListFailedRuns;
 ## no critic(RequireUseStrict,RequireUseWarnings)
 {
-    $HTGT::QC::Util::ListFailedRuns::VERSION = '0.046';
+    $HTGT::QC::Util::ListFailedRuns::VERSION = '0.047';
 }
 ## use critic
 

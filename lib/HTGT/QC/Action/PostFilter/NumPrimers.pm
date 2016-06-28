@@ -1,7 +1,7 @@
 package HTGT::QC::Action::PostFilter::NumPrimers;
 ## no critic(RequireUseStrict,RequireUseWarnings)
 {
-    $HTGT::QC::Action::PostFilter::NumPrimers::VERSION = '0.046';
+    $HTGT::QC::Action::PostFilter::NumPrimers::VERSION = '0.047';
 }
 ## use critic
 

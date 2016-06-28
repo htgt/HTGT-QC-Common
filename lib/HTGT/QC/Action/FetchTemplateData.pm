@@ -1,7 +1,7 @@
 package HTGT::QC::Action::FetchTemplateData;
 ## no critic(RequireUseStrict,RequireUseWarnings)
 {
-    $HTGT::QC::Action::FetchTemplateData::VERSION = '0.046';
+    $HTGT::QC::Action::FetchTemplateData::VERSION = '0.047';
 }
 ## use critic
 

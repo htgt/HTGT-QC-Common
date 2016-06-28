@@ -1,7 +1,7 @@
 package HTGT::QC::Action::AlignReads;
 ## no critic(RequireUseStrict,RequireUseWarnings)
 {
-    $HTGT::QC::Action::AlignReads::VERSION = '0.046';
+    $HTGT::QC::Action::AlignReads::VERSION = '0.047';
 }
 ## use critic
 

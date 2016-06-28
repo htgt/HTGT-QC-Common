@@ -1,7 +1,7 @@
 package HTGT::QC::Util::LIMS2Client;
 ## no critic(RequireUseStrict,RequireUseWarnings)
 {
-    $HTGT::QC::Util::LIMS2Client::VERSION = '0.046';
+    $HTGT::QC::Util::LIMS2Client::VERSION = '0.047';
 }
 ## use critic
 

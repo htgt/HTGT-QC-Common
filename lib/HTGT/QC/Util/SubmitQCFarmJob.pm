@@ -1,7 +1,7 @@
 package HTGT::QC::Util::SubmitQCFarmJob;
 ## no critic(RequireUseStrict,RequireUseWarnings)
 {
-    $HTGT::QC::Util::SubmitQCFarmJob::VERSION = '0.046';
+    $HTGT::QC::Util::SubmitQCFarmJob::VERSION = '0.047';
 }
 ## use critic
 

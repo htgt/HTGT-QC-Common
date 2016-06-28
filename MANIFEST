@@ -24,6 +24,7 @@ lib/HTGT/QC/Action/FetchSeqReads/TraceArchive.pm
 lib/HTGT/QC/Action/FetchTemplateData.pm
 lib/HTGT/QC/Action/FetchTemplateData/LIMS2.pm
 lib/HTGT/QC/Action/GenerateReport.pm
+lib/HTGT/QC/Action/GenerateReport/Full.pm
 lib/HTGT/QC/Action/GenerateRunID/UUID.pm
 lib/HTGT/QC/Action/ListFailedRuns/DaemonDir.pm
 lib/HTGT/QC/Action/Misc/AnnotateAlignments.pm

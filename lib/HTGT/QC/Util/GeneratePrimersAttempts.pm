@@ -1,7 +1,7 @@
 package HTGT::QC::Util::GeneratePrimersAttempts;
 ## no critic(RequireUseStrict,RequireUseWarnings)
 {
-    $HTGT::QC::Util::GeneratePrimersAttempts::VERSION = '0.046';
+    $HTGT::QC::Util::GeneratePrimersAttempts::VERSION = '0.047';
 }
 ## use critic
 

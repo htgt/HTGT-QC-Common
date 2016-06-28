@@ -1,7 +1,7 @@
 package HTGT::QC::Action::ListFailedRuns::DaemonDir;
 ## no critic(RequireUseStrict,RequireUseWarnings)
 {
-    $HTGT::QC::Action::ListFailedRuns::DaemonDir::VERSION = '0.046';
+    $HTGT::QC::Action::ListFailedRuns::DaemonDir::VERSION = '0.047';
 }
 ## use critic
 

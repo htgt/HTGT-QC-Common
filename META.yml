@@ -29,6 +29,7 @@ requires:
   Bio::SeqFeature::Generic: 0
   Bio::SeqIO: 0
   Bio::SeqUtils: 0
+  CSV::Writer: 0
   Carp: 0
   Config::Scoped: 0
   Const::Fast: 0
@@ -84,4 +85,4 @@ requires:
   namespace::autoclean: 0
   strict: 0
   warnings: 0
-version: 0.046
+version: 0.047

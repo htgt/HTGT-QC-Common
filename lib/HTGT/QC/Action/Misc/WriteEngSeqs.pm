@@ -1,7 +1,7 @@
 package HTGT::QC::Action::Misc::WriteEngSeqs;
 ## no critic(RequireUseStrict,RequireUseWarnings)
 {
-    $HTGT::QC::Action::Misc::WriteEngSeqs::VERSION = '0.046';
+    $HTGT::QC::Action::Misc::WriteEngSeqs::VERSION = '0.047';
 }
 ## use critic
 

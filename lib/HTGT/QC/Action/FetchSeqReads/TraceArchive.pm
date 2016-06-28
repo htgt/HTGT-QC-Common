@@ -1,7 +1,7 @@
 package HTGT::QC::Action::FetchSeqReads::TraceArchive;
 ## no critic(RequireUseStrict,RequireUseWarnings)
 {
-    $HTGT::QC::Action::FetchSeqReads::TraceArchive::VERSION = '0.046';
+    $HTGT::QC::Action::FetchSeqReads::TraceArchive::VERSION = '0.047';
 }
 ## use critic
 

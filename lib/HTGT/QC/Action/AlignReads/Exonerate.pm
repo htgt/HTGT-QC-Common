@@ -1,7 +1,7 @@
 package HTGT::QC::Action::AlignReads::Exonerate;
 ## no critic(RequireUseStrict,RequireUseWarnings)
 {
-    $HTGT::QC::Action::AlignReads::Exonerate::VERSION = '0.046';
+    $HTGT::QC::Action::AlignReads::Exonerate::VERSION = '0.047';
 }
 ## use critic
 

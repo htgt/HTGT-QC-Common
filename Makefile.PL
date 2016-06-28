@@ -48,6 +48,7 @@ my %WriteMakefileArgs = (
     "Bio::SeqFeature::Generic" => 0,
     "Bio::SeqIO" => 0,
     "Bio::SeqUtils" => 0,
+    "CSV::Writer" => 0,
     "Carp" => 0,
     "Config::Scoped" => 0,
     "Const::Fast" => 0,
@@ -104,7 +105,7 @@ my %WriteMakefileArgs = (
     "strict" => 0,
     "warnings" => 0
   },
-  "VERSION" => "0.046",
+  "VERSION" => "0.047",
   "test" => {
     "TESTS" => "t/*.t"
   }

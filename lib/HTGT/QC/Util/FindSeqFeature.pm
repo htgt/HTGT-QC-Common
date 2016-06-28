@@ -1,7 +1,7 @@
 package HTGT::QC::Util::FindSeqFeature;
 ## no critic(RequireUseStrict,RequireUseWarnings)
 {
-    $HTGT::QC::Util::FindSeqFeature::VERSION = '0.046';
+    $HTGT::QC::Util::FindSeqFeature::VERSION = '0.047';
 }
 ## use critic
 
