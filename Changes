@@ -1,5 +1,9 @@
 {{$NEXT}}
 
+0.046     2016-06-28 14:38:00 Europe/London
+
+  Included all scripts and modules needed to run vector QC (taken from htgt_app)
+
 0.045     2016-06-07 15:17:53 Europe/London
 
   Crispr QC now uses blat instead of BWA so some processing steps have changed
