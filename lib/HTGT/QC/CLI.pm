@@ -5,6 +5,8 @@ use namespace::autoclean;
 
 extends 'MooseX::App::Cmd';
 
+# ABSTRACT: Command line interface to run QC steps
+
 ## no critic (ProhibitConstantPragma)
 
 use constant plugin_search_path => [
