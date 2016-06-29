@@ -32,7 +32,6 @@ has farm_job_runner => (
 );
 
 sub _build_farm_job_runner{
-    my $wrapper_script = file(  );
     return WebAppCommon::Util::FarmJobRunner->new({
         dry_run => 0,
         bsub_wrapper => '/nfs/team87/farm3_lims2_vms/conf/run_in_farm3_af11'
@@ -372,67 +371,6 @@ sub run_bsub_cmd{
 
     my $job_id = $self->farm_job_runner->submit($job_params);
     return $job_id;
-}
-
-#set all common options for bsub and run the user specified command.
-sub run_bsub_cmd_old {
-    my ( $self, $previous_job_id, $out_file, $err_file, @cmd ) = @_;
-
-    #if you make a change to this command you'll need to find all places bsub is used,
-    #as not everyone uses this.
-
-    #raise exception if we dont have the required items, otherwise everything would break
-    HTGT::QC::Exception->throw( message => "Not enough parameters passed to run_bsub_cmd" )
-        unless ( $out_file and $err_file and @cmd );
-
-    my $memory_limit = $self->memory_required; # no factors required for farm3
-
-    my @bsub = (
-        'bsub',
-        '-q', 'normal',
-        '-o', $out_file,
-        '-e', $err_file,
-        '-M', $memory_limit,
-        '-R', 'select[mem>' . $self->memory_required . '] rusage[mem=' . $self->memory_required . ']',
-    );
-
-    #allow the user to specify multiple job ids by providing an array ref.
-    #also allow NO dependency by havign previous_job_id as undef or 0
-    if ( ref $previous_job_id eq 'ARRAY' ) {
-        #this makes -w 'done(1) && done(2) && ...'
-        push @bsub, ( '-w', join( " && ", map { 'done(' . $_ . ')' } @{ $previous_job_id } ) );
-    }
-    elsif ( $previous_job_id ) {
-        push @bsub, ( '-w', 'done(' . $previous_job_id . ')' );
-    }
-
-    push @bsub, @cmd; #anything left is the actual command
-
-    my $output = $self->run_cmd( @bsub );
-    my ( $job_id ) = $output =~ /Job <(\d+)>/;
-
-    return $job_id;
-}
-
-#this should be removed and Util::RunCmd used for consistency
-sub run_cmd {
-    my ( $self, @cmd ) = @_;
-
-    my $output;
-
-    ## no critic(RequireCheckingReturnValueOfEval)
-    eval {
-        IPC::Run::run( \@cmd, '<', \undef, '>&', \$output )
-                or die "$output\n";
-    };
-    if ( my $err = $@ ) {
-        chomp $err;
-        die "Command failed: $err";
-    }
-    ## use critic
-
-    chomp $output;
-    return  $output;
 }
 
 __PACKAGE__->meta->make_immutable;
