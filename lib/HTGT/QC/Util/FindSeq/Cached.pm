@@ -1,7 +1,7 @@
 package HTGT::QC::Util::FindSeq::Cached;
 ## no critic(RequireUseStrict,RequireUseWarnings)
 {
-    $HTGT::QC::Util::FindSeq::Cached::VERSION = '0.047';
+    $HTGT::QC::Util::FindSeq::Cached::VERSION = '0.048';
 }
 ## use critic
 

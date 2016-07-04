@@ -1,7 +1,7 @@
 package HTGT::QC::Util::ZipSequences;
 ## no critic(RequireUseStrict,RequireUseWarnings)
 {
-    $HTGT::QC::Util::ZipSequences::VERSION = '0.047';
+    $HTGT::QC::Util::ZipSequences::VERSION = '0.048';
 }
 ## use critic
 

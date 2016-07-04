@@ -1,7 +1,7 @@
 package HTGT::QC::Util::RunExonerate;
 ## no critic(RequireUseStrict,RequireUseWarnings)
 {
-    $HTGT::QC::Util::RunExonerate::VERSION = '0.047';
+    $HTGT::QC::Util::RunExonerate::VERSION = '0.048';
 }
 ## use critic
 

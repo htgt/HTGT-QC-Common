@@ -1,7 +1,7 @@
 package HTGT::QC::Action::Misc::RevcomBackbones;
 ## no critic(RequireUseStrict,RequireUseWarnings)
 {
-    $HTGT::QC::Action::Misc::RevcomBackbones::VERSION = '0.047';
+    $HTGT::QC::Action::Misc::RevcomBackbones::VERSION = '0.048';
 }
 ## use critic
 

@@ -1,7 +1,7 @@
 package HTGT::QC::Util::ReadSeq;
 ## no critic(RequireUseStrict,RequireUseWarnings)
 {
-    $HTGT::QC::Util::ReadSeq::VERSION = '0.047';
+    $HTGT::QC::Util::ReadSeq::VERSION = '0.048';
 }
 ## use critic
 

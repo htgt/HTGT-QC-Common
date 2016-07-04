@@ -1,7 +1,7 @@
 package HTGT::QC::Action::PostFilter::ESCell;
 ## no critic(RequireUseStrict,RequireUseWarnings)
 {
-    $HTGT::QC::Action::PostFilter::ESCell::VERSION = '0.047';
+    $HTGT::QC::Action::PostFilter::ESCell::VERSION = '0.048';
 }
 ## use critic
 

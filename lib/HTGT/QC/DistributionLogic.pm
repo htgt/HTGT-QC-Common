@@ -1,7 +1,7 @@
 package HTGT::QC::DistributionLogic;
 ## no critic(RequireUseStrict,RequireUseWarnings)
 {
-    $HTGT::QC::DistributionLogic::VERSION = '0.047';
+    $HTGT::QC::DistributionLogic::VERSION = '0.048';
 }
 ## use critic
 

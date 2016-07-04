@@ -1,7 +1,7 @@
 package HTGT::QC::Action::FetchTemplateData::LIMS2;
 ## no critic(RequireUseStrict,RequireUseWarnings)
 {
-    $HTGT::QC::Action::FetchTemplateData::LIMS2::VERSION = '0.047';
+    $HTGT::QC::Action::FetchTemplateData::LIMS2::VERSION = '0.048';
 }
 ## use critic
 

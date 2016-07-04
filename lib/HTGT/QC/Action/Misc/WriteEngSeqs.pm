@@ -1,7 +1,7 @@
 package HTGT::QC::Action::Misc::WriteEngSeqs;
 ## no critic(RequireUseStrict,RequireUseWarnings)
 {
-    $HTGT::QC::Action::Misc::WriteEngSeqs::VERSION = '0.047';
+    $HTGT::QC::Action::Misc::WriteEngSeqs::VERSION = '0.048';
 }
 ## use critic
 
@@ -74,12 +74,16 @@ sub _init_output_dir {
 }
 
 sub _build_eng_seq_builder {
+    my $self = shift;
+    my $eng_seq_builder;
     if ( $ENV{ENG_SEQ_BUILDER_CONFIG} ) {
-        return EngSeqBuilder->new( configfile => $ENV{ENG_SEQ_BUILDER_CONFIG} );
+        $eng_seq_builder = EngSeqBuilder->new( configfile => $ENV{ENG_SEQ_BUILDER_CONFIG} );
     }
     else {
-        return EngSeqBuilder->new();
+        $eng_seq_builder = EngSeqBuilder->new();
     }
+    $self->log->debug("Created EngSeqBuilder using config file at ".$eng_seq_builder->configfile->stringify);
+    return $eng_seq_builder;
 }
 
 sub execute {

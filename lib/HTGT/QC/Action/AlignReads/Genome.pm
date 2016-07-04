@@ -1,7 +1,7 @@
 package HTGT::QC::Action::AlignReads::Genome;
 ## no critic(RequireUseStrict,RequireUseWarnings)
 {
-    $HTGT::QC::Action::AlignReads::Genome::VERSION = '0.047';
+    $HTGT::QC::Action::AlignReads::Genome::VERSION = '0.048';
 }
 ## use critic
 

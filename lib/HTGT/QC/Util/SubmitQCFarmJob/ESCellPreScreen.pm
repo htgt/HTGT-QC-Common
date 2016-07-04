@@ -1,7 +1,7 @@
 package HTGT::QC::Util::SubmitQCFarmJob::ESCellPreScreen;
 ## no critic(RequireUseStrict,RequireUseWarnings)
 {
-    $HTGT::QC::Util::SubmitQCFarmJob::ESCellPreScreen::VERSION = '0.047';
+    $HTGT::QC::Util::SubmitQCFarmJob::ESCellPreScreen::VERSION = '0.048';
 }
 ## use critic
 

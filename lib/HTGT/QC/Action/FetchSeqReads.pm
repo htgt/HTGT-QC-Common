@@ -1,7 +1,7 @@
 package HTGT::QC::Action::FetchSeqReads;
 ## no critic(RequireUseStrict,RequireUseWarnings)
 {
-    $HTGT::QC::Action::FetchSeqReads::VERSION = '0.047';
+    $HTGT::QC::Action::FetchSeqReads::VERSION = '0.048';
 }
 ## use critic
 

@@ -1,7 +1,7 @@
 package HTGT::QC::Action::Persist::LIMS2TestResults;
 ## no critic(RequireUseStrict,RequireUseWarnings)
 {
-    $HTGT::QC::Action::Persist::LIMS2TestResults::VERSION = '0.047';
+    $HTGT::QC::Action::Persist::LIMS2TestResults::VERSION = '0.048';
 }
 ## use critic
 

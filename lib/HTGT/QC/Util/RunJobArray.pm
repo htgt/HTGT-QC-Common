@@ -1,7 +1,7 @@
 package HTGT::QC::Util::RunJobArray;
 ## no critic(RequireUseStrict,RequireUseWarnings)
 {
-    $HTGT::QC::Util::RunJobArray::VERSION = '0.047';
+    $HTGT::QC::Util::RunJobArray::VERSION = '0.048';
 }
 ## use critic
 
