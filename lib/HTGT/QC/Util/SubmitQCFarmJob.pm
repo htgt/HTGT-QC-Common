@@ -34,7 +34,6 @@ has farm_job_runner => (
 sub _build_farm_job_runner{
     return WebAppCommon::Util::FarmJobRunner->new({
         dry_run => 0,
-        bsub_wrapper => '/nfs/team87/farm3_lims2_vms/conf/run_in_farm3_af11'
     });
 }
 
