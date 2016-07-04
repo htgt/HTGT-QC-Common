@@ -1,5 +1,9 @@
 {{$NEXT}}
 
+0.048     2016-07-04 10:45:17 Europe/London
+
+  LIMS2 can now kill farm jobs
+
 0.047     2016-06-28 16:27:17 Europe/London
 
   Deployment fix in dist.ini
