@@ -119,7 +119,7 @@ sub _build_query_primer_rx {
 
     my $primer_match = join '|', @primer_names;
 
-    return qr/^(.+)\.(?:[a-z]\d)k\d*[a-z]?($primer_match)[a-z]?$/;
+    return qr/^(.+)\.(?:[a-z]\d)k\d*?[a-z]?($primer_match)[a-z]?$/;
 }
 
 sub parse_query_id {
