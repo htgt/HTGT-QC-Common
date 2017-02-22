@@ -19,7 +19,7 @@ use_ok 'HTGT::QC::Util::CigarParser';
     is_deeply $cigar, {
         query_id      => 'Gpc3_R1_1858289-CherryD11.w2k0',
         query_well    => 'Gpc3_R1_1858289-CherryD11',
-        query_primer  => '',
+        query_primer  => '0',
         query_start   => 18,
         query_end     => 704,
         query_strand  => '+',
