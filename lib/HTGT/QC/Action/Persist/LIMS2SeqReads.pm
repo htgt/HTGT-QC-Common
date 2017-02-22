@@ -1,4 +1,10 @@
 package HTGT::QC::Action::Persist::LIMS2SeqReads;
+## no critic(RequireUseStrict,RequireUseWarnings)
+{
+    $HTGT::QC::Action::Persist::LIMS2SeqReads::VERSION = '0.050';
+}
+## use critic
+
 
 use Moose;
 use HTGT::QC::Util::CigarParser;

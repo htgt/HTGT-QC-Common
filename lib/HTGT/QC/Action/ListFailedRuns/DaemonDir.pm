@@ -1,4 +1,10 @@
 package HTGT::QC::Action::ListFailedRuns::DaemonDir;
+## no critic(RequireUseStrict,RequireUseWarnings)
+{
+    $HTGT::QC::Action::ListFailedRuns::DaemonDir::VERSION = '0.050';
+}
+## use critic
+
 
 use Moose;
 use HTGT::QC::Util::ListFailedRuns;

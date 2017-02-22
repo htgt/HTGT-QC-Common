@@ -1,4 +1,10 @@
 package HTGT::QC::Util::SubmitQCFarmJob;
+## no critic(RequireUseStrict,RequireUseWarnings)
+{
+    $HTGT::QC::Util::SubmitQCFarmJob::VERSION = '0.050';
+}
+## use critic
+
 
 use Moose;
 use Moose::Util::TypeConstraints;

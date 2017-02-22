@@ -1,4 +1,10 @@
 package HTGT::QC::Action::PostFilter::ESCell;
+## no critic(RequireUseStrict,RequireUseWarnings)
+{
+    $HTGT::QC::Action::PostFilter::ESCell::VERSION = '0.050';
+}
+## use critic
+
 
 use Moose;
 use MooseX::ClassAttribute;

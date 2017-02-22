@@ -1,4 +1,10 @@
 package HTGT::QC::Action::PreFilter;
+## no critic(RequireUseStrict,RequireUseWarnings)
+{
+    $HTGT::QC::Action::PreFilter::VERSION = '0.050';
+}
+## use critic
+
 
 use Moose;
 use MooseX::Types::Path::Class;

@@ -1,4 +1,10 @@
 package HTGT::QC::Action::Misc::ConfigTest;
+## no critic(RequireUseStrict,RequireUseWarnings)
+{
+    $HTGT::QC::Action::Misc::ConfigTest::VERSION = '0.050';
+}
+## use critic
+
 
 use Moose;
 use namespace::autoclean;

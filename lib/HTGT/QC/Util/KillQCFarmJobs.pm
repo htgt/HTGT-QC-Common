@@ -1,4 +1,10 @@
 package HTGT::QC::Util::KillQCFarmJobs;
+## no critic(RequireUseStrict,RequireUseWarnings)
+{
+    $HTGT::QC::Util::KillQCFarmJobs::VERSION = '0.050';
+}
+## use critic
+
 
 use Moose;
 use YAML::Any;

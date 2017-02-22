@@ -1,4 +1,10 @@
 package HTGT::QC::Util::SubmitQCFarmJob::Vector;
+## no critic(RequireUseStrict,RequireUseWarnings)
+{
+    $HTGT::QC::Util::SubmitQCFarmJob::Vector::VERSION = '0.050';
+}
+## use critic
+
 
 use Moose;
 extends qw( HTGT::QC::Util::SubmitQCFarmJob );

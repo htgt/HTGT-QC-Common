@@ -1,4 +1,10 @@
 package HTGT::QC::DistributionLogic;
+## no critic(RequireUseStrict,RequireUseWarnings)
+{
+    $HTGT::QC::DistributionLogic::VERSION = '0.050';
+}
+## use critic
+
 
 use Moose;
 use namespace::autoclean;

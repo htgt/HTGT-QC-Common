@@ -1,4 +1,10 @@
 package HTGT::QC::Util::CrisprDamageVEP;
+## no critic(RequireUseStrict,RequireUseWarnings)
+{
+    $HTGT::QC::Util::CrisprDamageVEP::VERSION = '0.050';
+}
+## use critic
+
 
 =head1 NAME
 

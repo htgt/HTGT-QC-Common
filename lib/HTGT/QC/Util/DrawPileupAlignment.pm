@@ -1,4 +1,10 @@
 package HTGT::QC::Util::DrawPileupAlignment;
+## no critic(RequireUseStrict,RequireUseWarnings)
+{
+    $HTGT::QC::Util::DrawPileupAlignment::VERSION = '0.050';
+}
+## use critic
+
 
 =head1 NAME
 

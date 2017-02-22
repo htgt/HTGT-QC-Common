@@ -1,4 +1,10 @@
 package HTGT::QC::Action::Misc::WriteEngSeqs;
+## no critic(RequireUseStrict,RequireUseWarnings)
+{
+    $HTGT::QC::Action::Misc::WriteEngSeqs::VERSION = '0.050';
+}
+## use critic
+
 
 use Moose;
 use MooseX::ClassAttribute;

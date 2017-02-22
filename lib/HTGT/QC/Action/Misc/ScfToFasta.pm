@@ -1,4 +1,10 @@
 package HTGT::QC::Action::Misc::ScfToFasta;
+## no critic(RequireUseStrict,RequireUseWarnings)
+{
+    $HTGT::QC::Action::Misc::ScfToFasta::VERSION = '0.050';
+}
+## use critic
+
 
 use Moose;
 use MooseX::Types::Path::Class;

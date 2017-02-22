@@ -1,4 +1,10 @@
 package HTGT::QC::Action::FetchTemplateData::LIMS2;
+## no critic(RequireUseStrict,RequireUseWarnings)
+{
+    $HTGT::QC::Action::FetchTemplateData::LIMS2::VERSION = '0.050';
+}
+## use critic
+
 
 use Moose;
 use namespace::autoclean;

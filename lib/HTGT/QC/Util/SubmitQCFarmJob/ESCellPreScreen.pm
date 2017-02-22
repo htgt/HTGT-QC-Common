@@ -1,4 +1,10 @@
 package HTGT::QC::Util::SubmitQCFarmJob::ESCellPreScreen;
+## no critic(RequireUseStrict,RequireUseWarnings)
+{
+    $HTGT::QC::Util::SubmitQCFarmJob::ESCellPreScreen::VERSION = '0.050';
+}
+## use critic
+
 
 use Moose;
 use Try::Tiny;

@@ -1,4 +1,10 @@
 package HTGT::QC::Util::SubmitQCFarmJob::ESCell;
+## no critic(RequireUseStrict,RequireUseWarnings)
+{
+    $HTGT::QC::Util::SubmitQCFarmJob::ESCell::VERSION = '0.050';
+}
+## use critic
+
 
 use Moose;
 use Try::Tiny;

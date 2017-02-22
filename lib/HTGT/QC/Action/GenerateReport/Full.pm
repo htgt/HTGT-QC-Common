@@ -1,4 +1,10 @@
 package HTGT::QC::Action::GenerateReport::Full;
+## no critic(RequireUseStrict,RequireUseWarnings)
+{
+    $HTGT::QC::Action::GenerateReport::Full::VERSION = '0.050';
+}
+## use critic
+
 
 use strict;
 use warnings FATAL => 'all';

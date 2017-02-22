@@ -1,4 +1,10 @@
 package HTGT::QC::Action::RunAnalysis;
+## no critic(RequireUseStrict,RequireUseWarnings)
+{
+    $HTGT::QC::Action::RunAnalysis::VERSION = '0.050';
+}
+## use critic
+
 
 use Moose;
 use Bio::SeqIO;

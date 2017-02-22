@@ -1,4 +1,10 @@
 package HTGT::QC::Util::RunCmd;
+## no critic(RequireUseStrict,RequireUseWarnings)
+{
+    $HTGT::QC::Util::RunCmd::VERSION = '0.050';
+}
+## use critic
+
 
 use strict;
 use warnings FATAL => 'all';

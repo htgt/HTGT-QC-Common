@@ -1,4 +1,10 @@
 package HTGT::QC::Util::MergeVariantsVCF;
+## no critic(RequireUseStrict,RequireUseWarnings)
+{
+    $HTGT::QC::Util::MergeVariantsVCF::VERSION = '0.050';
+}
+## use critic
+
 
 =head1 NAME
 

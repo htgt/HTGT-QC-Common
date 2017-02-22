@@ -1,4 +1,10 @@
 package HTGT::QC::Util::Alignment;
+## no critic(RequireUseStrict,RequireUseWarnings)
+{
+    $HTGT::QC::Util::Alignment::VERSION = '0.050';
+}
+## use critic
+
 
 use strict;
 use warnings FATAL => 'all';

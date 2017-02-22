@@ -1,4 +1,10 @@
 package HTGT::QC::Action::Persist;
+## no critic(RequireUseStrict,RequireUseWarnings)
+{
+    $HTGT::QC::Action::Persist::VERSION = '0.050';
+}
+## use critic
+
 
 use strict;
 use warnings FATAL => 'all';

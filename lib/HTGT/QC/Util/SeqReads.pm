@@ -1,4 +1,10 @@
 package HTGT::QC::Util::SeqReads;
+## no critic(RequireUseStrict,RequireUseWarnings)
+{
+    $HTGT::QC::Util::SeqReads::VERSION = '0.050';
+}
+## use critic
+
 
 use Moose::Role;
 use Bio::SeqIO;

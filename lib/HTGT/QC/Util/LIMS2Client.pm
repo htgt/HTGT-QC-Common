@@ -1,4 +1,10 @@
 package HTGT::QC::Util::LIMS2Client;
+## no critic(RequireUseStrict,RequireUseWarnings)
+{
+    $HTGT::QC::Util::LIMS2Client::VERSION = '0.050';
+}
+## use critic
+
 
 use Moose::Role;
 use LIMS2::REST::Client;

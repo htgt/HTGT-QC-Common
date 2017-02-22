@@ -1,4 +1,10 @@
 package HTGT::QC::Util::CigarParser;
+## no critic(RequireUseStrict,RequireUseWarnings)
+{
+    $HTGT::QC::Util::CigarParser::VERSION = '0.050';
+}
+## use critic
+
 
 use Moose;
 use MooseX::ClassAttribute;

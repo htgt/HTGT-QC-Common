@@ -1,4 +1,10 @@
 package HTGT::QC::Util::FindSeq::Cached;
+## no critic(RequireUseStrict,RequireUseWarnings)
+{
+    $HTGT::QC::Util::FindSeq::Cached::VERSION = '0.050';
+}
+## use critic
+
 
 use strict;
 use warnings FATAL => 'all';

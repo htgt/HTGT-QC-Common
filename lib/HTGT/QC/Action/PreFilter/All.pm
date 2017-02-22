@@ -1,4 +1,10 @@
 package HTGT::QC::Action::PreFilter::All;
+## no critic(RequireUseStrict,RequireUseWarnings)
+{
+    $HTGT::QC::Action::PreFilter::All::VERSION = '0.050';
+}
+## use critic
+
 
 use Moose;
 use List::Util qw( sum );

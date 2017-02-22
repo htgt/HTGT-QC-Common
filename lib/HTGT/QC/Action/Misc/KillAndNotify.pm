@@ -1,4 +1,10 @@
 package HTGT::QC::Action::Misc::KillAndNotify;
+## no critic(RequireUseStrict,RequireUseWarnings)
+{
+    $HTGT::QC::Action::Misc::KillAndNotify::VERSION = '0.050';
+}
+## use critic
+
 
 use Moose;
 use namespace::autoclean;

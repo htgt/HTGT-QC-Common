@@ -1,4 +1,10 @@
 package HTGT::QC::Action::RunAnalysis::Standard;
+## no critic(RequireUseStrict,RequireUseWarnings)
+{
+    $HTGT::QC::Action::RunAnalysis::Standard::VERSION = '0.050';
+}
+## use critic
+
 
 use Moose;
 use MooseX::Types::Path::Class;

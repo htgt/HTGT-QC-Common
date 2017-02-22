@@ -1,4 +1,10 @@
 package HTGT::QC::Action::Persist::QcTemplateLIMS2;
+## no critic(RequireUseStrict,RequireUseWarnings)
+{
+    $HTGT::QC::Action::Persist::QcTemplateLIMS2::VERSION = '0.050';
+}
+## use critic
+
 
 use Moose;
 use Try::Tiny;

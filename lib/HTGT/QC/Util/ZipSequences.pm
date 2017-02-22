@@ -1,4 +1,10 @@
 package HTGT::QC::Util::ZipSequences;
+## no critic(RequireUseStrict,RequireUseWarnings)
+{
+    $HTGT::QC::Util::ZipSequences::VERSION = '0.050';
+}
+## use critic
+
 
 use strict;
 use warnings FATAL => 'all';

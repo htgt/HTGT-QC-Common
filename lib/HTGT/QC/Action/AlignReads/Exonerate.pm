@@ -1,4 +1,10 @@
 package HTGT::QC::Action::AlignReads::Exonerate;
+## no critic(RequireUseStrict,RequireUseWarnings)
+{
+    $HTGT::QC::Action::AlignReads::Exonerate::VERSION = '0.050';
+}
+## use critic
+
 
 use Moose;
 use HTGT::QC::Util::RunExonerate qw( run_exonerate );

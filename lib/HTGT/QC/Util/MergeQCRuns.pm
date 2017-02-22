@@ -1,4 +1,10 @@
 package HTGT::QC::Util::MergeQCRuns;
+## no critic(RequireUseStrict,RequireUseWarnings)
+{
+    $HTGT::QC::Util::MergeQCRuns::VERSION = '0.050';
+}
+## use critic
+
 
 use strict;
 use warnings FATAL => 'all';

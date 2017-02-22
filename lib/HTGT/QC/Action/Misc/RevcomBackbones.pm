@@ -1,4 +1,10 @@
 package HTGT::QC::Action::Misc::RevcomBackbones;
+## no critic(RequireUseStrict,RequireUseWarnings)
+{
+    $HTGT::QC::Action::Misc::RevcomBackbones::VERSION = '0.050';
+}
+## use critic
+
 
 use Moose;
 use Path::Class;

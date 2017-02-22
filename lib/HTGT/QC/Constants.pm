@@ -1,4 +1,10 @@
 package HTGT::QC::Constants;
+## no critic(RequireUseStrict,RequireUseWarnings)
+{
+    $HTGT::QC::Constants::VERSION = '0.050';
+}
+## use critic
+
 use strict;
 use warnings FATAL => 'all';
 

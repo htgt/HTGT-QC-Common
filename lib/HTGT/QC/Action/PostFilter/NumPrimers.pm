@@ -1,4 +1,10 @@
 package HTGT::QC::Action::PostFilter::NumPrimers;
+## no critic(RequireUseStrict,RequireUseWarnings)
+{
+    $HTGT::QC::Action::PostFilter::NumPrimers::VERSION = '0.050';
+}
+## use critic
+
 
 use Moose;
 use namespace::autoclean;

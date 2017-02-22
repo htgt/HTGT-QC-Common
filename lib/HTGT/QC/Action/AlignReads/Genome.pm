@@ -1,4 +1,10 @@
 package HTGT::QC::Action::AlignReads::Genome;
+## no critic(RequireUseStrict,RequireUseWarnings)
+{
+    $HTGT::QC::Action::AlignReads::Genome::VERSION = '0.050';
+}
+## use critic
+
 
 use Moose;
 use HTGT::QC::Exception;

@@ -1,4 +1,10 @@
 package HTGT::QC::Action::Persist::LIMS2TestResults;
+## no critic(RequireUseStrict,RequireUseWarnings)
+{
+    $HTGT::QC::Action::Persist::LIMS2TestResults::VERSION = '0.050';
+}
+## use critic
+
 
 use Moose;
 use List::Util qw( sum );

@@ -1,4 +1,10 @@
 package HTGT::QC::Util::GeneratePrimers;
+## no critic(RequireUseStrict,RequireUseWarnings)
+{
+    $HTGT::QC::Util::GeneratePrimers::VERSION = '0.050';
+}
+## use critic
+
 
 =head1 NAME
 

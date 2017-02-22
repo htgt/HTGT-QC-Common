@@ -1,4 +1,10 @@
 package HTGT::QC::Util::ListLatestRuns;
+## no critic(RequireUseStrict,RequireUseWarnings)
+{
+    $HTGT::QC::Util::ListLatestRuns::VERSION = '0.050';
+}
+## use critic
+
 
 use Moose;
 use YAML::Any;

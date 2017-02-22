@@ -1,4 +1,10 @@
 package HTGT::QC::Action::GenerateRunID::UUID;
+## no critic(RequireUseStrict,RequireUseWarnings)
+{
+    $HTGT::QC::Action::GenerateRunID::UUID::VERSION = '0.050';
+}
+## use critic
+
 
 use Moose;
 use Data::UUID;

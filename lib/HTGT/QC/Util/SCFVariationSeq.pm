@@ -1,4 +1,10 @@
 package HTGT::QC::Util::SCFVariationSeq;
+## no critic(RequireUseStrict,RequireUseWarnings)
+{
+    $HTGT::QC::Util::SCFVariationSeq::VERSION = '0.050';
+}
+## use critic
+
 
 =head1 NAME
 
